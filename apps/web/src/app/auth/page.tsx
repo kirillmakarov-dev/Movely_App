@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/SafeLink";
 import { useEffect, useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import {

@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SafeLink";
 import SiteHeader from "@/components/SiteHeader";
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {

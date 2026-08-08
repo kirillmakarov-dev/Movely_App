@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import Link from "@/components/SafeLink";
 import { useEffect, useState } from "react";
 import { getCurrentUser, getMyMoveRequests, type CurrentUser, type MoveRequestSummaryResponse } from "@/lib/movely-api";
 import { formatRequestStatus, formatRequestType } from "@/lib/presentation";

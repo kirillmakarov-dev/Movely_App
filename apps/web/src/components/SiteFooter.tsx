@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SafeLink";
 
 const footerLinks = [
   { href: "/", label: "About" },

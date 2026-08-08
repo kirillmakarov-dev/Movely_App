@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SafeLink";
 
 export default function MoverPlaceholder({ title, description, action }: { title: string; description: string; action?: { href: string; label: string } }) {
   return (

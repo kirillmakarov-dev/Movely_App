@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SafeLink";
 import type { MarketplaceRequest } from "./mock-requests";
 import { formatRequestType } from "@/lib/presentation";
 

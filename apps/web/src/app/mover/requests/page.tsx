@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Link from "@/components/SafeLink";
 import RequestCard from "@/features/marketplace/RequestCard";
 import { mockMarketplaceRequests } from "@/features/marketplace/mock-requests";
 export default function MoverRequestsPage() { return <div><p className="eyebrow">Mover marketplace preview</p><div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><h1 className="text-3xl font-bold sm:text-4xl">Relevant Requests</h1><p className="mt-3 max-w-2xl text-slate-600">Presentation-only marketplace cards. Lead access is not implemented.</p></div><Link href="/requests" className="button button-secondary">Open public marketplace</Link></div><div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{mockMarketplaceRequests.slice(0, 3).map((request) => <RequestCard key={request.id} request={request} />)}</div></div>; }
