@@ -2,6 +2,7 @@ import { Atkinson_Hyperlegible } from "next/font/google";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
+import { LocaleProvider } from "@/components/LocaleProvider";
 import "./globals.css";
 
 const atkinson = Atkinson_Hyperlegible({
@@ -51,7 +52,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" dir="ltr" className={`h-full ${atkinson.className}`}>
-      <body className="min-h-full text-slate-950">{children}</body>
+      <body className="min-h-full text-slate-950">
+        <LocaleProvider>{children}</LocaleProvider>
+      </body>
     </html>
   );
 }

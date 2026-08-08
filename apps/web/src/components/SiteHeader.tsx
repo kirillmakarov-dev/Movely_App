@@ -1,4 +1,5 @@
 import Link from "@/components/SafeLink";
+import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const navigation = [
   { href: "/requests", label: "Requests" },
@@ -23,6 +24,7 @@ export default function SiteHeader() {
         </nav>
 
         <div className="hidden items-center gap-3 md:flex">
+          <LanguageSwitcher />
           <Link href="/auth" className="button button-ghost">
             Login
           </Link>
@@ -31,26 +33,29 @@ export default function SiteHeader() {
           </Link>
         </div>
 
-        <details className="mobile-menu md:hidden">
-          <summary aria-label="Open navigation menu">
-            <span />
-            <span />
-            <span />
-          </summary>
-          <div className="mobile-menu-panel">
-            {navigation.map((item) => (
-              <Link key={item.href} href={item.href} className="mobile-menu-link">
-                {item.label}
+        <div className="flex items-center gap-2 md:hidden">
+          <LanguageSwitcher />
+          <details className="mobile-menu">
+            <summary aria-label="Open navigation menu">
+              <span />
+              <span />
+              <span />
+            </summary>
+            <div className="mobile-menu-panel">
+              {navigation.map((item) => (
+                <Link key={item.href} href={item.href} className="mobile-menu-link">
+                  {item.label}
+                </Link>
+              ))}
+              <Link href="/auth" className="mobile-menu-link">
+                Login
               </Link>
-            ))}
-            <Link href="/auth" className="mobile-menu-link">
-              Login
-            </Link>
-            <Link href="/request/new" className="button button-primary mt-2 w-full">
-              Create Request
-            </Link>
-          </div>
-        </details>
+              <Link href="/request/new" className="button button-primary mt-2 w-full">
+                Create Request
+              </Link>
+            </div>
+          </details>
+        </div>
       </div>
     </header>
   );

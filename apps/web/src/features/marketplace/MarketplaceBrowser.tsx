@@ -4,10 +4,12 @@ import { useDeferredValue, useState } from "react";
 import RequestCard from "./RequestCard";
 import { mockMarketplaceRequests } from "./mock-requests";
 import type { MoveRequestType } from "@/lib/movely-api";
+import { useLocale } from "@/components/LocaleProvider";
 
 type CategoryFilter = "All" | MoveRequestType;
 
 export default function MarketplaceBrowser() {
+  const { locale } = useLocale();
   const [category, setCategory] = useState<CategoryFilter>("All");
   const [pickupCity, setPickupCity] = useState("");
   const [destinationCity, setDestinationCity] = useState("");
@@ -71,7 +73,10 @@ export default function MarketplaceBrowser() {
       </div>
 
       <div className="mt-7 flex items-center justify-between gap-4">
-        <p className="text-sm text-slate-600"><strong className="text-slate-950">{visibleRequests.length}</strong> requests</p>
+        <p className="text-sm text-slate-600">
+          <strong className="text-slate-950">{visibleRequests.length}</strong>{" "}
+          {locale === "he" ? "בקשות" : "requests"}
+        </p>
         <label className="flex items-center gap-2 text-sm font-bold text-slate-600">
           Sort
           <select className="field-control min-w-36" value={sort} onChange={(event) => setSort(event.target.value)}>

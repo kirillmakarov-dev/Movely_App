@@ -58,6 +58,16 @@ button, summary { cursor: pointer; }
 .mobile-menu-panel { position: absolute; right: 0; top: calc(100% + .75rem); width: min(19rem, calc(100vw - 2rem)); padding: .75rem; border: 1px solid var(--line); border-radius: var(--radius-md); background: white; box-shadow: var(--shadow-card); }
 .mobile-menu-link { min-height: 48px; display: flex; align-items: center; padding: 0 .75rem; border-radius: 7px; font-weight: 700; }
 .mobile-menu-link:hover { background: #f1f5f9; }
+.language-switcher { display: inline-flex; min-height: 44px; align-items: center; gap: 2px; padding: 3px; border: 1px solid var(--line); border-radius: 999px; background: #f8fafc; }
+.language-option { width: 38px; min-height: 36px; display: grid; place-items: center; border-radius: 999px; color: #64748b; font-size: .75rem; font-weight: 800; letter-spacing: .04em; cursor: pointer; transition: color 180ms ease, background-color 180ms ease, box-shadow 180ms ease; }
+.language-option:hover { color: var(--ink); background: #eaf2f8; }
+.language-option[aria-pressed="true"] { color: white; background: var(--ink); box-shadow: 0 2px 8px rgba(15, 23, 42, .18); }
+.language-option:focus-visible { outline: 3px solid rgba(14, 116, 144, .28); outline-offset: 2px; }
+
+html[dir="rtl"] body { font-family: "Noto Sans Hebrew", "Segoe UI", sans-serif; }
+html[dir="rtl"] .mobile-menu-panel { right: auto; left: 0; }
+html[dir="rtl"] .route-arrow { transform: scaleX(-1); }
+html[dir="rtl"] .text-left { text-align: right; }
 
 .hero-section { border-bottom: 1px solid var(--line); background: linear-gradient(105deg, #f7fafc 0 62%, #e6f3f7 62% 100%); }
 .eyebrow { color: var(--brand); font-size: .78rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }

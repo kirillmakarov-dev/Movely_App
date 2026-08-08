@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "@/components/SafeLink";
+import { useLocale } from "@/components/LocaleProvider";
 import { useEffect, useMemo, useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/presentation";
@@ -533,6 +534,7 @@ export default function CustomerRequestFlow({
 }: {
   initialRequestType?: MoveRequestType | null;
 }) {
+  const { locale } = useLocale();
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [drafts, setDrafts] = useState<MoveRequestSummaryResponse[]>([]);
   const [activeRequest, setActiveRequest] = useState<MoveRequestResponse | null>(null);
@@ -2152,11 +2154,15 @@ export default function CustomerRequestFlow({
           >
             <div className="flex flex-col gap-4 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm font-semibold text-sky-800">Step {stepIndex + 1} of {steps.length}</p>
+                <p className="text-sm font-semibold text-sky-800">
+                  {locale === "he" ? `שלב ${stepIndex + 1} מתוך ${steps.length}` : `Step ${stepIndex + 1} of ${steps.length}`}
+                </p>
                 <h2 className="text-xl font-bold text-slate-950">{currentStep?.title ?? "Get started"}</h2>
                 <p className="text-sm leading-6 text-slate-500">{currentStep?.description}</p>
               </div>
-              <div className="text-sm font-medium text-slate-600">{Math.round(progressPercent)}% complete</div>
+              <div className="text-sm font-medium text-slate-600">
+                {locale === "he" ? `${Math.round(progressPercent)}% הושלמו` : `${Math.round(progressPercent)}% complete`}
+              </div>
             </div>
 
             <div className="mt-4">
@@ -2237,7 +2243,9 @@ export default function CustomerRequestFlow({
                 <h2 className="text-xl font-bold text-slate-950">Continue request</h2>
                 <p className="mt-1 text-sm text-slate-500">Pick up a saved draft where you left off.</p>
               </div>
-              <div className="text-sm text-slate-500">{drafts.length} saved</div>
+              <div className="text-sm text-slate-500">
+                {locale === "he" ? `${drafts.length} נשמרו` : `${drafts.length} saved`}
+              </div>
             </div>
 
             <div className="mt-4 grid gap-3 md:grid-cols-2">
