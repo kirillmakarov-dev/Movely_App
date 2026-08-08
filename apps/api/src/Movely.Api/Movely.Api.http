@@ -1,0 +1,6 @@
+@Movely.Api_HostAddress = http://localhost:5117
+
+GET {{Movely.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

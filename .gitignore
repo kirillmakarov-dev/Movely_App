@@ -1,0 +1,34 @@
+# Node / Next.js
+node_modules/
+apps/web/node_modules/
+apps/web/.next/
+apps/web/out/
+apps/web/.turbo/
+*.tsbuildinfo
+
+# .NET
+bin/
+obj/
+apps/api/src/Movely.Api/bin/
+apps/api/src/Movely.Api/obj/
+tests/**/bin/
+tests/**/obj/
+*.db
+.tools/
+
+# Environment
+.env
+.env.*
+!.env.example
+apps/web/.env
+apps/web/.env.*
+!apps/web/.env.example
+apps/api/src/Movely.Api/.env
+apps/api/src/Movely.Api/.env.*
+!apps/api/src/Movely.Api/.env.example
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
