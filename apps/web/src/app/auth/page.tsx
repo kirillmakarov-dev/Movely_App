@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import SiteHeader from "@/components/SiteHeader";
 import {
   type CurrentUser,
   getCurrentUser,
@@ -11,15 +12,14 @@ import {
   verifyPhoneCode,
 } from "@/lib/movely-api";
 
+const developmentCredential = "dev-google:demo-subject:customer@example.com:Alex:Customer";
+
 export default function AuthPage() {
-  const [status, setStatus] = useState("Ready");
+  const [status, setStatus] = useState("Sign in to continue your request.");
   const [user, setUser] = useState<CurrentUser | null>(null);
-  const [googleCredential, setGoogleCredential] = useState(
-    "dev-google:demo-subject:customer@example.com:Alex:Customer",
-  );
   const [phone, setPhone] = useState("050-123-4567");
   const [otpCode, setOtpCode] = useState("");
-  const [debugCode, setDebugCode] = useState("");
+  const [busy, setBusy] = useState(false);
 
   useEffect(() => {
     void getCurrentUser().then(setUser).catch(() => setUser(null));
@@ -27,182 +27,109 @@ export default function AuthPage() {
 
   async function handleGoogleSignIn() {
     try {
+      setBusy(true);
       setStatus("Signing in...");
-      setUser(await signInWithGoogle(googleCredential));
-      setStatus("Signed in with Google.");
+      setUser(await signInWithGoogle(developmentCredential));
+      setStatus("You are signed in.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Sign-in failed.");
+      setStatus(error instanceof Error ? error.message : "Sign-in failed. Please try again.");
+    } finally {
+      setBusy(false);
     }
   }
 
   async function handleRequestCode() {
     try {
-      setStatus("Requesting code...");
+      setBusy(true);
+      setStatus("Sending verification code...");
       const payload = await requestPhoneCode(phone);
-      setDebugCode(payload.debugCode ?? "");
-      setStatus(`OTP sent to ${payload.normalizedPhone}.`);
+      if (payload.debugCode) setOtpCode(payload.debugCode);
+      setStatus(`Verification code sent to ${payload.normalizedPhone}.`);
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "OTP request failed.");
+      setStatus(error instanceof Error ? error.message : "Could not send a code. Please try again.");
+    } finally {
+      setBusy(false);
     }
   }
 
   async function handleVerifyCode() {
     try {
-      setStatus("Verifying code...");
+      setBusy(true);
+      setStatus("Checking your code...");
       const response = await verifyPhoneCode(phone, otpCode);
-      setUser((current) =>
-        current
-          ? {
-              ...current,
-              phone: response.normalizedPhone,
-              phoneVerified: response.phoneVerified,
-            }
-          : current,
-      );
-      setStatus("Phone verified.");
+      setUser((current) => current ? { ...current, phone: response.normalizedPhone, phoneVerified: response.phoneVerified } : current);
+      setStatus("Phone verified. You can now publish requests.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Verification failed.");
+      setStatus(error instanceof Error ? error.message : "Verification failed. Check the code and try again.");
+    } finally {
+      setBusy(false);
     }
   }
 
   async function handleLogout() {
     try {
-      setStatus("Logging out...");
+      setBusy(true);
       await logout();
       setUser(null);
-      setStatus("Signed out.");
+      setStatus("You are signed out.");
     } catch (error) {
-      setStatus(error instanceof Error ? error.message : "Logout failed.");
+      setStatus(error instanceof Error ? error.message : "Could not sign out.");
+    } finally {
+      setBusy(false);
     }
   }
 
   return (
-    <main className="mx-auto flex min-h-screen w-full max-w-5xl flex-col gap-8 px-4 py-8 sm:px-6 lg:px-8">
-      <section className="rounded-[32px] border border-white/70 bg-white/85 p-6 shadow-[0_28px_90px_rgba(30,58,138,0.08)] backdrop-blur-xl">
-        <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-500">
-          Movely auth foundation
-        </p>
-        <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-          Sign in, verify the phone, and keep the session server-managed.
-        </h1>
-        <p className="mt-3 max-w-2xl text-base leading-7 text-slate-600">
-          This page uses the same auth flow that the request wizard relies on before publish.
-        </p>
-        <div className="mt-5 flex flex-wrap gap-3">
-          <Link
-            href="/"
-            className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-          >
-            Back to wizard
-          </Link>
+    <>
+      <SiteHeader />
+      <main id="main-content" className="site-container py-10 sm:py-16">
+        <div className="mx-auto grid max-w-5xl overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:grid-cols-[.85fr_1.15fr]">
+          <section className="bg-slate-950 p-7 text-white sm:p-10">
+            <p className="eyebrow text-sky-300">Movely account</p>
+            <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">Your moves, saved in one place.</h1>
+            <p className="mt-5 leading-7 text-slate-300">Sign in to save drafts, resume a request and publish after phone verification.</p>
+            <Link href="/" className="mt-10 inline-flex min-h-11 items-center font-bold text-sky-300 hover:text-white">&larr; Back to home</Link>
+          </section>
+
+          <section className="p-6 sm:p-10">
+            {user ? (
+              <div>
+                <p className="text-sm font-bold text-sky-800">Signed in</p>
+                <h2 className="mt-2 text-2xl font-bold">Welcome, {user.firstName}</h2>
+                <p className="mt-2 text-slate-600">{user.phoneVerified ? "Your phone is verified." : "Verify your phone before publishing a request."}</p>
+              </div>
+            ) : (
+              <div>
+                <h2 className="text-2xl font-bold">Login</h2>
+                <p className="mt-2 text-slate-600">Continue with Google to access your customer account.</p>
+                <button type="button" onClick={handleGoogleSignIn} disabled={busy} className="button button-primary mt-6 w-full disabled:opacity-60">Continue with Google</button>
+              </div>
+            )}
+
+            {user && !user.phoneVerified ? (
+              <div className="mt-8 border-t border-slate-200 pt-7">
+                <h2 className="text-xl font-bold">Verify your phone</h2>
+                <div className="mt-5 grid gap-4 sm:grid-cols-2">
+                  <label className="field-label">Phone number<input className="field-control" type="tel" autoComplete="tel" value={phone} onChange={(event) => setPhone(event.target.value)} /></label>
+                  <label className="field-label">Verification code<input className="field-control" inputMode="numeric" autoComplete="one-time-code" value={otpCode} onChange={(event) => setOtpCode(event.target.value)} /></label>
+                </div>
+                <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+                  <button type="button" onClick={handleRequestCode} disabled={busy} className="button button-secondary">Send code</button>
+                  <button type="button" onClick={handleVerifyCode} disabled={busy || !otpCode} className="button button-primary disabled:cursor-not-allowed disabled:opacity-50">Verify phone</button>
+                </div>
+              </div>
+            ) : null}
+
+            {user ? (
+              <div className="mt-8 flex flex-col gap-3 border-t border-slate-200 pt-6 sm:flex-row">
+                <Link href="/account/requests" className="button button-primary">Go to My Requests</Link>
+                <button type="button" onClick={handleLogout} disabled={busy} className="button button-ghost">Log out</button>
+              </div>
+            ) : null}
+            <p className="mt-6 text-sm text-slate-500" aria-live="polite">{status}</p>
+          </section>
         </div>
-      </section>
-
-      <section className="grid gap-6 lg:grid-cols-[1.2fr_0.8fr]">
-        <div className="space-y-6 rounded-[32px] border border-white/70 bg-white/85 p-6 shadow-[0_28px_90px_rgba(30,58,138,0.08)] backdrop-blur-xl">
-          <div className="space-y-2">
-            <h2 className="text-lg font-semibold text-slate-950">Google sign-in</h2>
-            <p className="text-sm text-slate-600">
-              Use the development credential format{" "}
-              <code className="rounded bg-slate-100 px-1 py-0.5">
-                dev-google:subject:email:first:last
-              </code>
-              .
-            </p>
-          </div>
-          <label className="block space-y-2">
-            <span className="text-sm font-medium text-slate-700">Credential</span>
-            <input
-              value={googleCredential}
-              onChange={(event) => setGoogleCredential(event.target.value)}
-              className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
-            />
-          </label>
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleGoogleSignIn}
-              className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 cursor-pointer"
-            >
-              Sign in
-            </button>
-            <button
-              type="button"
-              onClick={handleLogout}
-              className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
-            >
-              Log out
-            </button>
-          </div>
-
-          <div className="grid gap-4 md:grid-cols-2">
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-slate-700">Phone</span>
-              <input
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
-              />
-            </label>
-            <label className="block space-y-2">
-              <span className="text-sm font-medium text-slate-700">OTP code</span>
-              <input
-                value={otpCode}
-                onChange={(event) => setOtpCode(event.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
-              />
-            </label>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleRequestCode}
-              className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
-            >
-              Request code
-            </button>
-            <button
-              type="button"
-              onClick={handleVerifyCode}
-              className="rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500 cursor-pointer"
-            >
-              Verify code
-            </button>
-          </div>
-          {debugCode ? (
-            <p className="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">
-              Development OTP: <strong>{debugCode}</strong>
-            </p>
-          ) : null}
-          <p className="text-sm text-slate-500">{status}</p>
-        </div>
-
-        <aside className="space-y-4 rounded-[32px] border border-white/70 bg-slate-950 p-6 text-slate-100 shadow-[0_28px_90px_rgba(30,58,138,0.08)]">
-          <h2 className="text-lg font-semibold">Current session</h2>
-          <dl className="space-y-3 text-sm">
-            <div>
-              <dt className="text-slate-400">Authenticated</dt>
-              <dd className="font-medium">{user ? "Yes" : "No"}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-400">Name</dt>
-              <dd className="font-medium">{user ? `${user.firstName} ${user.lastName}` : "—"}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-400">Email</dt>
-              <dd className="font-medium">{user?.email ?? "—"}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-400">Phone verified</dt>
-              <dd className="font-medium">{user?.phoneVerified ? "Yes" : "No"}</dd>
-            </div>
-            <div>
-              <dt className="text-slate-400">Role</dt>
-              <dd className="font-medium">{user?.role ?? "—"}</dd>
-            </div>
-          </dl>
-        </aside>
-      </section>
-    </main>
+      </main>
+    </>
   );
 }

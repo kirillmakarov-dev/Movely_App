@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import SiteHeader from "@/components/SiteHeader";
+import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/presentation";
 import {
   type CurrentUser,
   type MoveBudgetBand,
@@ -517,11 +519,27 @@ function LoadingState() {
   );
 }
 
-export default function CustomerRequestFlow() {
+function withUiTimeout<T>(promise: Promise<T>, timeoutMs = 2500) {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) => {
+      window.setTimeout(() => reject(new Error("The account service is taking longer than expected.")), timeoutMs);
+    }),
+  ]);
+}
+
+export default function CustomerRequestFlow({
+  initialRequestType = null,
+}: {
+  initialRequestType?: MoveRequestType | null;
+}) {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [drafts, setDrafts] = useState<MoveRequestSummaryResponse[]>([]);
   const [activeRequest, setActiveRequest] = useState<MoveRequestResponse | null>(null);
-  const [form, setForm] = useState<FormState>(() => makeFormState());
+  const [form, setForm] = useState<FormState>(() => ({
+    ...makeFormState(),
+    requestType: initialRequestType,
+  }));
   const [stepIndex, setStepIndex] = useState(0);
   const [pendingGoogleCredential, setPendingGoogleCredential] = useState(
     "dev-google:demo-subject:customer@example.com:Alex:Customer",
@@ -553,10 +571,10 @@ export default function CustomerRequestFlow() {
 
   async function bootstrap() {
     try {
-      const [currentUser, requestList] = await Promise.all([
+      const [currentUser, requestList] = await withUiTimeout(Promise.all([
         getCurrentUser(),
         getMyMoveRequests().catch(() => [] as MoveRequestSummaryResponse[]),
-      ]);
+      ]));
       setUser(currentUser);
       setDrafts(requestList);
       if (currentUser) {
@@ -566,8 +584,12 @@ export default function CustomerRequestFlow() {
             : `Signed in as ${currentUser.firstName}. Phone verification is still required.`,
         );
       }
-    } catch (error) {
-      setBanner(normalizeApiError(error));
+    } catch {
+      setBanner({
+        tone: "info",
+        title: "Start your request",
+        message: "You can fill in the details now. Sign in when you are ready to save your draft.",
+      });
       setStatusText("Using the request wizard in local mode until the API is reachable.");
     } finally {
       setIsBootstrapping(false);
@@ -2049,7 +2071,7 @@ export default function CustomerRequestFlow() {
           <SummarySection
             title="Published request"
             value={publishState.moveRequest.id}
-            detail={`Status: ${publishState.moveRequest.status} · Lead sales: ${publishState.moveRequest.leadSalesStatus} · Lead price: ${moneyLabel(publishState.moveRequest.leadPrice)}`}
+            detail={`Status: ${formatRequestStatus(publishState.moveRequest.status)}. Movers can now discover this request when marketplace access is available.`}
           />
         ) : null}
       </div>
@@ -2108,89 +2130,51 @@ export default function CustomerRequestFlow() {
   const progressPercent = Math.max(0, Math.min(100, ((stepIndex + 1) / steps.length) * 100));
 
   return (
-    <main className="mx-auto w-full max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-      <header className="mb-6 overflow-hidden rounded-[32px] border border-white/70 bg-white/85 p-4 shadow-[0_24px_80px_rgba(30,58,138,0.08)] backdrop-blur-xl sm:p-6">
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-          <div className="space-y-2">
-            <p className="text-xs font-bold uppercase tracking-[0.24em] text-slate-500">
-              Movely Phase 4
-            </p>
-            <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-              Request a move in minutes.
-            </h1>
-            <p className="max-w-2xl text-base leading-7 text-slate-600">
-              A clean, trustworthy, mobile-first request wizard for apartment moves and small
-              item transports. Drafts save step by step, the review uses the saved request, and
-              publish runs through the real auth and phone-verification flow.
-            </p>
-          </div>
-          <div className="flex flex-wrap gap-3">
-            <Link
-              href="#wizard"
-              className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800"
-            >
-              Get moving quotes
-            </Link>
-            <Link
-              href="#request-list"
-              className="rounded-full border border-slate-300 bg-white px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50"
-            >
-              Continue request
-            </Link>
-          </div>
-        </div>
+    <>
+      <SiteHeader />
+      <main id="main-content" className="site-container py-8 sm:py-12">
+        <header className="mb-8 max-w-3xl">
+          <Link href="/" className="inline-link mt-0">&larr; Back to home</Link>
+          <p className="eyebrow mt-6">Create a request</p>
+          <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-5xl">
+            Request a move in minutes.
+          </h1>
+          <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
+            Tell movers what needs moving, where it is going and when. Your draft is saved as you progress after sign-in.
+          </p>
+        </header>
 
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          {[
-            "Apartment Move",
-            "Small Move / Individual Items",
-            "Drafts, review, and publish",
-          ].map((item) => (
-            <div
-              key={item}
-              className="rounded-[20px] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700"
-            >
-              {item}
-            </div>
-          ))}
-        </div>
-      </header>
-
-      <section id="how-it-works" className="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
-        <div className="space-y-6">
+      <section className="grid items-start gap-7 lg:grid-cols-[minmax(0,1fr)_300px]">
+        <div className="min-w-0 space-y-6">
           <div
             id="wizard"
-            className="rounded-[32px] border border-white/70 bg-white/85 p-4 shadow-[0_28px_90px_rgba(30,58,138,0.1)] backdrop-blur-xl sm:p-6"
+            className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm sm:p-7"
           >
             <div className="flex flex-col gap-4 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
-                <p className="text-sm font-semibold text-slate-500">Request wizard</p>
+                <p className="text-sm font-semibold text-sky-800">Step {stepIndex + 1} of {steps.length}</p>
                 <h2 className="text-xl font-bold text-slate-950">{currentStep?.title ?? "Get started"}</h2>
                 <p className="text-sm leading-6 text-slate-500">{currentStep?.description}</p>
               </div>
-              <div className="text-sm font-medium text-slate-600">{stepIndex + 1} / {steps.length}</div>
+              <div className="text-sm font-medium text-slate-600">{Math.round(progressPercent)}% complete</div>
             </div>
 
             <div className="mt-4">
-              <div className="mb-3 flex items-center justify-between text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">
-                <span>Progress</span>
-                <span>{Math.round(progressPercent)}%</span>
-              </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-blue-600 via-sky-500 to-indigo-600 transition-all duration-300"
+                  className="h-full rounded-full bg-sky-700 transition-all duration-300"
                   style={{ width: `${progressPercent}%` }}
                 />
               </div>
             </div>
 
-            <div className="mt-5 flex flex-wrap gap-2">
+            <div className="wizard-step-tabs mt-5 flex max-w-full gap-2 overflow-x-auto pb-2">
               {steps.map((step, index) => (
                 <button
                   key={step.key}
                   type="button"
                   onClick={() => setStepIndex(index)}
-                  className={`rounded-full px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] transition cursor-pointer ${
+                  className={`min-h-11 shrink-0 rounded-lg px-4 py-2 text-xs font-semibold transition cursor-pointer ${
                     index === stepIndex
                       ? "bg-slate-950 text-white"
                       : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -2206,12 +2190,12 @@ export default function CustomerRequestFlow() {
               {renderStepBody()}
             </div>
 
-            <div className="mt-6 flex flex-col gap-3 border-t border-slate-200 pt-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="mt-6 flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="button"
                 onClick={handleBack}
                 disabled={stepIndex === 0}
-                className={`rounded-full px-5 py-3 text-sm font-semibold transition cursor-pointer ${
+                className={`button ${
                   stepIndex === 0
                     ? "cursor-not-allowed bg-slate-200 text-slate-400"
                     : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
@@ -2219,8 +2203,7 @@ export default function CustomerRequestFlow() {
               >
                 Back
               </button>
-              <div className="flex flex-wrap items-center gap-3">
-                <span className="text-sm text-slate-500">{statusText}</span>
+              <div className="flex flex-col gap-2 sm:items-end">
                 <button
                   type="button"
                   onClick={
@@ -2231,7 +2214,7 @@ export default function CustomerRequestFlow() {
                         : handleContinue
                   }
                   disabled={busyAction !== null}
-                  className="rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 disabled:cursor-wait disabled:opacity-70 cursor-pointer"
+                  className="button button-primary disabled:cursor-wait disabled:opacity-70"
                 >
                   {busyAction ??
                     (stepIndex === accountStepIndex
@@ -2240,18 +2223,19 @@ export default function CustomerRequestFlow() {
                         ? "Start new request"
                         : "Continue")}
                 </button>
+                <span className="max-w-sm text-sm text-slate-500 sm:text-right" aria-live="polite">{statusText}</span>
               </div>
             </div>
           </div>
 
           <section
             id="request-list"
-            className="rounded-[32px] border border-white/70 bg-white/85 p-4 shadow-[0_28px_90px_rgba(30,58,138,0.08)] backdrop-blur-xl sm:p-6"
+            className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6"
           >
             <div className="flex items-center justify-between gap-3">
               <div>
-                <p className="text-sm font-semibold text-slate-500">Resume</p>
                 <h2 className="text-xl font-bold text-slate-950">Continue request</h2>
+                <p className="mt-1 text-sm text-slate-500">Pick up a saved draft where you left off.</p>
               </div>
               <div className="text-sm text-slate-500">{drafts.length} saved</div>
             </div>
@@ -2263,110 +2247,69 @@ export default function CustomerRequestFlow() {
                     key={draft.id}
                     type="button"
                     onClick={() => handleResumeDraft(draft.id)}
-                    className="rounded-[24px] border border-slate-200 bg-white p-4 text-left transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer"
+                    className="min-h-32 rounded-lg border border-slate-200 bg-white p-4 text-left transition hover:border-slate-400 hover:bg-slate-50 cursor-pointer"
                   >
                     <div className="flex items-center justify-between gap-4">
                       <div>
                         <p className="text-sm font-semibold text-slate-900">
-                          {draft.requestType === "SmallMove" ? "Small move" : "Apartment move"}
+                          {formatRequestType(draft.requestType)}
                         </p>
                         <p className="mt-1 text-sm text-slate-500">
-                          {draft.status} · {draft.leadSalesStatus}
+                          {formatRequestStatus(draft.status)}
                         </p>
                       </div>
                       <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
                         {draft.currentVersionNumber ? `v${draft.currentVersionNumber}` : "Draft"}
                       </span>
                     </div>
-                    <p className="mt-3 text-sm text-slate-600">
-                      Lead price: {moneyLabel(draft.leadPrice)} · Created{" "}
-                      {dateFormatter.format(new Date(draft.createdAt))}
-                    </p>
+                    <p className="mt-3 text-sm text-slate-600">Created {dateFormatter.format(new Date(draft.createdAt))}</p>
                   </button>
                 ))
               ) : (
-                <div className="rounded-[24px] border border-dashed border-slate-300 bg-white p-5 text-sm leading-6 text-slate-500">
-                  No saved request yet. Start a new request above and the server draft will appear
-                  here after your first save.
+                <div className="rounded-lg border border-dashed border-slate-300 bg-white p-5 text-sm leading-6 text-slate-500">
+                  No saved request yet. Start above and your draft will appear here after the first save.
                 </div>
               )}
             </div>
           </section>
         </div>
 
-        <aside className="space-y-6">
-          <div className="sticky top-4 space-y-6">
-            <div className="rounded-[32px] border border-white/70 bg-white/85 p-4 shadow-[0_28px_90px_rgba(30,58,138,0.08)] backdrop-blur-xl sm:p-6">
-              <p className="text-sm font-semibold text-slate-500">At a glance</p>
-              <h2 className="mt-1 text-xl font-bold text-slate-950">Current request</h2>
-              <dl className="mt-4 space-y-4 text-sm">
-                <StatRow label="Signed in" value={user ? "Yes" : "No"} />
-                <StatRow
-                  label="Phone verified"
-                  value={user ? (user.phoneVerified ? "Yes" : "No") : "Pending"}
-                />
-                <StatRow
-                  label="Request type"
-                  value={form.requestType === "SmallMove" ? "Small Move" : form.requestType ?? "Not chosen"}
-                />
+        <aside className="hidden lg:block">
+          <div className="sticky top-24">
+            <div className="rounded-xl border border-slate-200 bg-white p-5">
+              <p className="eyebrow">Your Request</p>
+              <h2 className="mt-2 text-xl font-bold text-slate-950">
+                {form.requestType ? formatRequestType(form.requestType) : "New move"}
+              </h2>
+              <dl className="mt-4 space-y-2 text-sm">
                 <StatRow
                   label="Route"
                   value={
                     form.pickup.city || form.destination.city
                       ? `${emptyString(form.pickup.city)} to ${emptyString(form.destination.city)}`
-                      : "Not set"
+                      : "Add your route"
                   }
                 />
                 <StatRow
                   label="Budget"
-                  value={form.budgetBand ? form.budgetBand : "Not set"}
+                  value={form.budgetBand ? budgetLabels[form.budgetBand] : "Add a budget"}
                 />
                 <StatRow
-                  label="Lead price"
-                  value={
-                    activeRequest
-                      ? moneyLabel(activeRequest.leadPrice)
-                      : form.requestType === "SmallMove"
-                        ? moneyLabel({ currency: "ILS", amountMinor: 500 })
-                        : moneyLabel({ currency: "ILS", amountMinor: 1000 })
-                  }
+                  label="Progress"
+                  value={`${Math.round(progressPercent)}%`}
+                />
+                <StatRow
+                  label="Save status"
+                  value={activeRequest ? "Draft saved" : user ? "Ready to save" : "Sign in to save"}
                 />
               </dl>
             </div>
 
-            <div className="rounded-[32px] border border-white/70 bg-white/85 p-4 shadow-[0_28px_90px_rgba(30,58,138,0.08)] backdrop-blur-xl sm:p-6">
-              <p className="text-sm font-semibold text-slate-500">Navigation</p>
-              <div className="mt-4 grid gap-3">
-                {[
-                  { label: "How it works", href: "#how-it-works" },
-                  { label: "Browse requests / mover area", href: "#request-list" },
-                  { label: "For movers", href: "#how-it-works" },
-                  { label: "Login", href: "/auth" },
-                ].map((item) => (
-                  <Link
-                    key={item.label}
-                    href={item.href}
-                    className="rounded-[20px] border border-slate-200 bg-white px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-                  >
-                    {item.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
-
-            <div className="rounded-[32px] border border-white/70 bg-white/85 p-4 shadow-[0_28px_90px_rgba(30,58,138,0.08)] backdrop-blur-xl sm:p-6">
-              <p className="text-sm font-semibold text-slate-500">Mobile UX</p>
-              <ul className="mt-4 space-y-3 text-sm leading-6 text-slate-600">
-                <li>One main column with comfortable touch targets.</li>
-                <li>Step-by-step saving instead of one huge form.</li>
-                <li>Drafts resume from the server once signed in.</li>
-                <li>Publish honors real auth and phone verification.</li>
-              </ul>
-            </div>
           </div>
         </aside>
       </section>
-    </main>
+      </main>
+    </>
   );
 }
 
@@ -2390,7 +2333,7 @@ function SummarySection({
 
 function StatRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex items-start justify-between gap-4 rounded-[20px] border border-slate-200 bg-white px-4 py-3">
+    <div className="flex items-start justify-between gap-4 border-b border-slate-100 py-3 last:border-0">
       <dt className="text-sm text-slate-500">{label}</dt>
       <dd className="text-sm font-semibold text-slate-950">{value}</dd>
     </div>
