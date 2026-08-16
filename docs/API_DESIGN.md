@@ -115,14 +115,14 @@ Base convention:
 - Role: Authenticated owner customer
 - Purpose: Close search
 - Validation: ownership, current state allows closing
-- Response: closed request summary
+- Response: closed request summary with `MoveRequestStatus = Closed` and `LeadSalesStatus = Closed`
 
 ### POST `/api/v1/move-requests/{requestId}/cancel`
 
 - Role: Authenticated owner customer
 - Purpose: Cancel request
 - Validation: ownership, current state allows cancellation
-- Response: cancelled request summary
+- Response: cancelled request summary with `MoveRequestStatus = Cancelled` and `LeadSalesStatus = Closed`
 
 ### GET `/api/v1/move-requests/{requestId}/versions`
 
@@ -371,4 +371,3 @@ Important error codes:
 - PHONE_NOT_VERIFIED
 
 Frontend maps these codes to UX states rather than guessing by HTTP status alone.
-

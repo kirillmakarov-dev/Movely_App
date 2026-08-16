@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Movely.Api.Data;
 using Movely.Api.Infrastructure.Authentication;
 using Movely.Api.Modules.Identity;
+using Movely.Api.Modules.MoveRequests;
 using Movely.Api.Shared.Errors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,6 +19,7 @@ builder.Services.AddHealthChecks();
 builder.Services.AddRouting();
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMovelyAuthentication(builder.Configuration, builder.Environment);
+builder.Services.AddMoveRequestsModule(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     var allowedOrigins =
@@ -49,6 +51,7 @@ app.MapGet("/health", () =>
 });
 
 app.MapIdentityEndpoints();
+app.MapMoveRequestEndpoints();
 
 app.Run();
 

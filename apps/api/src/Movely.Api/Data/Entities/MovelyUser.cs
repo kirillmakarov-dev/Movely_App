@@ -19,5 +19,6 @@ public sealed class MovelyUser
     public ICollection<PhoneVerification> PhoneVerifications { get; set; } = new List<PhoneVerification>();
     public ICollection<Business> OwnedBusinesses { get; set; } = new List<Business>();
     public ICollection<UserSession> Sessions { get; set; } = new List<UserSession>();
+    public ICollection<MoveRequest> MoveRequests { get; set; } = new List<MoveRequest>();
+    public ICollection<MoveRequestVersion> CreatedMoveRequestVersions { get; set; } = new List<MoveRequestVersion>();
 }
-

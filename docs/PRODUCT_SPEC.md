@@ -600,6 +600,11 @@ If the customer does not close the request and the relevant move date passes, th
 
 If the customer closes the request because they found a mover, all participating movers should be informed that the request has closed. Historical purchases remain valid and previously granted contact access must not automatically be revoked.
 
+Cancellation is distinct from closing the search. If the customer cancels the transportation request/search, the request becomes:
+
+- `MoveRequestStatus = Cancelled`
+- `LeadSalesStatus = Closed`
+
 ## 26. Mover profile
 
 Mover profiles should eventually contain:

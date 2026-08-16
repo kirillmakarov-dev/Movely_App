@@ -188,11 +188,15 @@ Customer edits request after publication → system checks whether edits are min
 - Purchased movers should be notified about material changes
 - After a mover is rejected by the customer, the request should no longer present that mover with a path to re-enter for the same request
 
-## 14. Cancellation flow
+## 14. Closing and cancellation flows
 
-### Flow
+### Close search flow
 
 Customer chooses “I found a mover” or “Close search” → confirms action → request becomes Closed → lead sales close
+
+### Cancellation flow
+
+Customer chooses to cancel the transportation request/search → confirms cancellation → request becomes Cancelled → lead sales close
 
 ### Notes
 

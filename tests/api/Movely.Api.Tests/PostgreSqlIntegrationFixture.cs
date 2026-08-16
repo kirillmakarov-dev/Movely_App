@@ -82,6 +82,11 @@ public sealed class PostgreSqlIntegrationFixture : IAsyncLifetime
         await using var db = CreateDbContext();
         await db.Database.ExecuteSqlRawAsync("""
             TRUNCATE TABLE
+                "MovePhotos",
+                "MoveItems",
+                "MoveLocations",
+                "MoveRequestVersions",
+                "MoveRequests",
                 "BusinessSubscriptions",
                 "BusinessVerifications",
                 "PhoneVerifications",

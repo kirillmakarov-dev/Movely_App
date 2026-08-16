@@ -150,7 +150,7 @@
 ## D-053 — Customer cancellation after purchase
 
 - Status: Accepted
-- Decision: A customer may cancel a request even after movers purchased the lead. If no movers purchased, cancellation closes the request immediately. If movers already purchased, the request closes and existing purchasers retain the historical purchase record. Cancellation after a valid purchase does not automatically qualify for a refund.
+- Decision: A customer may cancel a request even after movers purchased the lead. Cancellation means the customer cancelled the transportation request/search and sets `MoveRequestStatus = Cancelled` and `LeadSalesStatus = Closed`. If movers already purchased, existing purchasers retain the historical purchase record. Cancellation after a valid purchase does not automatically qualify for a refund.
 - Rationale: Customers must retain control of their request, but cancellation should not erase valid purchases.
 - Affected areas: request lifecycle, customer dashboard, lead purchase records, refund policy, notifications.
 

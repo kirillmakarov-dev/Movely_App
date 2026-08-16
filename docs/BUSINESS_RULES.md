@@ -93,11 +93,14 @@ The operation must be all-or-nothing.
 - Existing purchasers keep their historical access
 - Movers who already purchased the lead should be notified when material request details change
 
-## Cancellation
+## Cancellation and closing
 
 - The customer may explicitly close the request by choosing “I found a mover” or “Close search”
+- Explicit close means the customer intentionally finished the search, for example because they found a mover
+- After explicit close, `MoveRequestStatus = Closed` and `LeadSalesStatus = Closed`
 - Cancellation is allowed even after movers already purchased the lead
-- After cancellation, `MoveRequestStatus = Closed` and `LeadSalesStatus = Closed`
+- Cancellation means the customer cancelled the transportation request/search
+- After cancellation, `MoveRequestStatus = Cancelled` and `LeadSalesStatus = Closed`
 - Existing purchasers keep the historical purchase record
 - Cancellation after a valid purchase does not automatically qualify for refund
 - If the customer chooses another mover, historical purchases remain valid and contact access is not automatically revoked

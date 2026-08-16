@@ -29,6 +29,17 @@ public sealed class PostgreSqlIdentityPersistenceTests : IClassFixture<PostgreSq
     }
 
     [SkippableFact]
+    public async Task Phase3Migrations_ApplySuccessfully_FromCleanPostgreSqlDatabase()
+    {
+        Skip.IfNot(_fixture.IsConfigured, MissingPostgresReason);
+
+        await using var db = _fixture.CreateDbContext();
+        var migrations = await db.Database.GetAppliedMigrationsAsync();
+
+        Assert.Contains(migrations, migration => migration.EndsWith("_Phase3MoveRequestDomainFoundation", StringComparison.Ordinal));
+    }
+
+    [SkippableFact]
     public async Task DuplicateProviderAndSubject_ViolatesUniqueConstraint()
     {
         Skip.IfNot(_fixture.IsConfigured, MissingPostgresReason);
