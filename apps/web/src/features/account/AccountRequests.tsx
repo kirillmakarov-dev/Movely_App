@@ -14,7 +14,7 @@ export default function AccountRequests() {
   useEffect(() => {
     let active = true;
     const timeout = new Promise<never>((_, reject) => {
-      window.setTimeout(() => reject(new Error("Account request timed out")), 2500);
+      window.setTimeout(() => reject(new Error("הבקשות בחשבון פג זמן")), 2500);
     });
     Promise.race([Promise.all([getCurrentUser(), getMyMoveRequests().catch(() => [])]), timeout])
       .then(([currentUser, moveRequests]) => {
@@ -32,15 +32,15 @@ export default function AccountRequests() {
   }, []);
 
   if (loading) {
-    return <div className="rounded-xl border border-slate-200 bg-white p-6" aria-live="polite">Loading your requests...</div>;
+    return <div className="rounded-xl border border-slate-200 bg-white p-6" aria-live="polite">טוענים את הבקשות שלכם...</div>;
   }
 
   if (unavailable || !user) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white p-7">
-        <h1 className="text-2xl font-bold">Sign in to see your requests</h1>
-        <p className="mt-3 text-slate-600">Your saved drafts and published requests will appear here.</p>
-        <Link href="/auth" className="button button-primary mt-6">Login</Link>
+        <h1 className="text-2xl font-bold">התחברו כדי לראות את הבקשות שלכם</h1>
+        <p className="mt-3 text-slate-600">הטיוטות השמורות והבקשות שפורסמו יופיעו כאן.</p>
+        <Link href="/auth" className="button button-primary mt-6">התחברות</Link>
       </div>
     );
   }
@@ -49,10 +49,10 @@ export default function AccountRequests() {
     <div>
       <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div>
-          <p className="text-sm text-slate-500">Welcome back, {user.firstName}</p>
-          <h2 className="mt-1 text-2xl font-bold">My Requests</h2>
+          <p className="text-sm text-slate-500">ברוכים השבים, {user.firstName}</p>
+          <h2 className="mt-1 text-2xl font-bold">הבקשות שלי</h2>
         </div>
-        <Link href="/request/new" className="button button-primary">Create Request</Link>
+        <Link href="/request/new" className="button button-primary">יצירת בקשה</Link>
       </div>
 
       {requests.length ? (
@@ -67,12 +67,12 @@ export default function AccountRequests() {
                     <h3 className="mt-2 text-xl font-bold">{formatRequestStatus(request.status)}</h3>
                   </div>
                   <span className="rounded-md bg-slate-100 px-2.5 py-1 text-xs font-bold text-slate-700">
-                    {isDraft ? "Draft" : "Customer request"}
+                    {isDraft ? "טיוטה" : "בקשת לקוח"}
                   </span>
                 </div>
-                <p className="mt-5 text-sm text-slate-500">Updated {new Intl.DateTimeFormat("en", { dateStyle: "medium" }).format(new Date(request.updatedAt))}</p>
+                <p className="mt-5 text-sm text-slate-500">עודכן {new Intl.DateTimeFormat("he", { dateStyle: "medium" }).format(new Date(request.updatedAt))}</p>
                 <Link href={isDraft ? "/request/new" : `/requests/${request.id}`} className="request-card-link">
-                  {isDraft ? "Continue" : "View Request"} <span aria-hidden="true">&rarr;</span>
+                  {isDraft ? "המשך" : "צפייה בבקשה"} <span aria-hidden="true">&rarr;</span>
                 </Link>
               </article>
             );
@@ -80,9 +80,9 @@ export default function AccountRequests() {
         </div>
       ) : (
         <div className="rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
-          <h3 className="text-xl font-bold">No requests yet</h3>
-          <p className="mt-2 text-slate-600">Create your first move request and save it as a draft.</p>
-          <Link href="/request/new" className="button button-primary mt-5">Create Request</Link>
+          <h3 className="text-xl font-bold">עדיין אין בקשות</h3>
+          <p className="mt-2 text-slate-600">צרו את בקשת ההובלה הראשונה שלכם ושמרו אותה כטיוטה.</p>
+          <Link href="/request/new" className="button button-primary mt-5">יצירת בקשה</Link>
         </div>
       )}
     </div>

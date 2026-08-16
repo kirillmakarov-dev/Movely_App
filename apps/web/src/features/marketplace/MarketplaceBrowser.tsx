@@ -24,14 +24,14 @@ export default function MarketplaceBrowser() {
     .toSorted((a, b) => sort === "move-date" ? a.moveDate.localeCompare(b.moveDate) : a.id.localeCompare(b.id));
 
   const categories: Array<{ value: CategoryFilter; label: string }> = [
-    { value: "All", label: "All" },
-    { value: "ApartmentMove", label: "Apartment Moves" },
-    { value: "SmallMove", label: "Small Moves" },
+    { value: "All", label: "הכול" },
+    { value: "ApartmentMove", label: "הובלות דירה" },
+    { value: "SmallMove", label: "הובלות קטנות" },
   ];
 
   return (
     <div>
-      <div className="tab-list" role="tablist" aria-label="Request categories">
+      <div className="tab-list" role="tablist" aria-label="קטגוריות בקשות">
         {categories.map((item) => (
           <button
             key={item.value}
@@ -49,24 +49,24 @@ export default function MarketplaceBrowser() {
       <div className="filter-shell mt-6">
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
           <label className="field-label lg:col-span-2">
-            Pickup city
-            <input className="field-control" value={pickupCity} onChange={(event) => setPickupCity(event.target.value)} placeholder="Any city" />
+            עיר איסוף
+            <input className="field-control" value={pickupCity} onChange={(event) => setPickupCity(event.target.value)} placeholder="כל עיר" />
           </label>
           <label className="field-label lg:col-span-2">
-            Destination city
-            <input className="field-control" value={destinationCity} onChange={(event) => setDestinationCity(event.target.value)} placeholder="Any city" />
+            עיר יעד
+            <input className="field-control" value={destinationCity} onChange={(event) => setDestinationCity(event.target.value)} placeholder="כל עיר" />
           </label>
           <label className="field-label">
-            Date
-            <input className="field-control" type="date" aria-label="Move date" />
+            תאריך
+            <input className="field-control" type="date" aria-label="תאריך הובלה" />
           </label>
           <label className="field-label">
-            Budget
-            <select className="field-control" defaultValue="any" aria-label="Budget range">
-              <option value="any">Any budget</option>
-              <option value="1000">Up to NIS 1,000</option>
-              <option value="2000">NIS 1,000-2,000</option>
-              <option value="3000">NIS 2,000+</option>
+            תקציב
+            <select className="field-control" defaultValue="any" aria-label="טווח תקציב">
+              <option value="any">כל תקציב</option>
+              <option value="1000">עד 1,000 ₪</option>
+              <option value="2000">1,000-2,000 ₪</option>
+              <option value="3000">2,000 ₪ ומעלה</option>
             </select>
           </label>
         </div>
@@ -78,10 +78,10 @@ export default function MarketplaceBrowser() {
           {locale === "he" ? "בקשות" : "requests"}
         </p>
         <label className="flex items-center gap-2 text-sm font-bold text-slate-600">
-          Sort
+          מיון
           <select className="field-control min-w-36" value={sort} onChange={(event) => setSort(event.target.value)}>
-            <option value="newest">Newest</option>
-            <option value="move-date">Move Date</option>
+            <option value="newest">החדשות ביותר</option>
+            <option value="move-date">תאריך ההובלה</option>
           </select>
         </label>
       </div>
@@ -92,8 +92,8 @@ export default function MarketplaceBrowser() {
         </div>
       ) : (
         <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
-          <h2 className="text-xl font-bold">No matching requests</h2>
-          <p className="mt-2 text-slate-600">Try another city or request category.</p>
+          <h2 className="text-xl font-bold">לא נמצאו בקשות מתאימות</h2>
+          <p className="mt-2 text-slate-600">נסו עיר אחרת או קטגוריית בקשה אחרת.</p>
         </div>
       )}
     </div>

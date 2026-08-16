@@ -3,13 +3,13 @@ import Link from "@/components/SafeLink";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 
-export const metadata: Metadata = { title: "For Movers" };
+export const metadata: Metadata = { title: "למובילים" };
 
 const steps = [
-  ["01", "Browse relevant requests", "Search marketplace-safe jobs by route, move type, date and budget."],
-  ["02", "Review move details", "Check access, inventory, services and photos before making a decision."],
-  ["03", "Buy the lead if it fits", "Lead purchasing will unlock customer contact details when Phase 5 is available."],
-  ["04", "Contact the customer", "Continue the conversation directly and agree on the move."],
+  ["01", "עיינו בבקשות רלוונטיות", "חפשו עבודות בטוחות לשוק לפי מסלול, סוג הובלה, תאריך ותקציב."],
+  ["02", "בדקו את פרטי ההובלה", "בדקו גישה, תכולה, שירותים ותמונות לפני קבלת החלטה."],
+  ["03", "רכשו ליד אם הוא מתאים", "רכישת לידים תחשוף את פרטי הקשר של הלקוח כאשר שלב 5 יהיה זמין."],
+  ["04", "צרו קשר עם הלקוח", "המשיכו את השיחה ישירות וסגרו את ההובלה."],
 ];
 
 export default function ForMoversPage() {
@@ -20,24 +20,24 @@ export default function ForMoversPage() {
         <header className="page-hero bg-slate-950! text-white">
           <div className="site-container grid gap-10 lg:grid-cols-[1fr_380px] lg:items-end">
             <div>
-              <p className="eyebrow text-sky-300">Built for moving businesses</p>
-              <h1 className="page-title">Spend less time chasing the wrong jobs.</h1>
-              <p className="page-lead text-slate-300!">Browse detailed moving requests and focus your time on jobs that match your team, service area and schedule.</p>
+              <p className="eyebrow text-sky-300">נבנה לעסקים בתחום ההובלה</p>
+              <h1 className="page-title">פחות זמן על עבודות לא מתאימות.</h1>
+              <p className="page-lead text-slate-300!">עיינו בבקשות הובלה מפורטות והתמקדו בעבודות שמתאימות לצוות, לאזור השירות וללוח הזמנים שלכם.</p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/mover" className="button button-light button-large">Create Mover Account</Link>
-                <Link href="/auth" className="button button-large border-slate-600 text-white hover:border-sky-300">Login as Mover</Link>
+                <Link href="/mover" className="button button-light button-large">יצירת חשבון מוביל</Link>
+                <Link href="/auth" className="button button-large border-slate-600 text-white hover:border-sky-300">התחברות כמוביל</Link>
               </div>
             </div>
             <div className="border-l border-slate-700 pl-6">
-              <p className="text-sm font-bold uppercase tracking-wider text-sky-300">Product boundary</p>
-              <p className="mt-3 leading-7 text-slate-300">Mover onboarding and lead purchasing are not active yet. This page previews the Phase 5 experience without presenting unavailable tools as operational.</p>
+              <p className="text-sm font-bold uppercase tracking-wider text-sky-300">גבול המוצר</p>
+              <p className="mt-3 leading-7 text-slate-300">קליטת מובילים ורכישת לידים עדיין לא פעילים. הדף מציג תצוגה מקדימה של שלב 5 בלי להציג כלים לא זמינים כפעילים.</p>
             </div>
           </div>
         </header>
 
         <section className="section-block">
           <div className="site-container">
-            <div className="section-heading"><p className="eyebrow">The workflow</p><h2>How Movely works for movers</h2></div>
+            <div className="section-heading"><p className="eyebrow">תהליך העבודה</p><h2>איך Movely עובד עבור מובילים</h2></div>
             <ol className="mt-10 grid gap-px overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 md:grid-cols-2">
               {steps.map(([number, title, copy]) => (
                 <li key={number} className="min-h-64 bg-white p-7 list-none">
@@ -52,10 +52,10 @@ export default function ForMoversPage() {
 
         <section className="section-block bg-sky-50">
           <div className="site-container grid gap-8 md:grid-cols-[.7fr_1.3fr]">
-            <p className="eyebrow">Premium preview</p>
+            <p className="eyebrow">תצוגת פרימיום</p>
             <div>
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">Show interest before purchasing a lead.</h2>
-              <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">Premium movers may later submit an offer before buying contact information and see whether the customer is interested. Premium offers are not active in this phase.</p>
+              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">הביעו עניין לפני רכישת ליד.</h2>
+              <p className="mt-4 max-w-2xl text-lg leading-8 text-slate-600">מובילי פרימיום יוכלו בהמשך להגיש הצעה לפני רכישת פרטי הקשר ולראות אם הלקוח מעוניין. הצעות פרימיום אינן פעילות בשלב הזה.</p>
             </div>
           </div>
         </section>

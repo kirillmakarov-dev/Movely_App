@@ -1,2 +1,2 @@
 import MoverPlaceholder from "@/components/MoverPlaceholder";
-export default function MoverProfilePage() { return <MoverPlaceholder title="Business Profile" description="Mover verification and business profile editing are not part of this frontend restructuring." />; }
+export default function MoverProfilePage() { return <MoverPlaceholder title="פרופיל עסקי" description="אימות מובילים ועריכת פרופיל עסקי אינם חלק מהתאמת חזית זו." />; }

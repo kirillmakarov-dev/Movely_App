@@ -1,2 +1,2 @@
 import MoverPlaceholder from "@/components/MoverPlaceholder";
-export default function MoverPremiumPage() { return <MoverPlaceholder title="Premium" description="Premium plans and early offers will be introduced with their approved backend capabilities." />; }
+export default function MoverPremiumPage() { return <MoverPlaceholder title="פרימיום" description="מסלולי פרימיום והצעות מוקדמות יוצגו עם יכולות השרת המאושרות שלהם." />; }

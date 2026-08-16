@@ -217,6 +217,7 @@ async function renderApp({
   user?: any;
   drafts?: any[];
 } = {}) {
+  window.localStorage.setItem("movely-language", "en");
   apiMocks.getCurrentUser.mockResolvedValue(user);
   apiMocks.getMyMoveRequests.mockResolvedValue(drafts);
   apiMocks.getMoveRequest.mockResolvedValue(drafts[0] ?? makeRequestResponse());

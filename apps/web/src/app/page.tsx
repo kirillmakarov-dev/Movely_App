@@ -12,31 +12,31 @@ export default function HomePage() {
         <section className="hero-section">
           <div className="site-container grid items-center gap-12 py-16 lg:grid-cols-[1.08fr_0.92fr] lg:py-24">
             <div>
-              <p className="eyebrow">Moving, made clearer</p>
-              <h1 className="hero-title">Need something moved?</h1>
+              <p className="eyebrow">הובלה, בצורה ברורה יותר</p>
+              <h1 className="hero-title">צריכים להעביר משהו?</h1>
               <p className="hero-copy">
-                Describe your move once and let suitable movers find the job, without calling dozens of companies.
+                תארו את ההובלה פעם אחת ותנו למובילים מתאימים למצוא את העבודה, בלי להתקשר לעשרות חברות.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/request/new" className="button button-primary button-large">Create Request</Link>
-                <Link href="/requests" className="button button-secondary button-large">Browse Requests</Link>
+                <Link href="/request/new" className="button button-primary button-large">יצירת בקשה</Link>
+                <Link href="/requests" className="button button-secondary button-large">עיון בבקשות</Link>
               </div>
-              <p className="mt-5 text-sm text-slate-500">Free to create. Your contact details stay protected.</p>
+              <p className="mt-5 text-sm text-slate-500">היצירה בחינם. פרטי הקשר שלכם נשארים מוגנים.</p>
             </div>
-            <div className="route-preview" aria-label="Example move request from Harish to Tel Aviv">
+            <div className="route-preview" aria-label="דוגמת בקשת הובלה מאריש לתל אביב">
               <div className="route-preview-topline">
-                <span>New request</span>
-                <span>Apartment Move</span>
+                <span>בקשה חדשה</span>
+                <span>הובלת דירה</span>
               </div>
               <div className="route-line">
-                <div><span className="route-dot" /><p>Harish</p><small>Pickup</small></div>
+                <div><span className="route-dot" /><p>חריש</p><small>איסוף</small></div>
                 <span className="route-arrow" aria-hidden="true">&rarr;</span>
-                <div><span className="route-dot route-dot-end" /><p>Tel Aviv</p><small>Destination</small></div>
+                <div><span className="route-dot route-dot-end" /><p>תל אביב</p><small>יעד</small></div>
               </div>
               <div className="route-stats">
-                <div><strong>3</strong><span>rooms</span></div>
-                <div><strong>18</strong><span>boxes</span></div>
-                <div><strong>18 Aug</strong><span>move date</span></div>
+                <div><strong>3</strong><span>חדרים</span></div>
+                <div><strong>18</strong><span>ארגזים</span></div>
+                <div><strong>18 באוגוסט</strong><span>תאריך הובלה</span></div>
               </div>
             </div>
           </div>
@@ -45,22 +45,22 @@ export default function HomePage() {
         <section className="section-block">
           <div className="site-container">
             <div className="section-heading">
-              <p className="eyebrow">Choose your move</p>
-              <h2>What needs moving?</h2>
-              <p>Start with the route that fits your job. You can save a draft and finish later.</p>
+              <p className="eyebrow">בחרו את סוג ההובלה</p>
+              <h2>מה צריך להעביר?</h2>
+              <p>התחילו מהמסלול שמתאים לכם. אפשר לשמור טיוטה ולהמשיך אחר כך.</p>
             </div>
             <div className="mt-10 grid gap-5 md:grid-cols-2">
               <article className="category-card category-card-apartment">
                 <span className="category-number">01</span>
-                <h3>Apartment Move</h3>
-                <p>Full apartment or home relocation including furniture, boxes and appliances.</p>
-                <Link href="/request/new/apartment" className="inline-link">Create Apartment Move <span aria-hidden="true">&rarr;</span></Link>
+                <h3>הובלת דירה</h3>
+                <p>הובלת דירה או בית מלאים, כולל ריהוט, ארגזים ומכשירי חשמל.</p>
+                <Link href="/request/new/apartment" className="inline-link">יצירת הובלת דירה <span aria-hidden="true">&rarr;</span></Link>
               </article>
               <article className="category-card category-card-small">
                 <span className="category-number">02</span>
-                <h3>Small Move / Item Transportation</h3>
-                <p>Sofa, furniture, appliances, electronics, equipment, boxes and individual items.</p>
-                <Link href="/request/new/small-move" className="inline-link">Create Small Move <span aria-hidden="true">&rarr;</span></Link>
+                <h3>הובלה קטנה / העברת פריטים</h3>
+                <p>ספה, ריהוט, מכשירי חשמל, אלקטרוניקה, ציוד, ארגזים ופריטים בודדים.</p>
+                <Link href="/request/new/small-move" className="inline-link">יצירת הובלה קטנה <span aria-hidden="true">&rarr;</span></Link>
               </article>
             </div>
           </div>
@@ -70,11 +70,11 @@ export default function HomePage() {
           <div className="site-container">
             <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
               <div className="section-heading mb-0">
-                <p className="eyebrow">Fresh opportunities</p>
-                <h2>Latest Move Requests</h2>
-                <p>Marketplace-safe previews. Personal customer details are never shown here.</p>
+                <p className="eyebrow">הזדמנויות חדשות</p>
+                <h2>בקשות ההובלה האחרונות</h2>
+                <p>תצוגות מקדימות בטוחות לשוק. פרטי הלקוח האישיים אינם מוצגים כאן.</p>
               </div>
-              <Link href="/requests" className="button button-secondary shrink-0">View All Requests</Link>
+              <Link href="/requests" className="button button-secondary shrink-0">צפייה בכל הבקשות</Link>
             </div>
             <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
               {mockMarketplaceRequests.slice(0, 3).map((request) => <RequestCard key={request.id} request={request} />)}
@@ -85,13 +85,13 @@ export default function HomePage() {
         <section id="how-it-works" className="section-block">
           <div className="site-container">
             <div className="section-heading text-center mx-auto">
-              <p className="eyebrow">Simple by design</p>
-              <h2>How Movely Works</h2>
+              <p className="eyebrow">פשוט, בכוונה</p>
+              <h2>איך Movely עובד</h2>
             </div>
             <ol className="process-grid mt-10">
-              <li><span>1</span><h3>Describe your move</h3><p>Add the route, access details, inventory, date and budget.</p></li>
-              <li><span>2</span><h3>Movers find relevant requests</h3><p>Your marketplace-safe request helps the right businesses spot a good fit.</p></li>
-              <li><span>3</span><h3>Choose the right mover</h3><p>Compare interest and connect with the moving business that works for you.</p></li>
+              <li><span>1</span><h3>תארו את ההובלה</h3><p>הוסיפו מסלול, פרטי גישה, תכולה, תאריך ותקציב.</p></li>
+              <li><span>2</span><h3>מובילים מוצאים בקשות רלוונטיות</h3><p>הבקשה הבטוחה לשוק עוזרת לעסקים הנכונים לזהות התאמה טובה.</p></li>
+              <li><span>3</span><h3>בחרו את המוביל המתאים</h3><p>השוו בין ההתעניינות והתחברו לעסק ההובלה שמתאים לכם.</p></li>
             </ol>
           </div>
         </section>
@@ -99,11 +99,11 @@ export default function HomePage() {
         <section className="mover-callout">
           <div className="site-container grid gap-8 py-14 md:grid-cols-[1fr_auto] md:items-center">
             <div>
-              <p className="eyebrow text-sky-300">For moving businesses</p>
-              <h2>Are you a mover?</h2>
-              <p>Find jobs that match your service area. Purchase only the leads that interest you. Premium movers will be able to submit offers before purchasing contact information.</p>
+              <p className="eyebrow text-sky-300">לעסקי הובלה</p>
+              <h2>אתם מובילים?</h2>
+              <p>מצאו עבודות שמתאימות לאזור השירות שלכם. רכשו רק את הלידים שמעניינים אתכם. מובילי פרימיום יוכלו להגיש הצעות לפני רכישת פרטי הקשר.</p>
             </div>
-            <Link href="/for-movers" className="button button-light">For Movers <span aria-hidden="true">&rarr;</span></Link>
+            <Link href="/for-movers" className="button button-light">למובילים <span aria-hidden="true">&rarr;</span></Link>
           </div>
         </section>
       </main>

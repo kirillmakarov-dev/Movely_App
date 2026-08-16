@@ -20,26 +20,26 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     metadataBase: new URL(baseUrl),
     title: {
-      default: "Movely",
+      default: "Movely - מובילי מעבר",
       template: "%s | Movely",
     },
-    description: "Create a moving request and connect with suitable movers through Movely.",
+    description: "צרו בקשת הובלה והתחברו למובילים מתאימים דרך Movely.",
     openGraph: {
-      title: "Movely",
-      description: "Create a moving request and connect with suitable movers through Movely.",
+      title: "Movely - מובילי מעבר",
+      description: "צרו בקשת הובלה והתחברו למובילים מתאימים דרך Movely.",
       images: [
         {
           url: "/og.png",
           width: 1731,
           height: 909,
-          alt: "Movely moving marketplace",
+          alt: "שוק ההובלות של Movely",
         },
       ],
     },
     twitter: {
       card: "summary_large_image",
-      title: "Movely",
-      description: "Create a moving request and connect with suitable movers through Movely.",
+      title: "Movely - מובילי מעבר",
+      description: "צרו בקשת הובלה והתחברו למובילים מתאימים דרך Movely.",
       images: ["/og.png"],
     },
   };
@@ -51,7 +51,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="en" dir="ltr" className={`h-full ${atkinson.className}`}>
+    <html lang="he" dir="rtl" className={`h-full ${atkinson.className}`}>
       <body className="min-h-full text-slate-950">
         <LocaleProvider>{children}</LocaleProvider>
       </body>

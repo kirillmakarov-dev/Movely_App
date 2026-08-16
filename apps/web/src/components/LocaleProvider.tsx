@@ -144,6 +144,21 @@ const hebrew: Record<string, string> = {
   "Publish request": "פרסום הבקשה",
   "Start new request": "בקשה חדשה",
   "Get started": "בואו נתחיל",
+  "Choose a move type first so the wizard can load the right fields.": "בחרו קודם סוג הובלה כדי שהאשף יטען את השדות המתאימים.",
+  "The publish button activates after phone verification.": "כפתור הפרסום יופעל אחרי אימות הטלפון.",
+  "No photos yet": "אין עדיין תמונות",
+  "No comments yet": "אין עדיין הערות",
+  "Draft saved": "טיוטה נשמרה",
+  "Ready to save": "מוכנים לשמירה",
+  "Published request": "בקשה שפורסמה",
+  "Account confirmation": "אימות החשבון",
+  "Phone verification": "אימות טלפון",
+  "Request OTP": "בקשת קוד",
+  "Open auth page": "פתיחת עמוד האימות",
+  "Log out": "התנתקות",
+  "Publish now": "פרסמו עכשיו",
+  "View existing request": "צפייה בבקשה קיימת",
+  "Continue anyway": "להמשיך בכל זאת",
 };
 
 function translateText(value: string) {
@@ -202,7 +217,7 @@ type LocaleContextValue = { locale: Locale; setLocale: (locale: Locale) => void 
 const LocaleContext = createContext<LocaleContextValue>({ locale: "en", setLocale: () => undefined });
 
 export function LocaleProvider({ children }: { children: ReactNode }) {
-  const [locale, updateLocale] = useState<Locale>("en");
+  const [locale, updateLocale] = useState<Locale>("he");
 
   useEffect(() => {
     if (window.localStorage.getItem(STORAGE_KEY) === "he") updateLocale("he");

@@ -2,20 +2,20 @@ import Link from "@/components/SafeLink";
 import LanguageSwitcher from "@/components/LanguageSwitcher";
 
 const navigation = [
-  { href: "/requests", label: "Requests" },
-  { href: "/#how-it-works", label: "How it works" },
-  { href: "/for-movers", label: "For Movers" },
+  { href: "/requests", label: "בקשות" },
+  { href: "/#how-it-works", label: "איך זה עובד" },
+  { href: "/for-movers", label: "למובילים" },
 ];
 
 export default function SiteHeader() {
   return (
     <header className="site-header">
       <div className="site-container flex min-h-18 items-center justify-between gap-5">
-        <Link href="/" className="brand-mark" aria-label="Movely home">
+        <Link href="/" className="brand-mark" aria-label="דף הבית של Movely">
           MOVELY
         </Link>
 
-        <nav className="hidden items-center gap-7 md:flex" aria-label="Primary navigation">
+        <nav className="hidden items-center gap-7 md:flex" aria-label="ניווט ראשי">
           {navigation.map((item) => (
             <Link key={item.href} href={item.href} className="nav-link">
               {item.label}
@@ -26,17 +26,17 @@ export default function SiteHeader() {
         <div className="hidden items-center gap-3 md:flex">
           <LanguageSwitcher />
           <Link href="/auth" className="button button-ghost">
-            Login
+            התחברות
           </Link>
           <Link href="/request/new" className="button button-primary">
-            Create Request
+            יצירת בקשה
           </Link>
         </div>
 
         <div className="flex items-center gap-2 md:hidden">
           <LanguageSwitcher />
           <details className="mobile-menu">
-            <summary aria-label="Open navigation menu">
+            <summary aria-label="פתיחת תפריט ניווט">
               <span />
               <span />
               <span />
@@ -48,10 +48,10 @@ export default function SiteHeader() {
                 </Link>
               ))}
               <Link href="/auth" className="mobile-menu-link">
-                Login
+                התחברות
               </Link>
               <Link href="/request/new" className="button button-primary mt-2 w-full">
-                Create Request
+                יצירת בקשה
               </Link>
             </div>
           </details>

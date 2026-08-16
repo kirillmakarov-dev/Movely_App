@@ -21,21 +21,21 @@ export default function RequestCard({ request }: { request: MarketplaceRequest }
       <dl className="mt-5 grid grid-cols-2 gap-x-4 gap-y-3 text-sm">
         {isApartment ? (
           <>
-            <div><dt className="text-slate-500">Rooms</dt><dd className="mt-1 font-medium">{request.rooms}</dd></div>
-            <div><dt className="text-slate-500">Boxes</dt><dd className="mt-1 font-medium">{request.boxes}</dd></div>
+            <div><dt className="text-slate-500">חדרים</dt><dd className="mt-1 font-medium">{request.rooms}</dd></div>
+            <div><dt className="text-slate-500">ארגזים</dt><dd className="mt-1 font-medium">{request.boxes}</dd></div>
           </>
         ) : (
           <>
-            <div><dt className="text-slate-500">Item</dt><dd className="mt-1 font-medium">{request.itemName}</dd></div>
-            <div><dt className="text-slate-500">Quantity</dt><dd className="mt-1 font-medium">{request.quantity}</dd></div>
+            <div><dt className="text-slate-500">פריט</dt><dd className="mt-1 font-medium">{request.itemName}</dd></div>
+            <div><dt className="text-slate-500">כמות</dt><dd className="mt-1 font-medium">{request.quantity}</dd></div>
           </>
         )}
-        <div><dt className="text-slate-500">Budget</dt><dd className="mt-1 font-medium">{request.budget}</dd></div>
-        <div><dt className="text-slate-500">Photos</dt><dd className="mt-1 font-medium">{request.photoCount}</dd></div>
+        <div><dt className="text-slate-500">תקציב</dt><dd className="mt-1 font-medium">{request.budget}</dd></div>
+        <div><dt className="text-slate-500">תמונות</dt><dd className="mt-1 font-medium">{request.photoCount}</dd></div>
       </dl>
 
       <Link href={`/requests/${request.id}`} className="request-card-link">
-        View Request <span aria-hidden="true">&rarr;</span>
+        צפייה בבקשה <span aria-hidden="true">&rarr;</span>
       </Link>
     </article>
   );

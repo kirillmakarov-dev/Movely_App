@@ -127,13 +127,13 @@ type FlowStep = {
   description: string;
 };
 
-const currencyFormatter = new Intl.NumberFormat("en-IL", {
+const currencyFormatter = new Intl.NumberFormat("he-IL", {
   style: "currency",
   currency: "ILS",
   maximumFractionDigits: 0,
 });
 
-const dateFormatter = new Intl.DateTimeFormat("en-IL", {
+const dateFormatter = new Intl.DateTimeFormat("he-IL", {
   month: "short",
   day: "numeric",
   year: "numeric",
@@ -198,48 +198,58 @@ function moneyLabel(money: { currency: string; amountMinor: number }) {
   return `${money.currency} ${(money.amountMinor / 100).toFixed(0)}`;
 }
 
+function preferredTimeLabel(value: PreferredMoveTime | null | undefined) {
+  if (!value) return "";
+  return PREFERRED_TIME_OPTIONS.find((option) => option.value === value)?.label ?? value;
+}
+
+function dateFlexibilityLabel(value: MoveDateFlexibility | null | undefined) {
+  if (!value) return "";
+  return DATE_FLEXIBILITY_OPTIONS.find((option) => option.value === value)?.label ?? value;
+}
+
 function flowStepsForType(requestType: MoveRequestType | null): FlowStep[] {
   if (requestType === "SmallMove") {
     return [
       {
         key: "move-type",
-        title: "Move type",
-        description: "Confirm the request category.",
+        title: "סוג הובלה",
+        description: "אשרו את קטגוריית הבקשה.",
       },
       {
         key: "items",
-        title: "Items",
-        description: "Add one or more items with quantity and rough dimensions.",
+        title: "פריטים",
+        description: "הוסיפו פריט אחד או יותר עם כמות ומידות משוערות.",
       },
       {
         key: "route",
-        title: "Pickup and destination",
-        description: "Add cities, exact addresses, and access details.",
+        title: "איסוף ויעד",
+        description: "הוסיפו ערים, כתובות מדויקות ופרטי גישה.",
       },
       {
         key: "access",
-        title: "Access",
-        description: "Capture floors, elevator, stairs, and truck access.",
+        title: "גישה",
+        description: "ציינו קומות, מעלית, מדרגות וגישה למשאית.",
       },
       {
         key: "schedule",
-        title: "Date and budget",
-        description: "Pick the move date, time, flexibility, and budget band.",
+        title: "תאריך ותקציב",
+        description: "בחרו תאריך, שעה, גמישות וטווח תקציב.",
       },
       {
         key: "review",
-        title: "Review",
-        description: "Read back the server-backed request before sign-in.",
+        title: "בדיקה",
+        description: "עברו על הבקשה שנשמרה בשרת לפני ההתחברות.",
       },
       {
         key: "account",
-        title: "Account / phone verification",
-        description: "Sign in and verify the phone number if needed.",
+        title: "חשבון / אימות טלפון",
+        description: "התחברו ואמתו את מספר הטלפון אם צריך.",
       },
       {
         key: "publish",
-        title: "Publish",
-        description: "Send the request live.",
+        title: "פרסום",
+        description: "שלחו את הבקשה לפרסום.",
       },
     ];
   }
@@ -247,53 +257,53 @@ function flowStepsForType(requestType: MoveRequestType | null): FlowStep[] {
   return [
     {
       key: "move-type",
-      title: "Move type",
-      description: "Confirm the request category.",
+      title: "סוג הובלה",
+      description: "אשרו את קטגוריית הבקשה.",
     },
     {
       key: "route",
-      title: "Pickup and destination",
-      description: "Add cities, exact addresses, and access details.",
+      title: "איסוף ויעד",
+      description: "הוסיפו ערים, כתובות מדויקות ופרטי גישה.",
     },
     {
       key: "apartment",
-      title: "Apartment details",
-      description: "Choose room count and boxes.",
+      title: "פרטי הדירה",
+      description: "בחרו מספר חדרים וארגזים.",
     },
     {
       key: "inventory",
-      title: "Boxes and inventory",
-      description: "Add common items and quantities.",
+      title: "ארגזים ותכולה",
+      description: "הוסיפו פריטים נפוצים וכמויות.",
     },
     {
       key: "services",
-      title: "Services and special items",
-      description: "Add packing, assembly, and sensitive items.",
+      title: "שירותים ופריטים מיוחדים",
+      description: "הוסיפו אריזה, פירוק ופריטים רגישים.",
     },
     {
       key: "schedule",
-      title: "Date and budget",
-      description: "Pick the move date, time, flexibility, and budget band.",
+      title: "תאריך ותקציב",
+      description: "בחרו תאריך, שעה, גמישות וטווח תקציב.",
     },
     {
       key: "photos",
-      title: "Photos and comments",
-      description: "Keep the photo upload boundary ready without fake uploads.",
+      title: "תמונות והערות",
+      description: "שמרו את גבול העלאת התמונות מוכן בלי העלאות מדומות.",
     },
     {
       key: "review",
-      title: "Review",
-      description: "Read back the server-backed request before sign-in.",
+      title: "בדיקה",
+      description: "עברו על הבקשה שנשמרה בשרת לפני ההתחברות.",
     },
     {
       key: "account",
-      title: "Account / phone verification",
-      description: "Sign in and verify the phone number if needed.",
+      title: "חשבון / אימות טלפון",
+      description: "התחברו ואמתו את מספר הטלפון אם צריך.",
     },
     {
       key: "publish",
-      title: "Publish",
-      description: "Send the request live.",
+      title: "פרסום",
+      description: "שלחו את הבקשה לפרסום.",
     },
   ];
 }
@@ -459,8 +469,8 @@ function normalizeApiError(error: unknown) {
 
   return {
     tone: "error" as const,
-    title: "Request failed",
-    message: error instanceof Error ? error.message : "Something went wrong.",
+    title: "הבקשה נכשלה",
+    message: error instanceof Error ? error.message : "משהו השתבש.",
   };
 }
 
@@ -524,7 +534,7 @@ function withUiTimeout<T>(promise: Promise<T>, timeoutMs = 2500) {
   return Promise.race([
     promise,
     new Promise<T>((_, reject) => {
-      window.setTimeout(() => reject(new Error("The account service is taking longer than expected.")), timeoutMs);
+      window.setTimeout(() => reject(new Error("שירות החשבון איטי מהצפוי.")), timeoutMs);
     }),
   ]);
 }
@@ -550,7 +560,7 @@ export default function CustomerRequestFlow({
   const [otpCode, setOtpCode] = useState("");
   const [otpDebugCode, setOtpDebugCode] = useState("");
   const [banner, setBanner] = useState<Banner | null>(null);
-  const [statusText, setStatusText] = useState("Ready to start.");
+  const [statusText, setStatusText] = useState("מוכנים להתחיל.");
   const [busyAction, setBusyAction] = useState<string | null>(null);
   const [publishState, setPublishState] = useState<PublishState>(null);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
@@ -582,17 +592,17 @@ export default function CustomerRequestFlow({
       if (currentUser) {
         setStatusText(
           currentUser.phoneVerified
-            ? `Signed in as ${currentUser.firstName}.`
-            : `Signed in as ${currentUser.firstName}. Phone verification is still required.`,
+            ? `מחוברים כ-${currentUser.firstName}.`
+            : `מחוברים כ-${currentUser.firstName}. עדיין נדרש אימות טלפון.`,
         );
       }
     } catch {
       setBanner({
         tone: "info",
-        title: "Start your request",
-        message: "You can fill in the details now. Sign in when you are ready to save your draft.",
+        title: "התחילו את הבקשה",
+        message: "אפשר למלא את הפרטים עכשיו. התחברו כשתהיו מוכנים לשמור את הטיוטה.",
       });
-      setStatusText("Using the request wizard in local mode until the API is reachable.");
+      setStatusText("אשף הבקשה פועל במצב מקומי עד שה־API זמין.");
     } finally {
       setIsBootstrapping(false);
     }
@@ -615,17 +625,17 @@ export default function CustomerRequestFlow({
     updateForm({ requestType });
     setBanner({
       tone: "info",
-      title: `${requestType === "ApartmentMove" ? "Apartment move" : "Small move"} selected`,
+      title: requestType === "ApartmentMove" ? "נבחרה הובלת דירה" : "נבחרה הובלה קטנה",
       message:
         user?.id && !activeRequest
-          ? "Continue to create and save your draft request."
-          : "You can keep shaping the request before sign-in. The server draft will be created when you save.",
+          ? "המשיכו לבנות ולשמור את טיוטת הבקשה."
+          : "אפשר להמשיך לעצב את הבקשה לפני ההתחברות. טיוטת השרת תיווצר כששומרים.",
     });
   }
 
   async function ensureSavedDraft() {
     if (!form.requestType) {
-      throw new Error("Choose a move type first.");
+      throw new Error("בחרו קודם סוג הובלה.");
     }
 
     if (activeRequest) {
@@ -633,7 +643,7 @@ export default function CustomerRequestFlow({
     }
 
     if (!user) {
-      throw new Error("Sign in to create the saved draft.");
+      throw new Error("התחברו כדי ליצור את הטיוטה השמורה.");
     }
 
     const created = await createMoveRequest(form.requestType);
@@ -647,12 +657,12 @@ export default function CustomerRequestFlow({
 
   async function saveCurrentStep() {
     if (!user) {
-      setStatusText("Keep going locally, then sign in to save this draft.");
+      setStatusText("המשיכו מקומית ואז התחברו כדי לשמור את הטיוטה.");
       return null;
     }
 
     if (!form.requestType) {
-      throw new Error("Choose a move type first.");
+      throw new Error("בחרו קודם סוג הובלה.");
     }
 
     const savedRequest = await ensureSavedDraft();
@@ -679,16 +689,16 @@ export default function CustomerRequestFlow({
       if (user && form.requestType) {
         await saveCurrentStep();
       } else {
-        setStatusText("Drafting locally. Sign in when you are ready to save.");
+        setStatusText("עובדים מקומית. התחברו כשתהיו מוכנים לשמור.");
       }
       setStepIndex((current) => Math.min(current + 1, publishStepIndex));
       setBanner({
         tone: "success",
-        title: "Step captured",
+        title: "השלב נשמר",
         message:
           user && activeRequest
-            ? "The draft was saved to the server."
-            : "The step is preserved locally and will be saved once you sign in.",
+            ? "הטיוטה נשמרה בשרת."
+            : "השלב נשמר מקומית ויישמר ברגע שתתחברו.",
       });
     } catch (error) {
       const normalized = normalizeApiError(error);
@@ -710,11 +720,11 @@ export default function CustomerRequestFlow({
       setActiveRequest(request);
       setForm(hydrateFromRequest(request));
       setStepIndex(inferStepIndex(request));
-      setStatusText(`Draft ${request.id.slice(0, 8)} loaded.`);
+      setStatusText(`טיוטה ${request.id.slice(0, 8)} נטענה.`);
       setBanner({
         tone: "info",
-        title: "Draft resumed",
-        message: "You can continue from the saved server state now.",
+        title: "הטיוטה חודשה",
+        message: "אפשר להמשיך כעת מהמצב שנשמר בשרת.",
       });
     } catch (error) {
       const normalized = normalizeApiError(error);
@@ -725,17 +735,17 @@ export default function CustomerRequestFlow({
   }
 
   async function handleSignIn() {
-    setBusyAction("Signing in");
+    setBusyAction("מתחברים");
     try {
       const signedIn = await signInWithGoogle(pendingGoogleCredential.trim());
       setUser(signedIn);
-      setStatusText(`Signed in as ${signedIn.firstName}.`);
+      setStatusText(`מחוברים כ-${signedIn.firstName}.`);
       setBanner({
         tone: "success",
-        title: "Signed in",
+        title: "התחברות הצליחה",
         message: signedIn.phoneVerified
-          ? "Your phone is already verified."
-          : "Verify the phone number before publishing.",
+          ? "מספר הטלפון כבר מאומת."
+          : "אמתו את מספר הטלפון לפני הפרסום.",
       });
       await refreshDrafts();
     } catch (error) {
@@ -748,16 +758,16 @@ export default function CustomerRequestFlow({
   }
 
   async function handleLogoutClick() {
-    setBusyAction("Signing out");
+    setBusyAction("מתנתקים");
     try {
       await logout();
       setUser(null);
       setActiveRequest(null);
-      setStatusText("Signed out.");
+      setStatusText("התנתקתם.");
       setBanner({
         tone: "info",
-        title: "Signed out",
-        message: "Your local wizard state stays on the page.",
+        title: "התנתקתם",
+        message: "מצב האשף המקומי נשאר בעמוד.",
       });
     } catch (error) {
       const normalized = normalizeApiError(error);
@@ -768,17 +778,17 @@ export default function CustomerRequestFlow({
   }
 
   async function handleRequestOtp() {
-    setBusyAction("Requesting code");
+    setBusyAction("מבקשים קוד");
     try {
       const response = await requestPhoneCode(phone);
       setOtpDebugCode(response.debugCode ?? "");
-      setStatusText(`OTP sent to ${response.normalizedPhone}.`);
+      setStatusText(`קוד האימות נשלח ל-${response.normalizedPhone}.`);
       setBanner({
         tone: "info",
-        title: "OTP requested",
+        title: "קוד נשלח",
         message: response.debugCode
-          ? `Development code: ${response.debugCode}`
-          : "Check your phone for the verification code.",
+          ? `קוד פיתוח: ${response.debugCode}`
+          : "בדקו את הטלפון שלכם לקוד האימות.",
       });
     } catch (error) {
       const normalized = normalizeApiError(error);
@@ -789,13 +799,13 @@ export default function CustomerRequestFlow({
   }
 
   async function handleVerifyOtp() {
-    setBusyAction("Verifying code");
+    setBusyAction("מאמתים קוד");
     try {
       const response = await verifyPhoneCode(phone, otpCode.trim());
       setStatusText(
         response.phoneVerified
-          ? "Phone verified."
-          : "Verification response received, but the phone is still unverified.",
+          ? "הטלפון אומת."
+          : "התקבלה תשובת האימות, אך הטלפון עדיין לא מאומת.",
       );
       setUser((current) =>
         current
@@ -808,8 +818,8 @@ export default function CustomerRequestFlow({
       );
       setBanner({
         tone: "success",
-        title: "Phone verified",
-        message: "You can publish this request now.",
+        title: "הטלפון אומת",
+        message: "אפשר לפרסם את הבקשה עכשיו.",
       });
       await refreshDrafts();
     } catch (error) {
@@ -821,14 +831,14 @@ export default function CustomerRequestFlow({
   }
 
   async function handlePublish() {
-    setBusyAction("Publishing");
+    setBusyAction("מפרסמים");
     try {
       if (!user) {
         setStepIndex(accountStepIndex);
         setBanner({
           tone: "warning",
-          title: "Sign in required",
-          message: "Create or confirm your account before publishing the request.",
+          title: "נדרשת התחברות",
+          message: "צרו או אשרו את החשבון לפני פרסום הבקשה.",
         });
         return;
       }
@@ -837,8 +847,8 @@ export default function CustomerRequestFlow({
         setStepIndex(accountStepIndex);
         setBanner({
           tone: "warning",
-          title: "Phone verification required",
-          message: "Verify the phone number before publishing the request.",
+          title: "נדרש אימות טלפון",
+          message: "אמתו את מספר הטלפון לפני פרסום הבקשה.",
         });
         return;
       }
@@ -849,13 +859,13 @@ export default function CustomerRequestFlow({
       setActiveRequest(response.moveRequest);
       setForm(hydrateFromRequest(response.moveRequest));
       setStepIndex(publishStepIndex);
-      setStatusText("Request published.");
+      setStatusText("הבקשה פורסמה.");
       setBanner({
         tone: response.potentialDuplicateExists ? "warning" : "success",
-        title: response.potentialDuplicateExists ? "Potential duplicate detected" : "Published",
+        title: response.potentialDuplicateExists ? "זוהתה כפילות אפשרית" : "פורסם",
         message: response.potentialDuplicateExists
-          ? "It looks like you may already have a similar active request."
-          : "Your customer request is now live.",
+          ? "נראה שכבר יש לכם בקשה פעילה דומה."
+          : "בקשת הלקוח שלכם כעת פעילה.",
       });
       await refreshDrafts();
     } catch (error) {
@@ -874,10 +884,10 @@ export default function CustomerRequestFlow({
     setStepIndex(0);
     setBanner({
       tone: "info",
-      title: "Ready for a new request",
-      message: "Choose a move type and start again.",
+      title: "מוכנים לבקשה חדשה",
+      message: "בחרו סוג הובלה והתחילו מחדש.",
     });
-    setStatusText("Ready to start.");
+    setStatusText("מוכנים להתחיל.");
   }
 
   function renderBanner() {
@@ -936,8 +946,8 @@ export default function CustomerRequestFlow({
         </div>
         {!user ? (
           <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
-            You can choose a move type now and keep shaping the request locally. Sign in when you
-            are ready to save the draft to the server.
+            אפשר לבחור עכשיו סוג הובלה ולהמשיך לעצב את הבקשה מקומית. התחברו כשתהיו מוכנים לשמור
+            את הטיוטה בשרת.
           </div>
         ) : null}
       </div>
@@ -951,9 +961,9 @@ export default function CustomerRequestFlow({
         <legend className="px-2 text-sm font-semibold text-slate-900">{title}</legend>
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
-            {renderInputLabel("City", "Use the exact city from the move route.")}
+            {renderInputLabel("עיר", "השתמשו בשם העיר המדויק במסלול ההובלה.")}
             <input
-              aria-label={`${title} city`}
+              aria-label={`${title} עיר`}
               value={data.city ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -965,9 +975,9 @@ export default function CustomerRequestFlow({
             />
           </label>
           <label className="space-y-2">
-            {renderInputLabel("Exact address", "This stays inside the customer flow until access is granted.")}
+            {renderInputLabel("כתובת מדויקת", "השדה נשאר בתוך תהליך הלקוח עד שניתנת גישת הצגה.")}
             <input
-              aria-label={`${title} exact address`}
+              aria-label={`${title} כתובת מדויקת`}
               value={data.exactAddress ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -979,10 +989,10 @@ export default function CustomerRequestFlow({
             />
           </label>
           <label className="space-y-2">
-            {renderInputLabel("Floor", "Optional, but useful for access planning.")}
+            {renderInputLabel("קומה", "לא חובה, אבל מועיל לתכנון הגישה.")}
             <input
               type="number"
-              aria-label={`${title} floor`}
+              aria-label={`${title} קומה`}
               value={data.floor ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -994,9 +1004,9 @@ export default function CustomerRequestFlow({
             />
           </label>
           <div className="space-y-2">
-            {renderInputLabel("Elevator", "Yes or no.")}
+            {renderInputLabel("מעלית", "כן או לא.")}
             <div className="grid grid-cols-2 gap-2">
-              {["Yes", "No"].map((value) => (
+              {["כן", "לא"].map((value) => (
                 <button
                   type="button"
                   key={value}
@@ -1005,12 +1015,12 @@ export default function CustomerRequestFlow({
                       ...current,
                       [prefix]: {
                         ...current[prefix],
-                        hasElevator: value === "Yes",
+                        hasElevator: value === "כן",
                       },
                     }))
                   }
                   className={`rounded-2xl border px-4 py-3 text-sm font-medium transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 ${
-                    data.hasElevator === (value === "Yes")
+                    data.hasElevator === (value === "כן")
                       ? "border-slate-900 bg-slate-950 text-white"
                       : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
                   }`}
@@ -1021,12 +1031,12 @@ export default function CustomerRequestFlow({
             </div>
           </div>
           <div className="space-y-2 md:col-span-2">
-            {renderInputLabel("Elevator suitable for large furniture", "Choose the closest match for the building elevator.")}
+            {renderInputLabel("מעלית מתאימה לרהיטים גדולים", "בחרו את ההתאמה הקרובה ביותר למעלית בבניין.")}
             <div className="grid gap-2 md:grid-cols-3">
               {[
-                { value: "Unknown" as const, label: "Don't know" },
-                { value: "Yes" as const, label: "Yes" },
-                { value: "No" as const, label: "No" },
+                { value: "Unknown" as const, label: "לא יודע/ת" },
+                { value: "Yes" as const, label: "כן" },
+                { value: "No" as const, label: "לא" },
               ].map((option) => (
                 <button
                   type="button"
@@ -1052,9 +1062,9 @@ export default function CustomerRequestFlow({
             </div>
           </div>
           <label className="space-y-2">
-            {renderInputLabel("Stairs / access notes", "Describe steps, tight turns, or other access limits.")}
+            {renderInputLabel("מדרגות / הערות גישה", "תארו מדרגות, פניות חדות או מגבלות גישה אחרות.")}
             <textarea
-              aria-label={`${title} stairs or access notes`}
+              aria-label={`${title} מדרגות או הערות גישה`}
               value={data.stairsInfo ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -1067,9 +1077,9 @@ export default function CustomerRequestFlow({
             />
           </label>
           <label className="space-y-2">
-            {renderInputLabel("Truck / parking access", "Describe the loading path and curb access.")}
+            {renderInputLabel("גישה למשאית / חניה", "תארו את מסלול ההעמסה ואת הגישה מהכביש.")}
             <textarea
-              aria-label={`${title} truck or parking access`}
+              aria-label={`${title} גישה למשאית או חניה`}
               value={data.truckAccessInfo ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -1082,10 +1092,10 @@ export default function CustomerRequestFlow({
             />
           </label>
           <label className="space-y-2">
-            {renderInputLabel("Parking distance", "How far is the truck from the entrance?")}
+            {renderInputLabel("מרחק חניה", "כמה רחוקה המשאית מהכניסה?")}
             <input
               type="number"
-              aria-label={`${title} parking distance`}
+              aria-label={`${title} מרחק חניה`}
               value={data.parkingDistanceMeters ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -1111,12 +1121,12 @@ export default function CustomerRequestFlow({
           <div key={item.id} className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div className="space-y-2">
-                <p className="text-sm font-semibold text-slate-900">Item {index + 1}</p>
+                <p className="text-sm font-semibold text-slate-900">פריט {index + 1}</p>
                 <div className="grid gap-2 md:grid-cols-2">
                   <label className="space-y-2">
-                    {renderInputLabel("Category", "Choose the transport type.")}
+                    {renderInputLabel("קטגוריה", "בחרו את סוג ההובלה.")}
                     <select
-                      aria-label="Category"
+                      aria-label="קטגוריה"
                       value={item.smallMoveCategory}
                       onChange={(event) =>
                         setForm((current) => ({
@@ -1138,7 +1148,7 @@ export default function CustomerRequestFlow({
                     </select>
                   </label>
                   <label className="space-y-2">
-                    {renderInputLabel("Name / description", "A clear item name helps movers estimate effort.")}
+                    {renderInputLabel("שם / תיאור", "שם ברור של הפריט עוזר למובילים להעריך את המאמץ.")}
                     <input
                       value={item.name}
                       onChange={(event) =>
@@ -1155,7 +1165,7 @@ export default function CustomerRequestFlow({
                 </div>
                 <div className="grid gap-2 md:grid-cols-4">
                   <label className="space-y-2">
-                    {renderInputLabel("Quantity", "Use the stepper.")}
+                    {renderInputLabel("כמות", "השתמשו בכפתורי ההגדלה וההפחתה.")}
                     <input
                       type="number"
                       min={1}
@@ -1172,7 +1182,7 @@ export default function CustomerRequestFlow({
                     />
                   </label>
                   <label className="space-y-2">
-                    {renderInputLabel("Length cm", "Optional dimensions.")}
+                    {renderInputLabel("אורך ס\"מ", "מידות אופציונליות.")}
                     <input
                       type="number"
                       min={0}
@@ -1189,7 +1199,7 @@ export default function CustomerRequestFlow({
                     />
                   </label>
                   <label className="space-y-2">
-                    {renderInputLabel("Width cm", "Optional dimensions.")}
+                    {renderInputLabel("רוחב ס\"מ", "מידות אופציונליות.")}
                     <input
                       type="number"
                       min={0}
@@ -1206,7 +1216,7 @@ export default function CustomerRequestFlow({
                     />
                   </label>
                   <label className="space-y-2">
-                    {renderInputLabel("Height cm / kg", "Optional size or weight values.")}
+                    {renderInputLabel("גובה ס\"מ / ק\"ג", "מידות או משקל אופציונליים.")}
                     <input
                       type="number"
                       min={0}
@@ -1224,7 +1234,7 @@ export default function CustomerRequestFlow({
                   </label>
                 </div>
                 <label className="space-y-2">
-                  {renderInputLabel("Approx. weight kg", "Optional if the mover needs more planning detail.")}
+                  {renderInputLabel("משקל משוער ק\"ג", "אופציונלי אם המוביל צריך עוד פרטי תכנון.")}
                   <input
                     type="number"
                     min={0}
@@ -1251,7 +1261,7 @@ export default function CustomerRequestFlow({
                 }
                 className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer"
               >
-                Remove
+                הסרה
               </button>
             </div>
           </div>
@@ -1280,7 +1290,7 @@ export default function CustomerRequestFlow({
           }
           className="rounded-full border border-dashed border-slate-300 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-50 cursor-pointer"
         >
-          Add another item
+          הוסיפו פריט נוסף
         </button>
       </div>
     );
@@ -1350,11 +1360,11 @@ export default function CustomerRequestFlow({
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm font-semibold text-slate-900">{item.apartmentInventoryType}</p>
-                    <p className="text-sm leading-6 text-slate-500">Selected for the apartment inventory.</p>
+                    <p className="text-sm leading-6 text-slate-500">נבחר עבור תכולת הדירה.</p>
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     <label className="space-y-2">
-                      {renderInputLabel("Display name", "Rename if the item needs more detail.")}
+                      {renderInputLabel("שם תצוגה", "שנו את השם אם צריך עוד פירוט.")}
                       <input
                         value={item.name}
                         onChange={(event) =>
@@ -1369,7 +1379,7 @@ export default function CustomerRequestFlow({
                       />
                     </label>
                     <label className="space-y-2">
-                      {renderInputLabel("Description", "Optional extra context.")}
+                      {renderInputLabel("תיאור", "מידע נוסף אופציונלי.")}
                       <input
                         value={item.description}
                         onChange={(event) =>
@@ -1393,9 +1403,9 @@ export default function CustomerRequestFlow({
                       apartmentInventory: current.apartmentInventory.filter((row) => row.id !== item.id),
                     }))
                   }
-                  className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer"
-                >
-                  Remove
+                className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer"
+              >
+                  הסרה
                 </button>
               </div>
             </div>
@@ -1409,27 +1419,27 @@ export default function CustomerRequestFlow({
     return (
       <div className="space-y-4">
         <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900">Additional services</p>
+          <p className="text-sm font-semibold text-slate-900">שירותים נוספים</p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {[
               {
                 key: "furnitureDisassembly",
-                label: "Furniture disassembly",
+                label: "פירוק רהיטים",
                 checked: form.furnitureDisassembly,
               },
               {
                 key: "furnitureAssembly",
-                label: "Furniture assembly",
+                label: "הרכבת רהיטים",
                 checked: form.furnitureAssembly,
               },
               {
                 key: "packingAssistance",
-                label: "Packing assistance",
+                label: "סיוע באריזה",
                 checked: form.packingAssistance,
               },
               {
                 key: "packingMaterials",
-                label: "Packing materials",
+                label: "חומרי אריזה",
                 checked: form.packingMaterials,
               },
             ].map((option) => (
@@ -1496,7 +1506,7 @@ export default function CustomerRequestFlow({
               >
                 <p className="font-semibold">{option.label}</p>
                 <p className={`mt-1 text-sm leading-6 ${selected ? "text-slate-200" : "text-slate-500"}`}>
-                  Mark it when the mover should plan extra handling.
+                  סמנו כשהמוביל צריך לתכנן טיפול מיוחד.
                 </p>
               </button>
             );
@@ -1510,11 +1520,11 @@ export default function CustomerRequestFlow({
                 <div className="space-y-3">
                   <div>
                     <p className="text-sm font-semibold text-slate-900">{item.specialItemType}</p>
-                    <p className="text-sm leading-6 text-slate-500">Selected as a special handling item.</p>
+                    <p className="text-sm leading-6 text-slate-500">נבחר כפריט הדורש טיפול מיוחד.</p>
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
                     <label className="space-y-2">
-                      {renderInputLabel("Display name", "Rename if the item needs more detail.")}
+                      {renderInputLabel("שם תצוגה", "שנו את השם אם צריך עוד פירוט.")}
                       <input
                         value={item.name}
                         onChange={(event) =>
@@ -1529,7 +1539,7 @@ export default function CustomerRequestFlow({
                       />
                     </label>
                     <label className="space-y-2">
-                      {renderInputLabel("Description", "Optional extra context.")}
+                      {renderInputLabel("תיאור", "מידע נוסף אופציונלי.")}
                       <input
                         value={item.description}
                         onChange={(event) =>
@@ -1553,9 +1563,9 @@ export default function CustomerRequestFlow({
                       specialItems: current.specialItems.filter((row) => row.id !== item.id),
                     }))
                   }
-                  className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer"
-                >
-                  Remove
+                className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:border-slate-300 hover:bg-slate-50 cursor-pointer"
+              >
+                  הסרה
                 </button>
               </div>
             </div>
@@ -1575,7 +1585,7 @@ export default function CustomerRequestFlow({
     return (
       <div className="space-y-4">
         <fieldset className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <legend className="px-2 text-sm font-semibold text-slate-900">Apartment size</legend>
+          <legend className="px-2 text-sm font-semibold text-slate-900">גודל הדירה</legend>
           <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
             {ROOM_OPTIONS.map((rooms) => (
               <button
@@ -1595,7 +1605,7 @@ export default function CustomerRequestFlow({
         </fieldset>
 
         <fieldset className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <legend className="px-2 text-sm font-semibold text-slate-900">Boxes</legend>
+          <legend className="px-2 text-sm font-semibold text-slate-900">ארגזים</legend>
           <div className="mt-4 grid gap-4 md:grid-cols-3">
             {BOX_TYPE_OPTIONS.map((option) => (
               <div key={option.key} className="rounded-[20px] border border-slate-200 p-4">
@@ -1649,10 +1659,8 @@ export default function CustomerRequestFlow({
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold text-slate-900">Common inventory</p>
-              <p className="text-sm leading-6 text-slate-500">
-                Add the items that matter most for the moving estimate.
-              </p>
+              <p className="text-sm font-semibold text-slate-900">תכולה נפוצה</p>
+              <p className="text-sm leading-6 text-slate-500">הוסיפו את הפריטים המשפיעים ביותר על הצעת המחיר.</p>
             </div>
           </div>
           {renderApartmentInventory()}
@@ -1666,7 +1674,7 @@ export default function CustomerRequestFlow({
       <div className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
-            {renderInputLabel("Move date", "Pick the preferred date.")}
+            {renderInputLabel("תאריך הובלה", "בחרו את התאריך המועדף.")}
             <input
               type="date"
               value={form.moveDate}
@@ -1675,7 +1683,7 @@ export default function CustomerRequestFlow({
             />
           </label>
           <div className="space-y-2">
-            {renderInputLabel("Preferred time", "Choose the arrival window.")}
+            {renderInputLabel("שעה מועדפת", "בחרו את חלון ההגעה.")}
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {PREFERRED_TIME_OPTIONS.map((option) => (
                 <button
@@ -1694,7 +1702,7 @@ export default function CustomerRequestFlow({
             </div>
           </div>
           <div className="space-y-2 md:col-span-2">
-            {renderInputLabel("Date flexibility", "Tell movers how strict the date is.")}
+            {renderInputLabel("גמישות בתאריך", "ציינו עד כמה התאריך קשיח.")}
             <div className="grid gap-2 md:grid-cols-4">
               {DATE_FLEXIBILITY_OPTIONS.map((option) => (
                 <button
@@ -1713,7 +1721,7 @@ export default function CustomerRequestFlow({
             </div>
           </div>
           <div className="space-y-2 md:col-span-2">
-            {renderInputLabel("Budget band", "Choose the closest match for the customer budget.")}
+            {renderInputLabel("טווח תקציב", "בחרו את הטווח הקרוב ביותר לתקציב הלקוח.")}
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {BUDGET_OPTIONS.map((option) => (
                 <button
@@ -1740,13 +1748,13 @@ export default function CustomerRequestFlow({
     return (
       <div className="space-y-4">
         <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900">Photo upload foundation</p>
+          <p className="text-sm font-semibold text-slate-900">בסיס העלאת התמונות</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            The object storage upload boundary is ready for the next phase. For now, selected files
-            stay local so we do not fake a successful production upload.
+            גבול ההעלאה לאחסון האובייקטים מוכן לשלב הבא. כרגע הקבצים שנבחרו נשארים מקומית כדי שלא
+            נדמה העלאה מוצלחת לייצור.
           </p>
           <label className="mt-4 block space-y-2">
-            {renderInputLabel("Select photos", "They will remain pending until uploads are connected.")}
+            {renderInputLabel("בחירת תמונות", "הן יישארו ממתינות עד שיחוברו ההעלאות.")}
             <input
               type="file"
               multiple
@@ -1775,7 +1783,7 @@ export default function CustomerRequestFlow({
               >
                 <div>
                   <p className="text-sm font-semibold text-slate-900">{photo.name}</p>
-                  <p className="text-sm text-slate-500">Pending upload, {photo.sizeLabel}</p>
+                  <p className="text-sm text-slate-500">ממתין להעלאה, {photo.sizeLabel}</p>
                 </div>
                 <button
                   type="button"
@@ -1786,20 +1794,19 @@ export default function CustomerRequestFlow({
                   }
                   className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 cursor-pointer"
                 >
-                  Remove
+                  הסרה
                 </button>
               </div>
             ))
           ) : (
             <div className="rounded-[24px] border border-dashed border-slate-300 p-6 text-sm leading-6 text-slate-500">
-              No photos selected yet. Add them when you want to capture the size or access of the
-              move.
+              עדיין לא נבחרו תמונות. הוסיפו אותן כשתרצו לתעד את הגודל או הגישה של ההובלה.
             </div>
           )}
         </div>
 
         <label className="space-y-2 block">
-          {renderInputLabel("Comments", "Tell movers about anything that does not fit the form.")}
+          {renderInputLabel("הערות", "ספרו למובילים על כל דבר שלא נכנס לטופס.")}
           <textarea
             value={form.customerComment}
             onChange={(event) => updateForm({ customerComment: event.target.value })}
@@ -1827,115 +1834,115 @@ export default function CustomerRequestFlow({
       <div className="space-y-4">
         {!isSaved ? (
           <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-950">
-            This preview is still local. Sign in and save to review the server-backed request.
+            התצוגה המקדימה עדיין מקומית. התחברו ושמרו כדי לבדוק את הבקשה שמגובה בשרת.
           </div>
         ) : null}
         <SummarySection
-          title="Move type"
-          value={form.requestType === "SmallMove" ? "Small Move / Individual Items" : "Apartment Move"}
+          title="סוג הובלה"
+          value={form.requestType ? formatRequestType(form.requestType) : "לא נבחרה הובלה"}
         />
         <SummarySection
-          title="Route"
-          value={`${emptyString(pickup?.city)} to ${emptyString(destination?.city)}`.trim()}
-          detail={`Pickup ${emptyString(pickup?.exactAddress)} · Destination ${emptyString(destination?.exactAddress)}`}
+          title="מסלול"
+          value={`${emptyString(pickup?.city)} → ${emptyString(destination?.city)}`.trim()}
+          detail={`איסוף ${emptyString(pickup?.exactAddress)} · יעד ${emptyString(destination?.exactAddress)}`}
         />
         <SummarySection
-          title="Pickup access"
+          title="גישה באיסוף"
           value={[
-            pickup?.floor != null ? `Floor ${pickup.floor}` : null,
-            pickup?.hasElevator != null ? (pickup.hasElevator ? "Elevator" : "No elevator") : null,
-            pickup?.parkingDistanceMeters != null ? `${pickup.parkingDistanceMeters}m parking distance` : null,
+            pickup?.floor != null ? `קומה ${pickup.floor}` : null,
+            pickup?.hasElevator != null ? (pickup.hasElevator ? "מעלית" : "אין מעלית") : null,
+            pickup?.parkingDistanceMeters != null ? `${pickup.parkingDistanceMeters} מ' מהחניה` : null,
           ]
             .filter(Boolean)
             .join(" · ")}
-          detail={pickup?.stairsInfo ?? "No stairs note yet"}
+          detail={pickup?.stairsInfo ?? "אין עדיין הערות על מדרגות"}
         />
         <SummarySection
-          title="Destination access"
+          title="גישה ביעד"
           value={[
-            destination?.floor != null ? `Floor ${destination.floor}` : null,
-            destination?.hasElevator != null ? (destination.hasElevator ? "Elevator" : "No elevator") : null,
+            destination?.floor != null ? `קומה ${destination.floor}` : null,
+            destination?.hasElevator != null ? (destination.hasElevator ? "מעלית" : "אין מעלית") : null,
             destination?.parkingDistanceMeters != null
-              ? `${destination.parkingDistanceMeters}m parking distance`
+              ? `${destination.parkingDistanceMeters} מ' מהחניה`
               : null,
           ]
             .filter(Boolean)
             .join(" · ")}
-          detail={destination?.stairsInfo ?? "No stairs note yet"}
+          detail={destination?.stairsInfo ?? "אין עדיין הערות על מדרגות"}
         />
 
         {form.requestType === "ApartmentMove" ? (
           <>
             <SummarySection
-              title="Apartment details"
-              value={form.apartmentRooms ? `${form.apartmentRooms} rooms` : "Room count not set"}
-              detail={`Boxes: ${form.smallBoxes} small, ${form.mediumBoxes} medium, ${form.largeBoxes} large`}
+              title="פרטי הדירה"
+              value={form.apartmentRooms ? `${form.apartmentRooms} חדרים` : "מספר החדרים לא הוגדר"}
+              detail={`ארגזים: ${form.smallBoxes} קטנים, ${form.mediumBoxes} בינוניים, ${form.largeBoxes} גדולים`}
             />
             <SummarySection
-              title="Boxes and inventory"
-              value={`${form.apartmentInventory.length} inventory items`}
-              detail={form.apartmentInventory.map((item) => `${item.name} x${item.quantity}`).join(" · ") || "No inventory added yet"}
+              title="ארגזים ותכולה"
+              value={`${form.apartmentInventory.length} פריטי תכולה`}
+              detail={form.apartmentInventory.map((item) => `${item.name} × ${item.quantity}`).join(" · ") || "עדיין לא נוספה תכולה"}
             />
             <SummarySection
-              title="Additional services"
+              title="שירותים נוספים"
               value={[
-                form.furnitureDisassembly ? "Disassembly" : null,
-                form.furnitureAssembly ? "Assembly" : null,
-                form.packingAssistance ? "Packing help" : null,
-                form.packingMaterials ? "Packing materials" : null,
+                form.furnitureDisassembly ? "פירוק" : null,
+                form.furnitureAssembly ? "הרכבה" : null,
+                form.packingAssistance ? "עזרה באריזה" : null,
+                form.packingMaterials ? "חומרי אריזה" : null,
               ]
                 .filter(Boolean)
-                .join(" · ") || "No services selected"}
-              detail={form.specialItems.map((item) => item.name).join(" · ") || "No special items added"}
+                .join(" · ") || "לא נבחרו שירותים"}
+              detail={form.specialItems.map((item) => item.name).join(" · ") || "עדיין לא נוספו פריטים מיוחדים"}
             />
           </>
         ) : (
           <SummarySection
-            title="Items"
-            value={`${form.smallMoveItems.length} small move items`}
-            detail={form.smallMoveItems.map((item) => `${item.name} x${item.quantity}`).join(" · ") || "No items added yet"}
+            title="פריטים"
+            value={`${form.smallMoveItems.length} פריטים`}
+            detail={form.smallMoveItems.map((item) => `${item.name} × ${item.quantity}`).join(" · ") || "עדיין לא נוספו פריטים"}
           />
         )}
 
         <SummarySection
-          title="Date and budget"
-          value={schedule?.moveDate ? dateFormatter.format(new Date(schedule.moveDate)) : "Date not set"}
+          title="תאריך ותקציב"
+          value={schedule?.moveDate ? dateFormatter.format(new Date(schedule.moveDate)) : "התאריך לא הוגדר"}
           detail={[
-            schedule?.preferredTime ? `Preferred time: ${schedule.preferredTime}` : null,
-            schedule?.dateFlexibility ? `Flexibility: ${schedule.dateFlexibility}` : null,
-            form.budgetBand ? `Budget band: ${form.budgetBand}` : null,
+            schedule?.preferredTime ? `שעה מועדפת: ${preferredTimeLabel(schedule.preferredTime)}` : null,
+            schedule?.dateFlexibility ? `גמישות: ${dateFlexibilityLabel(schedule.dateFlexibility)}` : null,
+            form.budgetBand ? `טווח תקציב: ${budgetLabels[form.budgetBand]}` : null,
           ]
             .filter(Boolean)
             .join(" · ")}
         />
 
         <SummarySection
-          title="Photos"
-          value={form.pendingPhotos.length ? `${form.pendingPhotos.length} local selections` : "No photos yet"}
-          detail="The upload boundary stays local until object storage is connected."
+          title="תמונות"
+          value={form.pendingPhotos.length ? `${form.pendingPhotos.length} בחירות מקומיות` : "אין עדיין תמונות"}
+          detail="גבול ההעלאה נשאר מקומי עד שיחובר אחסון האובייקטים."
         />
 
         <SummarySection
-          title="Comments"
-          value={form.customerComment.trim() || "No comments yet"}
+          title="הערות"
+          value={form.customerComment.trim() || "אין עדיין הערות"}
         />
 
         {publishState?.potentialDuplicateExists || activeRequest?.duplicateRisk ? (
           <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-950">
-            It looks like you may already have a similar active request.
+            נראה שכבר יש לכם בקשה פעילה דומה.
             <div className="mt-3 flex flex-wrap gap-3">
               <Link
                 href="#request-list"
                 className="inline-flex items-center rounded-full border border-amber-300 px-4 py-2 font-medium text-amber-950 transition hover:bg-amber-100"
               >
-                View existing request
+                צפייה בבקשה קיימת
               </Link>
               <button
                 type="button"
                 onClick={() => setBanner(null)}
                 className="inline-flex items-center rounded-full bg-amber-950 px-4 py-2 font-medium text-white transition hover:bg-amber-900 cursor-pointer"
               >
-                Continue anyway
+                להמשיך בכל זאת
               </button>
             </div>
           </div>
@@ -1949,14 +1956,13 @@ export default function CustomerRequestFlow({
     return (
       <div className="space-y-6">
         <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900">Account confirmation</p>
+          <p className="text-sm font-semibold text-slate-900">אימות החשבון</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Publish uses the real auth foundation. Sign in first, then verify the phone number if
-            required.
+            הפרסום משתמש בתשתית האימות האמיתית. התחברו קודם, ואז אמתו את מספר הטלפון אם צריך.
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-[1.4fr_0.8fr]">
             <label className="space-y-2">
-              {renderInputLabel("Google credential", "Development sign-in format: dev-google:subject:email:first:last")}
+              {renderInputLabel("פרטי Google", "פורמט התחברות לפיתוח: dev-google:subject:email:first:last")}
               <input
                 value={pendingGoogleCredential}
                 onChange={(event) => setPendingGoogleCredential(event.target.value)}
@@ -1969,7 +1975,7 @@ export default function CustomerRequestFlow({
                 onClick={handleSignIn}
                 className="w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 cursor-pointer"
               >
-                Sign in
+                התחברות
               </button>
             </div>
           </div>
@@ -1979,25 +1985,25 @@ export default function CustomerRequestFlow({
               onClick={handleLogoutClick}
               className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer"
             >
-              Log out
+              התנתקות
             </button>
             <Link
               href="/auth"
               className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
             >
-              Open auth page
+              פתיחת עמוד האימות
             </Link>
           </div>
         </div>
 
         <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900">Phone verification</p>
+          <p className="text-sm font-semibold text-slate-900">אימות טלפון</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
-            Publish is blocked until the phone number is verified.
+            הפרסום חסום עד שמספר הטלפון מאומת.
           </p>
           <div className="mt-4 grid gap-3 md:grid-cols-[1.2fr_0.8fr]">
             <label className="space-y-2">
-              {renderInputLabel("Phone number", "Use the same number that will be verified.")}
+              {renderInputLabel("מספר טלפון", "השתמשו באותו מספר שיאומת.")}
               <input
                 value={phone}
                 onChange={(event) => setPhone(event.target.value)}
@@ -2010,11 +2016,11 @@ export default function CustomerRequestFlow({
                 onClick={handleRequestOtp}
                 className="w-full rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
               >
-                Request OTP
+                בקשת קוד
               </button>
             </div>
             <label className="space-y-2">
-              {renderInputLabel("OTP code", "Enter the code you receive.")}
+              {renderInputLabel("קוד אימות", "הזינו את הקוד שקיבלתם.")}
               <input
                 value={otpCode}
                 onChange={(event) => setOtpCode(event.target.value)}
@@ -2027,13 +2033,13 @@ export default function CustomerRequestFlow({
                 onClick={handleVerifyOtp}
                 className="w-full rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500 cursor-pointer"
               >
-                Verify phone
+                אימות טלפון
               </button>
             </div>
           </div>
           {otpDebugCode ? (
             <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">
-              Development OTP: {otpDebugCode}
+              קוד פיתוח: {otpDebugCode}
             </p>
           ) : null}
           <div className="mt-4 flex flex-wrap gap-3">
@@ -2047,11 +2053,11 @@ export default function CustomerRequestFlow({
                   : "cursor-not-allowed bg-slate-200 text-slate-500"
               }`}
             >
-              Publish now
+              פרסמו עכשיו
             </button>
             {!isVerified ? (
               <span className="text-sm leading-6 text-slate-500">
-                The publish button activates after phone verification.
+                כפתור הפרסום יופעל אחרי אימות הטלפון.
               </span>
             ) : null}
           </div>
@@ -2064,16 +2070,16 @@ export default function CustomerRequestFlow({
     return (
       <div className="space-y-4">
         <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 px-5 py-5 text-emerald-950">
-          <h3 className="text-lg font-semibold">Request published</h3>
+          <h3 className="text-lg font-semibold">הבקשה פורסמה</h3>
           <p className="mt-2 text-sm leading-6">
-            The request is live and ready for the next phase of the product.
+            הבקשה פעילה ומוכנה לשלב הבא של המוצר.
           </p>
         </div>
         {publishState?.moveRequest ? (
           <SummarySection
-            title="Published request"
+            title="בקשה שפורסמה"
             value={publishState.moveRequest.id}
-            detail={`Status: ${formatRequestStatus(publishState.moveRequest.status)}. Movers can now discover this request when marketplace access is available.`}
+            detail={`סטטוס: ${formatRequestStatus(publishState.moveRequest.status)}. מובילים יוכלו לאתר את הבקשה הזו כשהגישה לשוק תהיה זמינה.`}
           />
         ) : null}
       </div>
@@ -2084,7 +2090,7 @@ export default function CustomerRequestFlow({
     if (!form.requestType && stepIndex > 0) {
       return (
         <div className="rounded-[24px] border border-slate-200 bg-white p-5 text-sm leading-6 text-slate-600 shadow-sm">
-          Choose a move type first so the wizard can load the right fields.
+          בחרו קודם סוג הובלה כדי שהאשף יטען את השדות המתאימים.
         </div>
       );
     }
@@ -2095,8 +2101,8 @@ export default function CustomerRequestFlow({
       case "route":
         return (
           <div className="space-y-4">
-            {renderRouteFields("pickup", "Pickup")}
-            {renderRouteFields("destination", "Destination")}
+            {renderRouteFields("pickup", "איסוף")}
+            {renderRouteFields("destination", "יעד")}
           </div>
         );
       case "apartment":
@@ -2110,8 +2116,8 @@ export default function CustomerRequestFlow({
       case "access":
         return (
           <div className="space-y-4">
-            {renderRouteFields("pickup", "Pickup")}
-            {renderRouteFields("destination", "Destination")}
+            {renderRouteFields("pickup", "איסוף")}
+            {renderRouteFields("destination", "יעד")}
           </div>
         );
       case "schedule":
@@ -2136,13 +2142,13 @@ export default function CustomerRequestFlow({
       <SiteHeader />
       <main id="main-content" className="site-container py-8 sm:py-12">
         <header className="mb-8 max-w-3xl">
-          <Link href="/" className="inline-link mt-0">&larr; Back to home</Link>
-          <p className="eyebrow mt-6">Create a request</p>
+          <Link href="/" className="inline-link mt-0">&larr; חזרה לדף הבית</Link>
+          <p className="eyebrow mt-6">יצירת בקשה</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-5xl">
-            Request a move in minutes.
+            יוצרים בקשת הובלה תוך דקות.
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            Tell movers what needs moving, where it is going and when. Your draft is saved as you progress after sign-in.
+            ספרו למובילים מה צריך להעביר, לאן ומתי. לאחר ההתחברות הטיוטה נשמרת תוך כדי ההתקדמות.
           </p>
         </header>
 
@@ -2157,7 +2163,7 @@ export default function CustomerRequestFlow({
                 <p className="text-sm font-semibold text-sky-800">
                   {locale === "he" ? `שלב ${stepIndex + 1} מתוך ${steps.length}` : `Step ${stepIndex + 1} of ${steps.length}`}
                 </p>
-                <h2 className="text-xl font-bold text-slate-950">{currentStep?.title ?? "Get started"}</h2>
+                <h2 className="text-xl font-bold text-slate-950">{currentStep?.title ?? "בואו נתחיל"}</h2>
                 <p className="text-sm leading-6 text-slate-500">{currentStep?.description}</p>
               </div>
               <div className="text-sm font-medium text-slate-600">
@@ -2174,13 +2180,13 @@ export default function CustomerRequestFlow({
               </div>
             </div>
 
-            <div className="wizard-step-tabs mt-5 flex max-w-full gap-2 overflow-x-auto pb-2">
+            <div className="wizard-step-tabs mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {steps.map((step, index) => (
                 <button
                   key={step.key}
                   type="button"
                   onClick={() => setStepIndex(index)}
-                  className={`min-h-11 shrink-0 rounded-lg px-4 py-2 text-xs font-semibold transition cursor-pointer ${
+                  className={`min-h-11 w-full rounded-lg px-4 py-2 text-xs font-semibold transition cursor-pointer ${
                     index === stepIndex
                       ? "bg-slate-950 text-white"
                       : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
@@ -2207,7 +2213,7 @@ export default function CustomerRequestFlow({
                     : "border border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
                 }`}
               >
-                Back
+                חזרה
               </button>
               <div className="flex flex-col gap-2 sm:items-end">
                 <button
@@ -2224,10 +2230,10 @@ export default function CustomerRequestFlow({
                 >
                   {busyAction ??
                     (stepIndex === accountStepIndex
-                      ? "Publish request"
+                      ? "פרסום הבקשה"
                       : stepIndex === publishStepIndex
-                        ? "Start new request"
-                        : "Continue")}
+                        ? "בקשה חדשה"
+                        : "המשך")}
                 </button>
                 <span className="max-w-sm text-sm text-slate-500 sm:text-right" aria-live="polite">{statusText}</span>
               </div>
@@ -2240,8 +2246,8 @@ export default function CustomerRequestFlow({
           >
             <div className="flex items-center justify-between gap-3">
               <div>
-                <h2 className="text-xl font-bold text-slate-950">Continue request</h2>
-                <p className="mt-1 text-sm text-slate-500">Pick up a saved draft where you left off.</p>
+                <h2 className="text-xl font-bold text-slate-950">המשך בקשה</h2>
+                <p className="mt-1 text-sm text-slate-500">המשיכו טיוטה שמורה מהמקום שבו עצרתם.</p>
               </div>
               <div className="text-sm text-slate-500">
                 {locale === "he" ? `${drafts.length} נשמרו` : `${drafts.length} saved`}
@@ -2267,15 +2273,15 @@ export default function CustomerRequestFlow({
                         </p>
                       </div>
                       <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-semibold text-slate-600">
-                        {draft.currentVersionNumber ? `v${draft.currentVersionNumber}` : "Draft"}
+                        {draft.currentVersionNumber ? `v${draft.currentVersionNumber}` : "טיוטה"}
                       </span>
                     </div>
-                    <p className="mt-3 text-sm text-slate-600">Created {dateFormatter.format(new Date(draft.createdAt))}</p>
+                    <p className="mt-3 text-sm text-slate-600">נוצרה {dateFormatter.format(new Date(draft.createdAt))}</p>
                   </button>
                 ))
               ) : (
                 <div className="rounded-lg border border-dashed border-slate-300 bg-white p-5 text-sm leading-6 text-slate-500">
-                  No saved request yet. Start above and your draft will appear here after the first save.
+                  עדיין אין בקשה שמורה. התחילו למעלה והטיוטה תופיע כאן לאחר השמירה הראשונה.
                 </div>
               )}
             </div>
@@ -2285,30 +2291,30 @@ export default function CustomerRequestFlow({
         <aside className="hidden lg:block">
           <div className="sticky top-24">
             <div className="rounded-xl border border-slate-200 bg-white p-5">
-              <p className="eyebrow">Your Request</p>
+              <p className="eyebrow">הבקשה שלכם</p>
               <h2 className="mt-2 text-xl font-bold text-slate-950">
-                {form.requestType ? formatRequestType(form.requestType) : "New move"}
+                {form.requestType ? formatRequestType(form.requestType) : "הובלה חדשה"}
               </h2>
               <dl className="mt-4 space-y-2 text-sm">
                 <StatRow
-                  label="Route"
+                  label="מסלול"
                   value={
                     form.pickup.city || form.destination.city
-                      ? `${emptyString(form.pickup.city)} to ${emptyString(form.destination.city)}`
-                      : "Add your route"
+                      ? `${emptyString(form.pickup.city)} → ${emptyString(form.destination.city)}`
+                      : "הוסיפו מסלול"
                   }
                 />
                 <StatRow
-                  label="Budget"
-                  value={form.budgetBand ? budgetLabels[form.budgetBand] : "Add a budget"}
+                  label="תקציב"
+                  value={form.budgetBand ? budgetLabels[form.budgetBand] : "הוסיפו תקציב"}
                 />
                 <StatRow
-                  label="Progress"
+                  label="התקדמות"
                   value={`${Math.round(progressPercent)}%`}
                 />
                 <StatRow
-                  label="Save status"
-                  value={activeRequest ? "Draft saved" : user ? "Ready to save" : "Sign in to save"}
+                  label="מצב שמירה"
+                  value={activeRequest ? "טיוטה נשמרה" : user ? "מוכנים לשמירה" : "התחברו כדי לשמור"}
                 />
               </dl>
             </div>
