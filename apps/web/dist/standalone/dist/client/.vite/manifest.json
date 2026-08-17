@@ -1,0 +1,139 @@
+{
+  "_LanguageSwitcher-Dw2lFOSl.js": {
+    "file": "_next/static/chunks/LanguageSwitcher-Dw2lFOSl.js",
+    "name": "LanguageSwitcher",
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-aZfnbY-8.js",
+      "_LocaleProvider-DZsMg_js.js"
+    ]
+  },
+  "_LocaleProvider-DZsMg_js.js": {
+    "file": "_next/static/chunks/LocaleProvider-DZsMg_js.js",
+    "name": "LocaleProvider",
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-aZfnbY-8.js"
+    ]
+  },
+  "_SafeLink-Cr1baX1B.js": {
+    "file": "_next/static/chunks/SafeLink-Cr1baX1B.js",
+    "name": "SafeLink",
+    "imports": [
+      "_framework-aZfnbY-8.js"
+    ]
+  },
+  "_SiteHeader-BJFNP0qv.js": {
+    "file": "_next/static/chunks/SiteHeader-BJFNP0qv.js",
+    "name": "SiteHeader",
+    "imports": [
+      "_framework-aZfnbY-8.js",
+      "_LanguageSwitcher-Dw2lFOSl.js",
+      "_SafeLink-Cr1baX1B.js"
+    ]
+  },
+  "_framework-aZfnbY-8.js": {
+    "file": "_next/static/chunks/framework-aZfnbY-8.js",
+    "name": "framework",
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js"
+    ]
+  },
+  "_movely-api-wSJeyIWd.js": {
+    "file": "_next/static/chunks/movely-api-wSJeyIWd.js",
+    "name": "movely-api"
+  },
+  "_presentation-UNCDQN1M.js": {
+    "file": "_next/static/chunks/presentation-UNCDQN1M.js",
+    "name": "presentation"
+  },
+  "_rolldown-runtime-C60lm6uB.js": {
+    "file": "_next/static/chunks/rolldown-runtime-C60lm6uB.js",
+    "name": "rolldown-runtime"
+  },
+  "node_modules/vinext/dist/shims/layout-segment-context.js": {
+    "file": "_next/static/chunks/layout-segment-context-IW4TB3t3.js",
+    "name": "layout-segment-context",
+    "src": "node_modules/vinext/dist/shims/layout-segment-context.js",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "virtual:vinext-app-browser-entry",
+      "_framework-aZfnbY-8.js"
+    ]
+  },
+  "src/app/auth/page.tsx": {
+    "file": "_next/static/chunks/page-BgZIMfAl.js",
+    "name": "page",
+    "src": "src/app/auth/page.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-aZfnbY-8.js",
+      "_SafeLink-Cr1baX1B.js",
+      "_SiteHeader-BJFNP0qv.js",
+      "_movely-api-wSJeyIWd.js"
+    ]
+  },
+  "src/features/account/AccountRequests.tsx": {
+    "file": "_next/static/chunks/AccountRequests-BRYrILwN.js",
+    "name": "AccountRequests",
+    "src": "src/features/account/AccountRequests.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-aZfnbY-8.js",
+      "_SafeLink-Cr1baX1B.js",
+      "_movely-api-wSJeyIWd.js",
+      "_presentation-UNCDQN1M.js"
+    ]
+  },
+  "src/features/marketplace/MarketplaceBrowser.tsx": {
+    "file": "_next/static/chunks/MarketplaceBrowser-DLGMi8M0.js",
+    "name": "MarketplaceBrowser",
+    "src": "src/features/marketplace/MarketplaceBrowser.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-aZfnbY-8.js",
+      "_LocaleProvider-DZsMg_js.js",
+      "_SafeLink-Cr1baX1B.js",
+      "_presentation-UNCDQN1M.js"
+    ]
+  },
+  "src/features/request-flow/CustomerRequestFlow.tsx": {
+    "file": "_next/static/chunks/CustomerRequestFlow-B2uHro5T.js",
+    "name": "CustomerRequestFlow",
+    "src": "src/features/request-flow/CustomerRequestFlow.tsx",
+    "isDynamicEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-aZfnbY-8.js",
+      "_LocaleProvider-DZsMg_js.js",
+      "_SafeLink-Cr1baX1B.js",
+      "_SiteHeader-BJFNP0qv.js",
+      "_movely-api-wSJeyIWd.js",
+      "_presentation-UNCDQN1M.js"
+    ]
+  },
+  "virtual:vinext-app-browser-entry": {
+    "file": "_next/static/chunks/index-DK6uqG0M.js",
+    "name": "index",
+    "src": "virtual:vinext-app-browser-entry",
+    "isEntry": true,
+    "imports": [
+      "_rolldown-runtime-C60lm6uB.js",
+      "_framework-aZfnbY-8.js"
+    ],
+    "dynamicImports": [
+      "virtual:vinext-app-browser-entry",
+      "node_modules/vinext/dist/shims/layout-segment-context.js",
+      "src/features/request-flow/CustomerRequestFlow.tsx",
+      "src/app/auth/page.tsx",
+      "src/features/account/AccountRequests.tsx",
+      "src/features/marketplace/MarketplaceBrowser.tsx",
+      "_LanguageSwitcher-Dw2lFOSl.js",
+      "_LocaleProvider-DZsMg_js.js"
+    ]
+  }
+}

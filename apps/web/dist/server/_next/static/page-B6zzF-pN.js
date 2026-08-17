@@ -1,0 +1,1 @@
+import{t as e}from"./framework~index~app-page-cache-render~app-page-cache~layout~page~page~layout~layout~page~pa~m57n1z06-BIredk7t.js";import{t}from"./MoverPlaceholder-Ba0T5uys.js";var n=e();function r(){return(0,n.jsx)(t,{title:`לידים שנרכשו`,description:`לידים שנרכשו של לקוחות יופיעו כאן לאחר שצד השרת לרכישת לידים יהיה זמין.`})}export{r as default};

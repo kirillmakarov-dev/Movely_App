@@ -1,0 +1,1 @@
+import{t as e}from"./framework~index~app-page-cache-render~app-page-cache~layout~page~page~layout~layout~page~pa~m57n1z06-BIredk7t.js";import{t}from"./CustomerRequestFlow-DXPGK7K4.js";var n=e(),r={title:`יצירת בקשה`};function i(){return(0,n.jsx)(t,{})}export{i as default,r as metadata};

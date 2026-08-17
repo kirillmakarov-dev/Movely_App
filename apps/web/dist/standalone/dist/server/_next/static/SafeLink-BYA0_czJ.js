@@ -1,0 +1,1 @@
+import{t as e}from"./framework~index~app-page-cache-render~app-page-cache~layout~page~page~layout~layout~page~pa~m57n1z06-BIredk7t.js";var t=e();function n({href:e,target:n,...r}){return(0,t.jsx)(`a`,{href:e,target:n??`_top`,...r})}export{n as t};

@@ -1,0 +1,1 @@
+import{r as e}from"./navigation-errors-BxLAPh6h.js";import"./navigation.react-server-DcVGNu7w.js";function t(){e(`/account/requests`)}export{t as default};
