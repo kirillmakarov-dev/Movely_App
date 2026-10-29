@@ -2,12 +2,13 @@
 
 import Link from "@/components/SafeLink";
 import { UI_LOCALE as locale } from "@/lib/locale";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { FormState } from "./request-flow-types";
+import { clearLocalDraft, readLocalDraft, saveLocalDraft } from "./local-draft";
 import SiteHeader from "@/components/SiteHeader";
 import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/presentation";
 import {
   type CurrentUser,
-  type MoveBudgetBand,
   type MoveDateFlexibility,
   type MoveLocationDto,
   type MoveRequestResponse,
@@ -16,8 +17,6 @@ import {
   type MoveScheduleDto,
   type PreferredMoveTime,
   type UpdateMoveRequestRequest,
-  type ApartmentInventoryItemType,
-  type SpecialItemType,
   type SmallMoveItemCategory,
   MovelyApiError,
   createMoveRequest,
@@ -45,67 +44,6 @@ import {
   SPECIAL_ITEM_KIND,
   SPECIAL_ITEM_OPTIONS,
 } from "./request-flow-data";
-
-type PendingPhoto = {
-  id: string;
-  name: string;
-  sizeLabel: string;
-};
-
-type LocalInventoryItem = {
-  id: string;
-  apartmentInventoryType: ApartmentInventoryItemType;
-  name: string;
-  description: string;
-  quantity: number;
-  lengthCm: string;
-  widthCm: string;
-  heightCm: string;
-  approximateWeightKg: string;
-};
-
-type LocalSmallMoveItem = {
-  id: string;
-  smallMoveCategory: SmallMoveItemCategory;
-  name: string;
-  description: string;
-  quantity: number;
-  lengthCm: string;
-  widthCm: string;
-  heightCm: string;
-  approximateWeightKg: string;
-};
-
-type LocalSpecialItem = {
-  id: string;
-  specialItemType: SpecialItemType;
-  name: string;
-  description: string;
-  quantity: number;
-};
-
-type FormState = {
-  requestType: MoveRequestType | null;
-  pickup: MoveLocationDto;
-  destination: MoveLocationDto;
-  apartmentRooms: number | null;
-  smallBoxes: number;
-  mediumBoxes: number;
-  largeBoxes: number;
-  apartmentInventory: LocalInventoryItem[];
-  specialItems: LocalSpecialItem[];
-  smallMoveItems: LocalSmallMoveItem[];
-  furnitureDisassembly: boolean;
-  furnitureAssembly: boolean;
-  packingAssistance: boolean;
-  packingMaterials: boolean;
-  moveDate: string;
-  preferredTime: PreferredMoveTime | null;
-  dateFlexibility: MoveDateFlexibility | null;
-  budgetBand: MoveBudgetBand | null;
-  customerComment: string;
-  pendingPhotos: PendingPhoto[];
-};
 
 type BannerTone = "info" | "success" | "warning" | "error";
 
@@ -224,7 +162,7 @@ function flowStepsForType(requestType: MoveRequestType | null): FlowStep[] {
       {
         key: "review",
         title: "בדיקה",
-        description: "עברו על הבקשה שנשמרה בשרת לפני ההתחברות.",
+        description: "עברו על הפרטים ותקנו אותם לפני הפרסום.",
       },
       {
         key: "account",
@@ -273,12 +211,12 @@ function flowStepsForType(requestType: MoveRequestType | null): FlowStep[] {
     {
       key: "photos",
       title: "תמונות והערות",
-      description: "שמרו את גבול העלאת התמונות מוכן בלי העלאות מדומות.",
+      description: "הוסיפו הערות שחשוב למוביל לדעת. העלאת תמונות תיפתח בהמשך.",
     },
     {
       key: "review",
       title: "בדיקה",
-      description: "עברו על הבקשה שנשמרה בשרת לפני ההתחברות.",
+      description: "עברו על הפרטים ותקנו אותם לפני הפרסום.",
     },
     {
       key: "account",
@@ -537,6 +475,11 @@ export default function CustomerRequestFlow({
     requestType: initialRequestType,
   }));
   const [requestedStepIndex, setStepIndex] = useState(0);
+  const [rememberDraft, setRememberDraft] = useState(false);
+  const [draftSaveFailed, setDraftSaveFailed] = useState(false);
+  const stepHeading = useRef<HTMLHeadingElement>(null);
+  const stepNavigation = useRef<HTMLDetailsElement>(null);
+  const previousStep = useRef(0);
   const [pendingGoogleCredential, setPendingGoogleCredential] = useState(
     "dev-google:demo-subject:customer@example.com:Alex:Customer",
   );
@@ -556,35 +499,67 @@ export default function CustomerRequestFlow({
   const currentStep = steps[stepIndex] ?? steps[0];
 
   useEffect(() => {
-    void bootstrap();
-  }, []);
-
-  async function bootstrap() {
-    try {
-      const [currentUser, requestList] = await withUiTimeout(Promise.all([
-        getCurrentUser(),
-        getMyMoveRequests().catch(() => [] as MoveRequestSummaryResponse[]),
-      ]));
-      setUser(currentUser);
-      setDrafts(requestList);
-      if (currentUser) {
-        setStatusText(
-          currentUser.phoneVerified
-            ? `מחוברים כ-${currentUser.firstName}.`
-            : `מחוברים כ-${currentUser.firstName}. עדיין נדרש אימות טלפון.`,
-        );
-      }
-    } catch {
-      setBanner({
-        tone: "info",
-        title: "התחילו את הבקשה",
-        message: "אפשר למלא את הפרטים עכשיו. התחברו כשתהיו מוכנים לשמור את הטיוטה.",
-      });
-      setStatusText("אשף הבקשה פועל במצב מקומי עד שה־API זמין.");
-    } finally {
-      setIsBootstrapping(false);
+    if (previousStep.current !== stepIndex) {
+      stepHeading.current?.focus();
+      previousStep.current = stepIndex;
     }
-  }
+  }, [stepIndex]);
+
+  useEffect(() => {
+    if (isBootstrapping || user || !rememberDraft || publishState) return;
+    void Promise.resolve(saveLocalDraft(form, stepIndex)).then((saved) => setDraftSaveFailed(!saved));
+  }, [form, stepIndex, rememberDraft, user, isBootstrapping, publishState]);
+
+  useEffect(() => {
+    const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
+      const unsavedServerChanges = user && (!activeRequest ||
+        JSON.stringify(buildUpdatePayload(form)) !== JSON.stringify(buildUpdatePayload(hydrateFromRequest(activeRequest))));
+      if (form.requestType && (unsavedServerChanges || (!user && (!rememberDraft || draftSaveFailed)))) {
+        event.preventDefault();
+        event.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", warnBeforeLeaving);
+    return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
+  }, [user, form, activeRequest, rememberDraft, draftSaveFailed]);
+
+  useEffect(() => {
+    async function bootstrap() {
+      let authenticated = false;
+      try {
+        const [currentUser, requestList] = await withUiTimeout(Promise.all([
+          getCurrentUser(),
+          getMyMoveRequests().catch(() => [] as MoveRequestSummaryResponse[]),
+        ]));
+        authenticated = Boolean(currentUser);
+        setUser(currentUser);
+        setDrafts(requestList);
+        if (currentUser) {
+          setStatusText(
+            currentUser.phoneVerified
+              ? `מחוברים כ-${currentUser.firstName}.`
+              : `מחוברים כ-${currentUser.firstName}. עדיין נדרש אימות טלפון.`,
+          );
+        }
+      } catch {
+        setStatusText("שירות החשבון אינו זמין כרגע. אפשר למלא את הפרטים ולבחור שמירה בכרטיסייה.");
+      } finally {
+        if (authenticated) {
+          clearLocalDraft();
+        } else {
+          const saved = readLocalDraft();
+          if (saved && (!initialRequestType || saved.form.requestType === initialRequestType)) {
+            setForm(saved.form);
+            setStepIndex(saved.step);
+            setRememberDraft(true);
+            setStatusText("הטיוטה שוחזרה מהכרטיסייה הזאת.");
+          }
+        }
+        setIsBootstrapping(false);
+      }
+    }
+    void bootstrap();
+  }, [initialRequestType]);
 
   async function refreshDrafts() {
     try {
@@ -662,7 +637,11 @@ export default function CustomerRequestFlow({
       return;
     }
 
-    setBusyAction("Saving step");
+    if (!form.requestType) {
+      setBanner({ tone: "error", title: "בחרו סוג הובלה", message: "בחרו הובלת דירה או הובלה קטנה כדי להמשיך." });
+      return;
+    }
+    setBusyAction("שומרים את השלב");
     try {
       if (user && form.requestType) {
         await saveCurrentStep();
@@ -672,11 +651,11 @@ export default function CustomerRequestFlow({
       setStepIndex((current) => Math.min(current + 1, publishStepIndex));
       setBanner({
         tone: "success",
-        title: "השלב נשמר",
+        title: user ? "השלב נשמר" : "אפשר להמשיך",
         message:
-          user && activeRequest
+          user
             ? "הטיוטה נשמרה בשרת."
-            : "השלב נשמר מקומית ויישמר ברגע שתתחברו.",
+            : "הפרטים נשארים בעמוד. מצב שמירת הטיוטה מוצג מתחת לטופס.",
       });
     } catch (error) {
       const normalized = normalizeApiError(error);
@@ -692,7 +671,7 @@ export default function CustomerRequestFlow({
   }
 
   async function handleResumeDraft(requestId: string) {
-    setBusyAction("Loading draft");
+    setBusyAction("טוענים טיוטה");
     try {
       const request = await getMoveRequest(requestId);
       setActiveRequest(request);
@@ -716,6 +695,8 @@ export default function CustomerRequestFlow({
     setBusyAction("מתחברים");
     try {
       const signedIn = await signInWithGoogle(pendingGoogleCredential.trim());
+      clearLocalDraft();
+      setRememberDraft(false);
       setUser(signedIn);
       setStatusText(`מחוברים כ-${signedIn.firstName}.`);
       setBanner({
@@ -739,13 +720,22 @@ export default function CustomerRequestFlow({
     setBusyAction("מתנתקים");
     try {
       await logout();
+      clearLocalDraft();
+      setRememberDraft(false);
+      setForm(makeFormState());
+      setStepIndex(0);
+      setDrafts([]);
+      setPhone("");
+      setOtpCode("");
+      setOtpDebugCode("");
+      setPublishState(null);
       setUser(null);
       setActiveRequest(null);
       setStatusText("התנתקתם.");
       setBanner({
         tone: "info",
         title: "התנתקתם",
-        message: "מצב האשף המקומי נשאר בעמוד.",
+        message: "פרטי הבקשה הוסרו מהעמוד. טיוטות שנשמרו בחשבון יישארו בחשבון.",
       });
     } catch (error) {
       const normalized = normalizeApiError(error);
@@ -831,8 +821,11 @@ export default function CustomerRequestFlow({
         return;
       }
 
-      const savedRequest = await ensureSavedDraft();
+      const savedRequest = await saveCurrentStep();
+      if (!savedRequest) throw new Error("לא ניתן לפרסם לפני שמירת הבקשה.");
       const response = await publishMoveRequest(savedRequest.id);
+      clearLocalDraft();
+      setRememberDraft(false);
       setPublishState(response);
       setActiveRequest(response.moveRequest);
       setForm(hydrateFromRequest(response.moveRequest));
@@ -856,6 +849,8 @@ export default function CustomerRequestFlow({
   }
 
   function handleStartNewRequest() {
+    clearLocalDraft();
+    setRememberDraft(false);
     setActiveRequest(null);
     setPublishState(null);
     setForm(makeFormState());
@@ -907,6 +902,7 @@ export default function CustomerRequestFlow({
               <button
                 key={option.value}
                 type="button"
+                aria-pressed={selected}
                 onClick={() => selectRequestType(option.value)}
                 className={`rounded-[24px] border p-4 text-left transition duration-200 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 ${
                   selected
@@ -932,16 +928,17 @@ export default function CustomerRequestFlow({
     );
   }
 
-  function renderRouteFields(prefix: "pickup" | "destination", title: string) {
+  function renderRouteFields(prefix: "pickup" | "destination", title: string, mode: "route" | "access" | "combined" = "combined") {
     const data = form[prefix];
     return (
       <fieldset className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
         <legend className="px-2 text-sm font-semibold text-slate-900">{title}</legend>
-        <div className="mt-4 grid gap-4 md:grid-cols-2">
+        {mode !== "access" && <div className="mt-4 grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
             {renderInputLabel("עיר", "השתמשו בשם העיר המדויק במסלול ההובלה.")}
             <input
               aria-label={`${title} עיר`}
+              autoComplete={`section-${prefix} address-level2`}
               value={data.city ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -956,6 +953,7 @@ export default function CustomerRequestFlow({
             {renderInputLabel("כתובת מדויקת", "השדה נשאר בתוך תהליך הלקוח עד שניתנת גישת הצגה.")}
             <input
               aria-label={`${title} כתובת מדויקת`}
+              autoComplete={`section-${prefix} street-address`}
               value={data.exactAddress ?? ""}
               onChange={(event) =>
                 setForm((current) => ({
@@ -966,6 +964,10 @@ export default function CustomerRequestFlow({
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
             />
           </label>
+        </div>}
+        {mode !== "route" && <details className="access-details mt-3" open={mode === "access" ? true : undefined}>
+          <summary className="min-h-12 py-3 font-semibold text-sky-800">קומה, מעלית וגישה לבניין</summary>
+          <div className="grid gap-4 pt-3 md:grid-cols-2">
           <label className="space-y-2">
             {renderInputLabel("קומה", "לא חובה, אבל מועיל לתכנון הגישה.")}
             <input
@@ -988,6 +990,7 @@ export default function CustomerRequestFlow({
                 <button
                   type="button"
                   key={value}
+                  aria-pressed={data.hasElevator === (value === "כן")}
                   onClick={() =>
                     setForm((current) => ({
                       ...current,
@@ -1019,6 +1022,7 @@ export default function CustomerRequestFlow({
                 <button
                   type="button"
                   key={option.value}
+                  aria-pressed={data.elevatorFurnitureSuitability === option.value}
                   onClick={() =>
                     setForm((current) => ({
                       ...current,
@@ -1087,7 +1091,8 @@ export default function CustomerRequestFlow({
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
             />
           </label>
-        </div>
+          </div>
+        </details>}
       </fieldset>
     );
   }
@@ -1667,6 +1672,7 @@ export default function CustomerRequestFlow({
                 <button
                   type="button"
                   key={option.value}
+                  aria-pressed={form.preferredTime === option.value}
                   onClick={() => updateForm({ preferredTime: option.value })}
                   className={`rounded-2xl border px-4 py-3 text-sm font-medium transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 ${
                     form.preferredTime === option.value
@@ -1686,6 +1692,7 @@ export default function CustomerRequestFlow({
                 <button
                   type="button"
                   key={option.value}
+                  aria-pressed={form.dateFlexibility === option.value}
                   onClick={() => updateForm({ dateFlexibility: option.value })}
                   className={`rounded-2xl border px-4 py-3 text-sm font-medium transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 ${
                     form.dateFlexibility === option.value
@@ -1705,6 +1712,7 @@ export default function CustomerRequestFlow({
                 <button
                   type="button"
                   key={option.value}
+                  aria-pressed={form.budgetBand === option.value}
                   onClick={() => updateForm({ budgetBand: option.value })}
                   className={`rounded-[20px] border p-4 text-left transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 ${
                     form.budgetBand === option.value
@@ -1725,31 +1733,8 @@ export default function CustomerRequestFlow({
   function renderPhotosStep() {
     return (
       <div className="space-y-4">
-        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900">בסיס העלאת התמונות</p>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            גבול ההעלאה לאחסון האובייקטים מוכן לשלב הבא. כרגע הקבצים שנבחרו נשארים מקומית כדי שלא
-            נדמה העלאה מוצלחת לייצור.
-          </p>
-          <label className="mt-4 block space-y-2">
-            {renderInputLabel("בחירת תמונות", "הן יישארו ממתינות עד שיחוברו ההעלאות.")}
-            <input
-              type="file"
-              multiple
-              accept="image/*"
-              onChange={(event) => {
-                const files = Array.from(event.target.files ?? []).map((file) => ({
-                  id: crypto.randomUUID(),
-                  name: file.name,
-                  sizeLabel: `${Math.max(1, Math.round(file.size / 1024))} KB`,
-                }));
-                updateForm({
-                  pendingPhotos: [...form.pendingPhotos, ...files],
-                });
-              }}
-              className="block w-full text-sm text-slate-600 file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-slate-950 file:px-4 file:py-2 file:text-sm file:font-medium file:text-white hover:file:bg-slate-800"
-            />
-          </label>
+        <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">
+          העלאת תמונות עדיין אינה זמינה. בינתיים אפשר לתאר פריטים, גודל או בעיות גישה בהערות למטה.
         </div>
 
         <div className="space-y-3">
@@ -2079,8 +2064,8 @@ export default function CustomerRequestFlow({
       case "route":
         return (
           <div className="space-y-4">
-            {renderRouteFields("pickup", "איסוף")}
-            {renderRouteFields("destination", "יעד")}
+            {renderRouteFields("pickup", "איסוף", form.requestType === "SmallMove" ? "route" : "combined")}
+            {renderRouteFields("destination", "יעד", form.requestType === "SmallMove" ? "route" : "combined")}
           </div>
         );
       case "apartment":
@@ -2094,8 +2079,8 @@ export default function CustomerRequestFlow({
       case "access":
         return (
           <div className="space-y-4">
-            {renderRouteFields("pickup", "איסוף")}
-            {renderRouteFields("destination", "יעד")}
+            {renderRouteFields("pickup", "איסוף", "access")}
+            {renderRouteFields("destination", "יעד", "access")}
           </div>
         );
       case "schedule":
@@ -2118,10 +2103,9 @@ export default function CustomerRequestFlow({
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="site-container py-8 sm:py-12">
-        <header className="mb-8 max-w-3xl">
+      <main id="main-content" className="site-container request-flow-page py-6 sm:py-10" tabIndex={-1}>
+        <header className="request-flow-intro mb-6 max-w-3xl">
           <Link href="/" className="inline-link mt-0">&larr; חזרה לדף הבית</Link>
-          <p className="eyebrow mt-6">יצירת בקשה</p>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-5xl">
             יוצרים בקשת הובלה תוך דקות.
           </h1>
@@ -2141,16 +2125,16 @@ export default function CustomerRequestFlow({
                 <p className="text-sm font-semibold text-sky-800">
                   {locale === "he" ? `שלב ${stepIndex + 1} מתוך ${steps.length}` : `Step ${stepIndex + 1} of ${steps.length}`}
                 </p>
-                <h2 className="text-xl font-bold text-slate-950">{currentStep?.title ?? "בואו נתחיל"}</h2>
+                <h2 ref={stepHeading} tabIndex={-1} className="wizard-heading text-xl font-bold text-slate-950">{currentStep?.title ?? "בואו נתחיל"}</h2>
                 <p className="text-sm leading-6 text-slate-500">{currentStep?.description}</p>
               </div>
               <div className="text-sm font-medium text-slate-600">
-                {locale === "he" ? `${Math.round(progressPercent)}% הושלמו` : `${Math.round(progressPercent)}% complete`}
+                {locale === "he" ? `${Math.round(progressPercent)}% מהמסלול` : `${Math.round(progressPercent)}% complete`}
               </div>
             </div>
 
             <div className="mt-4">
-              <div className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
+              <div role="progressbar" aria-label="התקדמות בשלבי הבקשה" aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={stepIndex + 1} aria-valuetext={`שלב ${stepIndex + 1} מתוך ${steps.length}`} className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
                 <div
                   className="h-full rounded-full bg-sky-700 transition-all duration-300"
                   style={{ width: `${progressPercent}%` }}
@@ -2158,33 +2142,52 @@ export default function CustomerRequestFlow({
               </div>
             </div>
 
-            <div className="wizard-step-tabs mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
-              {steps.map((step, index) => (
-                <button
-                  key={step.key}
-                  type="button"
-                  onClick={() => setStepIndex(index)}
-                  className={`min-h-11 w-full rounded-lg px-4 py-2 text-xs font-semibold transition cursor-pointer ${
-                    index === stepIndex
-                      ? "bg-slate-950 text-white"
-                      : "border border-slate-200 bg-white text-slate-600 hover:bg-slate-50"
-                  }`}
-                >
-                  {step.title}
-                </button>
-              ))}
-            </div>
+            <details ref={stepNavigation} className="wizard-navigation mt-4">
+              <summary>מעבר לשלב אחר</summary>
+              <nav aria-label="שלבי הבקשה" className="wizard-step-tabs grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+                {steps.filter((step) => step.key !== "publish" || publishState).map((step, index) => (
+                  <button key={step.key} type="button" disabled={busyAction !== null || isBootstrapping}
+                    aria-current={index === stepIndex ? "step" : undefined}
+                    onClick={() => {
+                      setStepIndex(index);
+                      if (stepNavigation.current) stepNavigation.current.open = false;
+                      stepHeading.current?.focus();
+                    }}
+                    className={`min-h-12 rounded-lg border px-4 py-3 text-start text-sm font-semibold ${index === stepIndex ? "border-sky-800 bg-sky-800 text-white" : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"}`}>
+                    {step.title}
+                  </button>
+                ))}
+              </nav>
+            </details>
 
             <div className="mt-6 space-y-5">
               {isBootstrapping ? <LoadingState /> : renderBanner()}
-              {renderStepBody()}
+              <fieldset disabled={busyAction !== null || isBootstrapping} className="min-w-0">{renderStepBody()}</fieldset>
             </div>
+
+            {!user && !isBootstrapping && !publishState && (
+              <div className="draft-preference mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
+                <label className="flex min-h-12 cursor-pointer items-start gap-3">
+                  <input type="checkbox" checked={rememberDraft} className="mt-1 h-5 w-5 shrink-0 accent-sky-800"
+                    onChange={(event) => {
+                      const enabled = event.target.checked;
+                      setRememberDraft(enabled);
+                      setDraftSaveFailed(enabled && !saveLocalDraft(form, stepIndex));
+                      if (!enabled) clearLocalDraft();
+                    }} />
+                  <span><strong>לשמור טיוטה בכרטיסייה הזאת</strong><span className="mt-1 block text-sm leading-6 text-slate-600">כתובות והערות יישמרו עד 24 שעות מהעדכון האחרון, ללא תמונות או קודי אימות. לא מומלץ במחשב משותף.</span></span>
+                </label>
+                <p role="status" className={`mt-2 text-sm leading-6 ${draftSaveFailed ? "text-red-800" : "text-slate-600"}`}>
+                  {draftSaveFailed ? "הדפדפן לא מאפשר לשמור. אל תסגרו את העמוד לפני שמירה בחשבון." : rememberDraft ? "שמירת טיוטה מופעלת. ביטול הסימון מוחק את העותק מהדפדפן." : "הפרטים נשארים בעמוד בלבד ועלולים להימחק ברענון או בסגירה."}
+                </p>
+              </div>
+            )}
 
             <div className="mt-6 flex flex-col gap-4 border-t border-slate-200 pt-5 sm:flex-row sm:items-center sm:justify-between">
               <button
                 type="button"
                 onClick={handleBack}
-                disabled={stepIndex === 0}
+                disabled={stepIndex === 0 || busyAction !== null || isBootstrapping}
                 className={`button ${
                   stepIndex === 0
                     ? "cursor-not-allowed bg-slate-200 text-slate-400"
@@ -2203,7 +2206,7 @@ export default function CustomerRequestFlow({
                         ? handleStartNewRequest
                         : handleContinue
                   }
-                  disabled={busyAction !== null}
+                  disabled={busyAction !== null || isBootstrapping}
                   className="button button-primary disabled:cursor-wait disabled:opacity-70"
                 >
                   {busyAction ??
@@ -2238,6 +2241,7 @@ export default function CustomerRequestFlow({
                   <button
                     key={draft.id}
                     type="button"
+                    disabled={busyAction !== null || isBootstrapping}
                     onClick={() => handleResumeDraft(draft.id)}
                     className="min-h-32 rounded-lg border border-slate-200 bg-white p-4 text-left transition hover:border-slate-400 hover:bg-slate-50 cursor-pointer"
                   >

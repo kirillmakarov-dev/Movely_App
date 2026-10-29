@@ -1,5 +1,5 @@
 import React from "react";
-import { render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomerRequestFlow from "./CustomerRequestFlow";
 import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRequestType, type MoveRequestVersionResponse, type UpdateMoveRequestRequest } from "@/lib/movely-api";
@@ -259,10 +259,16 @@ async function renderApp({
   apiMocks.logout.mockResolvedValue(undefined);
 
   render(<CustomerRequestFlow />);
-  await waitFor(() => expect(apiMocks.getCurrentUser).toHaveBeenCalled());
+  await waitFor(() => expect(screen.getByRole("button", { name: /^המשך$/ })).toBeEnabled());
+}
+
+async function openStep(user: ReturnType<typeof userEvent.setup>, name: RegExp) {
+  await user.click(screen.getByText("מעבר לשלב אחר", { exact: true }));
+  await user.click(screen.getByRole("button", { name }));
 }
 
 beforeEach(() => {
+  window.sessionStorage.clear();
   vi.clearAllMocks();
 });
 
@@ -350,7 +356,7 @@ test("WIZARD-006 Apartment flow shows apartment-specific fields.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledTimes(2));
-  await user.click(screen.getByRole("button", { name: /פרטי הדירה/i }));
+  await openStep(user, /פרטי הדירה/i);
   expect(screen.getByText(/גודל הדירה/i)).toBeInTheDocument();
   expect(screen.getByText(/^ארגזים$/i)).toBeInTheDocument();
 });
@@ -388,7 +394,7 @@ test("WIZARD-008 Review reflects server-saved current request.", async () => {
   await user.clear(pickupCity);
   await user.type(pickupCity, "Server City");
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await user.click(screen.getByRole("button", { name: /^בדיקה$/i }));
+  await openStep(user, /^בדיקה$/i);
 
   expect(screen.getAllByText(/Server City/i).length).toBeGreaterThan(0);
 });
@@ -399,7 +405,7 @@ test("WIZARD-009 Anonymous user is sent through auth before publish.", async () 
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await openStep(user, /חשבון \/ אימות טלפון/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/נדרשת התחברות/i)).toBeInTheDocument();
@@ -411,7 +417,7 @@ test("WIZARD-010 Unverified phone requires OTP before publish.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await openStep(user, /חשבון \/ אימות טלפון/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText("נדרש אימות טלפון", { exact: true })).toBeInTheDocument();
@@ -424,7 +430,7 @@ test("WIZARD-011 Verified customer can publish valid request.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await openStep(user, /חשבון \/ אימות טלפון/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByRole("heading", { name: /הבקשה פורסמה/i })).toBeInTheDocument();
@@ -442,7 +448,7 @@ test("WIZARD-012 Server validation error is rendered correctly.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await openStep(user, /חשבון \/ אימות טלפון/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/INVALID_REQUEST_STATE/i)).toBeInTheDocument();
@@ -461,7 +467,7 @@ test("WIZARD-013 Potential duplicate warning is handled.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await openStep(user, /חשבון \/ אימות טלפון/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/זוהתה כפילות אפשרית/i)).toBeInTheDocument();
@@ -480,7 +486,7 @@ test("WIZARD-014 Active request limit error is handled.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await openStep(user, /חשבון \/ אימות טלפון/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/ACTIVE_REQUEST_LIMIT_REACHED/i)).toBeInTheDocument();
@@ -493,4 +499,45 @@ test("WIZARD-015 Entry and resume headings remain available after a viewport cha
 
   expect(screen.getByText(/יוצרים בקשת הובלה תוך דקות/i)).toBeInTheDocument();
   expect(screen.getByRole("heading", { name: /המשך בקשה/i })).toBeInTheDocument();
+});
+
+
+test("Anonymous draft restores only after the user enables browser saving", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await user.click(screen.getByRole("checkbox", { name: /לשמור טיוטה בכרטיסייה הזאת/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await user.type(screen.getByRole("textbox", { name: /^איסוף עיר/ }), "Haifa");
+  await waitFor(() => expect(window.sessionStorage.getItem("movely.anonymous-draft.v1")).toContain("Haifa"));
+  cleanup();
+  render(<CustomerRequestFlow />);
+  await waitFor(() => expect(screen.getByRole("textbox", { name: /^איסוף עיר/ })).toHaveValue("Haifa"));
+  expect(screen.getByRole("checkbox", { name: /לשמור טיוטה בכרטיסייה הזאת/ })).toBeChecked();
+  await user.click(screen.getByRole("checkbox", { name: /לשמור טיוטה בכרטיסייה הזאת/ }));
+  expect(window.sessionStorage.getItem("movely.anonymous-draft.v1")).toBeNull();
+});
+
+test("Continue requires choosing a move type and keeps the user on that step", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  expect(screen.getByText("בחרו סוג הובלה", { exact: true })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: "סוג הובלה" })).toBeInTheDocument();
+  expect(apiMocks.createMoveRequest).not.toHaveBeenCalled();
+});
+
+test("Publish saves the latest edits even when the user jumps directly to the account step", async () => {
+  const user = userEvent.setup();
+  await renderApp({ user: makeUser() });
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  const city = screen.getByRole("textbox", { name: /^איסוף עיר/ });
+  await user.clear(city);
+  await user.type(city, "Updated before publishing");
+  await openStep(user, /חשבון \/ אימות טלפון/);
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
+  await waitFor(() => expect(apiMocks.publishMoveRequest).toHaveBeenCalledTimes(1));
+  expect(apiMocks.updateMoveRequest).toHaveBeenLastCalledWith("request-1", expect.objectContaining({ pickup: expect.objectContaining({ city: "Updated before publishing" }) }));
+  expect(apiMocks.updateMoveRequest.mock.invocationCallOrder.at(-1)).toBeLessThan(apiMocks.publishMoveRequest.mock.invocationCallOrder[0]);
 });

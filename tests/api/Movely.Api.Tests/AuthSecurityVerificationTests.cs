@@ -513,14 +513,18 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
     }
 
     [Fact]
-    public void WebSource_DoesNotReferenceLocalStorageOrSessionStorage_ForAuthState()
+    public void WebSource_RestrictsBrowserStorageToAnonymousDraftAdapter()
     {
         var repoRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "..", ".."));
         var sourceFiles = Directory.GetFiles(Path.Combine(repoRoot, "apps", "web", "src"), "*.*", SearchOption.AllDirectories);
-        var combined = string.Join('\n', sourceFiles.Select(File.ReadAllText));
-
-        Assert.DoesNotContain("localStorage", combined, StringComparison.OrdinalIgnoreCase);
-        Assert.DoesNotContain("sessionStorage", combined, StringComparison.OrdinalIgnoreCase);
+        var draftAdapter = Path.Combine(repoRoot, "apps", "web", "src", "features", "request-flow", "local-draft.ts");
+        foreach (var file in sourceFiles.Where(path => !path.EndsWith(".test.ts") && !path.EndsWith(".test.tsx")))
+        {
+            var source = File.ReadAllText(file);
+            Assert.DoesNotContain("localStorage", source, StringComparison.OrdinalIgnoreCase);
+            if (!string.Equals(file, draftAdapter, StringComparison.OrdinalIgnoreCase))
+                Assert.DoesNotContain("sessionStorage", source, StringComparison.OrdinalIgnoreCase);
+        }
     }
 
     [Fact]
