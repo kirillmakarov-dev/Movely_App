@@ -1,109 +1,102 @@
+import Image from "next/image";
 import Link from "@/components/SafeLink";
+import Icon from "@/components/Icon";
 import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
-import RequestCard from "@/features/marketplace/RequestCard";
-import { mockMarketplaceRequests } from "@/features/marketplace/mock-requests";
+
+const questions = [
+  ["צריך להירשם לפני שמתחילים?", "לא. אפשר להתחיל לתאר את ההובלה בלי חשבון. לפני שמירת הבקשה בשרת ופרסומה נדרשים התחברות ואימות מספר הטלפון."],
+  ["אפשר להעביר רק ספה או מקרר?", "כן. בחרו בהובלה קטנה, הוסיפו את הפריטים וציינו מאיפה ולאן צריך להעביר אותם. אין צורך למלא פרטים על דירה שלמה."],
+  ["מה אם עדיין לא יודעים את התקציב?", "זה בסדר. בשלב התקציב אפשר לבחור ״לא יודע/ת״. כדאי לתאר את הפריטים והגישה לבניין כדי לעזור למובילים להבין את העבודה."],
+  ["האם שליחת בקשה היא הזמנת הובלה?", "לא. בקשה נועדה לתאר את הצורך שלכם. את המחיר הסופי, המועד ותנאי ההובלה מסכמים עם המוביל לפני שמזמינים שירות."],
+  ["האם השירות כבר פתוח להזמנות?", "עדיין לא. זו גרסת היכרות שמאפשרת להכיר את תהליך יצירת הבקשה. חיבור למובילים, רכישת פרטי קשר ותשלומים ייפתחו בהמשך."],
+];
 
 export default function HomePage() {
   return (
     <>
       <SiteHeader />
-      <main id="main-content">
-        <section className="hero-section">
-          <div className="site-container grid items-center gap-12 py-16 lg:grid-cols-[1.08fr_0.92fr] lg:py-24">
-            <div>
-              <p className="eyebrow">הובלה, בצורה ברורה יותר</p>
-              <h1 className="hero-title">צריכים להעביר משהו?</h1>
-              <p className="hero-copy">
-                תארו את ההובלה פעם אחת ותנו למובילים מתאימים למצוא את העבודה, בלי להתקשר לעשרות חברות.
-              </p>
-              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <Link href="/request/new" className="button button-primary button-large">יצירת בקשה</Link>
-                <Link href="/requests" className="button button-secondary button-large">עיון בבקשות</Link>
+      <main id="main-content" tabIndex={-1}>
+        <section className="home-hero" aria-labelledby="hero-heading">
+          <div className="site-container hero-layout">
+            <div className="hero-content">
+              <p className="eyebrow hero-eyebrow"><span /> מקום חדש. התחלה פשוטה.</p>
+              <h1 id="hero-heading" className="hero-title">הדרך לבית החדש.<br /><span>מתחילה כאן.</span></h1>
+              <p className="hero-copy">דירה שלמה או רק ספה אחת — תארו מה צריך להעביר, מאיפה ולאן. אנחנו נעזור לכם לעשות סדר בפרטים, צעד אחר צעד.</p>
+              <div className="hero-actions">
+                <Link href="/request/new" className="button button-primary button-large">מתחילים את הבקשה <Icon name="arrow" /></Link>
+                <Link href="#how-it-works" className="button button-secondary button-large">איך זה עובד?</Link>
               </div>
-              <p className="mt-5 text-sm text-slate-500">היצירה בחינם. פרטי הקשר שלכם נשארים מוגנים.</p>
+              <ul className="hero-benefits" aria-label="לפני שמתחילים">
+                <li><Icon name="check" /> מתחילים בלי להירשם</li>
+                <li><Icon name="check" /> בקצב שלכם</li>
+              </ul>
+              <p className="preview-notice"><strong>גרסת היכרות</strong> אפשר להכיר את התהליך. השירות עדיין לא פתוח להזמנות.</p>
             </div>
-            <div className="route-preview" aria-label="דוגמת בקשת הובלה מאריש לתל אביב">
-              <div className="route-preview-topline">
-                <span>בקשה חדשה</span>
-                <span>הובלת דירה</span>
+            <figure className="hero-figure">
+              <div className="hero-image-wrap">
+                <Image src="/images/moving-day.png" alt="המחשה של שני מובילים הנושאים ארגז בדירה מוארת, לצד ספה ועציצים" fill sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1023px) 75vw, 560px" preload className="hero-image" />
+                <div className="hero-image-note"><span className="icon-tile"><Icon name="house" /></span><div><strong>כל מעבר הוא התחלה</strong><span>נתחיל מהפרטים הקטנים.</span></div></div>
               </div>
-              <div className="route-line">
-                <div><span className="route-dot" /><p>חריש</p><small>איסוף</small></div>
-                <span className="route-arrow" aria-hidden="true">&rarr;</span>
-                <div><span className="route-dot route-dot-end" /><p>תל אביב</p><small>יעד</small></div>
-              </div>
-              <div className="route-stats">
-                <div><strong>3</strong><span>חדרים</span></div>
-                <div><strong>18</strong><span>ארגזים</span></div>
-                <div><strong>18 באוגוסט</strong><span>תאריך הובלה</span></div>
-              </div>
+              <figcaption>תמונת המחשה שנוצרה באמצעות בינה מלאכותית.</figcaption>
+            </figure>
+          </div>
+        </section>
+
+        <section id="move-types" className="section-block" aria-labelledby="types-heading">
+          <div className="site-container">
+            <div className="section-heading"><p className="eyebrow">מוצאים את המסלול שלכם</p><h2 id="types-heading">מה עוברים היום?</h2><p>בחרו את סוג ההובלה. נציג רק את הפרטים שמתאימים לכם.</p></div>
+            <div className="category-grid">
+              <Link href="/request/new/apartment" className="move-choice move-choice-apartment">
+                <div className="move-choice-top"><span className="choice-icon"><Icon name="house" /></span><span className="choice-tag">לבית כולו</span></div>
+                <h3>עוברים דירה</h3><p>רהיטים, ארגזים וכל מה שהופך דירה לבית.</p>
+                <span className="choice-detail">דירה או בית · תכולה · שירותים נוספים</span>
+                <span className="choice-action">מתחילים בקשה להובלת דירה <Icon name="arrow" /></span>
+              </Link>
+              <Link href="/request/new/small-move" className="move-choice move-choice-small">
+                <div className="move-choice-top"><span className="choice-icon"><Icon name="box" /></span><span className="choice-tag">גם לפריט אחד</span></div>
+                <h3>מעבירים כמה דברים</h3><p>ספה חדשה, מקרר, שולחן או כמה ארגזים.</p>
+                <span className="choice-detail">פריט אחד או יותר · בלי טופס של דירה שלמה</span>
+                <span className="choice-action">מתחילים בקשה להובלה קטנה <Icon name="arrow" /></span>
+              </Link>
             </div>
           </div>
         </section>
 
-        <section className="section-block">
+        <section id="how-it-works" className="section-block process-section" aria-labelledby="process-heading">
           <div className="site-container">
-            <div className="section-heading">
-              <p className="eyebrow">בחרו את סוג ההובלה</p>
-              <h2>מה צריך להעביר?</h2>
-              <p>התחילו מהמסלול שמתאים לכם. אפשר לשמור טיוטה ולהמשיך אחר כך.</p>
-            </div>
-            <div className="mt-10 grid gap-5 md:grid-cols-2">
-              <article className="category-card category-card-apartment">
-                <span className="category-number">01</span>
-                <h3>הובלת דירה</h3>
-                <p>הובלת דירה או בית מלאים, כולל ריהוט, ארגזים ומכשירי חשמל.</p>
-                <Link href="/request/new/apartment" className="inline-link">יצירת הובלת דירה <span aria-hidden="true">&rarr;</span></Link>
-              </article>
-              <article className="category-card category-card-small">
-                <span className="category-number">02</span>
-                <h3>הובלה קטנה / העברת פריטים</h3>
-                <p>ספה, ריהוט, מכשירי חשמל, אלקטרוניקה, ציוד, ארגזים ופריטים בודדים.</p>
-                <Link href="/request/new/small-move" className="inline-link">יצירת הובלה קטנה <span aria-hidden="true">&rarr;</span></Link>
-              </article>
-            </div>
-          </div>
-        </section>
-
-        <section className="section-block bg-white">
-          <div className="site-container">
-            <div className="flex flex-col gap-5 sm:flex-row sm:items-end sm:justify-between">
-              <div className="section-heading mb-0">
-                <p className="eyebrow">הזדמנויות חדשות</p>
-                <h2>בקשות ההובלה האחרונות</h2>
-                <p>תצוגות מקדימות בטוחות לשוק. פרטי הלקוח האישיים אינם מוצגים כאן.</p>
-              </div>
-              <Link href="/requests" className="button button-secondary shrink-0">צפייה בכל הבקשות</Link>
-            </div>
-            <div className="mt-10 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-              {mockMarketplaceRequests.slice(0, 3).map((request) => <RequestCard key={request.id} request={request} />)}
-            </div>
-          </div>
-        </section>
-
-        <section id="how-it-works" className="section-block">
-          <div className="site-container">
-            <div className="section-heading text-center mx-auto">
-              <p className="eyebrow">פשוט, בכוונה</p>
-              <h2>איך Movely עובד</h2>
-            </div>
+            <div className="section-heading"><p className="eyebrow">ברור מההתחלה</p><h2 id="process-heading">צעד קטן. פחות בלגן.</h2><p>כך ייראה התהליך כשהשירות ייפתח להזמנות.</p></div>
             <ol className="process-grid mt-10">
-              <li><span>1</span><h3>תארו את ההובלה</h3><p>הוסיפו מסלול, פרטי גישה, תכולה, תאריך ותקציב.</p></li>
-              <li><span>2</span><h3>מובילים מוצאים בקשות רלוונטיות</h3><p>הבקשה הבטוחה לשוק עוזרת לעסקים הנכונים לזהות התאמה טובה.</p></li>
-              <li><span>3</span><h3>בחרו את המוביל המתאים</h3><p>השוו בין ההתעניינות והתחברו לעסק ההובלה שמתאים לכם.</p></li>
+              <li><span>01</span><h3>מספרים מה צריך להעביר</h3><p>מוסיפים פריטים, כתובות ותאריך. אפשר לחזור ולתקן לפני הפרסום.</p></li>
+              <li><span>02</span><h3>בודקים ומפרסמים</h3><p>עוברים על הפרטים ומאמתים את הטלפון. לפני הפרסום יוסבר מי יוכל לקבל את פרטי הקשר.</p></li>
+              <li><span>03</span><h3>מתקדמים עם מוביל מתאים</h3><p>מדברים עם המוביל ומסכמים מחיר, מועד ומה כלול בשירות. הבקשה עצמה אינה הזמנה.</p></li>
             </ol>
           </div>
         </section>
 
-        <section className="mover-callout">
-          <div className="site-container grid gap-8 py-14 md:grid-cols-[1fr_auto] md:items-center">
-            <div>
-              <p className="eyebrow text-sky-300">לעסקי הובלה</p>
-              <h2>אתם מובילים?</h2>
-              <p>מצאו עבודות שמתאימות לאזור השירות שלכם. רכשו רק את הלידים שמעניינים אתכם. מובילי פרימיום יוכלו להגיש הצעות לפני רכישת פרטי הקשר.</p>
+        <section className="section-block" aria-labelledby="clarity-heading">
+          <div className="site-container clarity-panel">
+            <div><span className="icon-tile"><Icon name="shield" /></span><p className="eyebrow mt-6">יודעים מה השלב הבא</p><h2 id="clarity-heading">הפרטים שלכם.<br />הבחירות שלכם.</h2></div>
+            <div className="clarity-list">
+              <div><Icon name="check" /><div><h3>רואים הכול לפני הפרסום</h3><p>מסך סיכום מאפשר לבדוק את המסלול, התכולה והתאריך לפני שממשיכים.</p></div></div>
+              <div><Icon name="check" /><div><h3>לא חייבים לדעת הכול מראש</h3><p>אפשר לציין שהתקציב אינו ידוע ולהוסיף הערות על מה שחשוב לכם.</p></div></div>
+              <div><Icon name="check" /><div><h3>מסכמים את ההובלה במפורש</h3><p>יצירת בקשה אינה תשלום או התחייבות להזמין מוביל. את פרטי השירות מסכמים בנפרד.</p></div></div>
             </div>
-            <Link href="/for-movers" className="button button-light">למובילים <span aria-hidden="true">&rarr;</span></Link>
+          </div>
+        </section>
+
+        <section id="questions" className="section-block faq-section" aria-labelledby="faq-heading">
+          <div className="site-container faq-layout">
+            <div className="section-heading"><p className="eyebrow">קצת סדר, לפני שמתחילים</p><h2 id="faq-heading">שאלות שעולות<br />לפני מעבר</h2><p>תשובות קצרות, בלי מילים מסובכות.</p><Icon name="help" className="faq-icon" /></div>
+            <div className="faq-list">{questions.map(([question, answer]) => <details key={question}><summary>{question}<span aria-hidden="true">+</span></summary><p>{answer}</p></details>)}</div>
+          </div>
+        </section>
+
+        <section className="mover-callout">
+          <div className="site-container mover-callout-layout">
+            <span className="mover-callout-icon"><Icon name="truck" /></span>
+            <div><p className="eyebrow">הצד השני של הדרך</p><h2>יש לכם עסק להובלות?</h2><p>הכירו את אזור העבודה שאנחנו בונים למובילים, עם בקשות מסודרות לפי מסלול וסוג הובלה.</p></div>
+            <Link href="/for-movers" className="button button-light button-large">מידע למובילים <Icon name="arrow" /></Link>
           </div>
         </section>
       </main>

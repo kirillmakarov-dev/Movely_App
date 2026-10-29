@@ -1,14 +1,14 @@
-import { Atkinson_Hyperlegible } from "next/font/google";
+import { Noto_Sans_Hebrew } from "next/font/google";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import { LocaleProvider } from "@/components/LocaleProvider";
 import "./globals.css";
 
-const atkinson = Atkinson_Hyperlegible({
-  subsets: ["latin"],
-  weight: ["400", "700"],
+const hebrewFont = Noto_Sans_Hebrew({
+  subsets: ["hebrew", "latin"],
   display: "swap",
+  variable: "--font-hebrew",
 });
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -51,7 +51,7 @@ export default function RootLayout({
   children: ReactNode;
 }>) {
   return (
-    <html lang="he" dir="rtl" className={`h-full ${atkinson.className}`}>
+    <html lang="he" dir="rtl" className={`h-full ${hebrewFont.variable}`}>
       <body className="min-h-full text-slate-950">
         <LocaleProvider>{children}</LocaleProvider>
       </body>

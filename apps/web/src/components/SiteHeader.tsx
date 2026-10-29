@@ -1,62 +1,36 @@
+"use client";
+
+import { useRef, useState } from "react";
 import Link from "@/components/SafeLink";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import Icon from "@/components/Icon";
 
 const navigation = [
-  { href: "/requests", label: "בקשות" },
   { href: "/#how-it-works", label: "איך זה עובד" },
+  { href: "/#questions", label: "שאלות ותשובות" },
   { href: "/for-movers", label: "למובילים" },
 ];
 
 export default function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const menuButton = useRef<HTMLButtonElement>(null);
+
   return (
-    <header className="site-header">
-      <div className="site-container flex min-h-18 items-center justify-between gap-5">
-        <Link href="/" className="brand-mark" aria-label="דף הבית של Movely">
-          MOVELY
-        </Link>
-
-        <nav className="hidden items-center gap-7 md:flex" aria-label="ניווט ראשי">
-          {navigation.map((item) => (
-            <Link key={item.href} href={item.href} className="nav-link">
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="hidden items-center gap-3 md:flex">
-          <LanguageSwitcher />
-          <Link href="/auth" className="button button-ghost">
-            התחברות
-          </Link>
-          <Link href="/request/new" className="button button-primary">
-            יצירת בקשה
-          </Link>
-        </div>
-
-        <div className="flex items-center gap-2 md:hidden">
-          <LanguageSwitcher />
-          <details className="mobile-menu">
-            <summary aria-label="פתיחת תפריט ניווט">
-              <span />
-              <span />
-              <span />
-            </summary>
-            <div className="mobile-menu-panel">
-              {navigation.map((item) => (
-                <Link key={item.href} href={item.href} className="mobile-menu-link">
-                  {item.label}
-                </Link>
-              ))}
-              <Link href="/auth" className="mobile-menu-link">
-                התחברות
-              </Link>
-              <Link href="/request/new" className="button button-primary mt-2 w-full">
-                יצירת בקשה
-              </Link>
-            </div>
-          </details>
-        </div>
+    <header className="site-header" onKeyDown={(event) => {
+      if (event.key === "Escape" && menuOpen) {
+        setMenuOpen(false);
+        menuButton.current?.focus();
+      }
+    }}>
+      <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
+      <div className="site-container header-layout">
+        <Link href="/" className="brand-mark" aria-label="Movely — דף הבית"><span className="brand-symbol"><Icon name="box" /></span><span dir="ltr">movely<span className="brand-dot">.</span></span></Link>
+        <nav className="desktop-nav" aria-label="ניווט ראשי">{navigation.map((item) => <Link key={item.href} href={item.href} className="nav-link">{item.label}</Link>)}</nav>
+        <div className="desktop-actions"><Link href="/auth" className="button button-ghost">התחברות</Link><Link href="/request/new" className="button button-primary">מתחילים בקשה <Icon name="arrow" /></Link></div>
+        <div className="mobile-actions"><Link href="/request/new" className="button button-primary">בקשה חדשה</Link><button ref={menuButton} type="button" className="menu-toggle" aria-label={menuOpen ? "סגירת תפריט" : "פתיחת תפריט"} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? "close" : "menu"} /></button></div>
       </div>
+      <nav id="mobile-navigation" className="mobile-navigation" aria-label="ניווט לנייד" hidden={!menuOpen}>
+        <div className="site-container">{navigation.map((item) => <Link key={item.href} href={item.href} className="mobile-menu-link" onClick={() => setMenuOpen(false)}>{item.label}</Link>)}<Link href="/auth" className="mobile-menu-link" onClick={() => setMenuOpen(false)}>התחברות לחשבון</Link></div>
+      </nav>
     </header>
   );
 }
