@@ -5,6 +5,7 @@ using Movely.Api.Infrastructure.Authentication;
 using Movely.Api.Modules.Identity;
 using Movely.Api.Modules.MoveRequests;
 using Movely.Api.Modules.Localities;
+using Movely.Api.Modules.Marketplace;
 using Movely.Api.Shared.Errors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -25,6 +26,7 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddMovelyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddMoveRequestsModule(builder.Configuration);
 builder.Services.AddLocalitiesModule();
+builder.Services.AddMarketplaceModule();
 builder.Services.AddCors(options =>
 {
     var allowedOrigins =
@@ -59,6 +61,7 @@ app.Use(async (context, next) =>
 });
 app.UseCors("WebApp");
 app.UseMovelySecurity();
+app.UseRateLimiter();
 
 app.MapGet("/health", () =>
 {
@@ -72,6 +75,7 @@ app.MapGet("/health", () =>
 app.MapIdentityEndpoints();
 app.MapMoveRequestEndpoints();
 app.MapLocalityEndpoints();
+app.MapMarketplaceEndpoints();
 
 app.Run();
 

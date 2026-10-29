@@ -1,100 +1,59 @@
 "use client";
-
-import { useDeferredValue, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+import Link from "@/components/SafeLink";
+import { getLocalities, MovelyApiError, type Locality } from "@/lib/movely-api";
+import { getMarketplaceRequests, marketplaceBudgets, marketplaceQuery, parseMarketplaceFilters, type MarketplaceFilters } from "@/lib/marketplace-api";
+import { budgetLabels } from "@/lib/presentation";
 import RequestCard from "./RequestCard";
-import { mockMarketplaceRequests } from "./mock-requests";
-import type { MoveRequestType } from "@/lib/movely-api";
-import { UI_LOCALE as locale } from "@/lib/locale";
-
-type CategoryFilter = "All" | MoveRequestType;
-
-export default function MarketplaceBrowser() {
-  const [category, setCategory] = useState<CategoryFilter>("All");
-  const [pickupCity, setPickupCity] = useState("");
-  const [destinationCity, setDestinationCity] = useState("");
-  const [sort, setSort] = useState("newest");
-  const deferredPickup = useDeferredValue(pickupCity.toLowerCase());
-  const deferredDestination = useDeferredValue(destinationCity.toLowerCase());
-
-  const visibleRequests = mockMarketplaceRequests
-    .filter((request) => category === "All" || request.requestType === category)
-    .filter((request) => request.pickupCity.toLowerCase().includes(deferredPickup))
-    .filter((request) => request.destinationCity.toLowerCase().includes(deferredDestination))
-    .toSorted((a, b) => sort === "move-date" ? a.moveDate.localeCompare(b.moveDate) : a.id.localeCompare(b.id));
-
-  const categories: Array<{ value: CategoryFilter; label: string }> = [
-    { value: "All", label: "הכול" },
-    { value: "ApartmentMove", label: "הובלות דירה" },
-    { value: "SmallMove", label: "הובלות קטנות" },
-  ];
-
-  return (
-    <div>
-      <div className="tab-list" role="tablist" aria-label="קטגוריות בקשות">
-        {categories.map((item) => (
-          <button
-            key={item.value}
-            type="button"
-            role="tab"
-            aria-selected={category === item.value}
-            className="tab-button"
-            onClick={() => setCategory(item.value)}
-          >
-            {item.label}
-          </button>
-        ))}
+import MarketplaceAccessGate, { MarketplaceError } from "./MarketplaceAccessGate";
+import useMarketplaceResource from "./useMarketplaceResource";
+export default function MarketplaceBrowser({ filters = parseMarketplaceFilters({}), basePath = "/requests" }: { filters?: MarketplaceFilters; basePath?: "/requests" | "/mover/requests" }) {
+  return <MarketplaceAccessGate><BrowserContent filters={filters} basePath={basePath} /></MarketplaceAccessGate>;
+}
+function BrowserContent({ filters, basePath }: { filters: MarketplaceFilters; basePath: "/requests" | "/mover/requests" }) {
+  const query = marketplaceQuery(filters);
+  const load = useCallback((signal: AbortSignal) => getMarketplaceRequests(parseMarketplaceFilters(Object.fromEntries(new URLSearchParams(query))), signal), [query]);
+  const state = useMarketplaceResource(load, query);
+  const loadCities = useCallback((signal: AbortSignal) => getLocalities(signal), []);
+  const cities = useMarketplaceResource(loadCities, "localities");
+  const cityData = cities.kind === "ready" ? cities.data : null;
+  const options = useMemo(() => [...(cityData ?? [])].sort((a, b) => a.name.localeCompare(b.name, "he")), [cityData]);
+  const pageHref = (page: number) => `${basePath}?${marketplaceQuery({ ...filters, page })}#marketplace-results`;
+  const hasFilters = !!(filters.requestType || filters.pickupCityCode || filters.destinationCityCode || filters.moveDate || filters.budgetBand);
+  // The count is approximate during concurrent publications/closures. Never
+  // display fewer matches than the page we actually received proves exist.
+  const effectiveTotalCount = state.kind === "ready" ? state.data.items.length > 0
+    ? Math.max(state.data.totalCount, (state.data.page - 1) * state.data.pageSize + state.data.items.length)
+    : state.data.totalCount : 0;
+  if (state.kind === "error" && state.error instanceof MovelyApiError && [401, 403].includes(state.error.status)) return <MarketplaceError error={state.error} retry={state.retry} />;
+  return <div className="min-w-0 space-y-6" dir="rtl">
+    <form key={query} action={basePath} method="get" className="filter-shell space-y-5" aria-label="סינון בקשות הובלה">
+      <input type="hidden" name="page" value="1" /><input type="hidden" name="pageSize" value={filters.pageSize} />
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <label className="field-label">סוג הובלה<select name="requestType" className="field-control" defaultValue={filters.requestType ?? ""}><option value="">כל סוגי ההובלה</option><option value="ApartmentMove">הובלת דירה</option><option value="SmallMove">הובלה קטנה</option></select></label>
+        {(["pickupCityCode", "destinationCityCode"] as const).map((field) => <CityFilter key={`${query}-${field}`} field={field} initialValue={filters[field] ?? ""} options={options} />)}
+        <label className="field-label">תאריך ההובלה<input name="moveDate" type="date" className="field-control" defaultValue={filters.moveDate ?? ""} /></label>
+        <label className="field-label">תקציב להובלה<select name="budgetBand" className="field-control" defaultValue={filters.budgetBand ?? ""}><option value="">כל התקציבים</option>{marketplaceBudgets.map((band) => <option value={band} key={band}>{budgetLabels[band]}</option>)}</select></label>
+        <label className="field-label">מיון<select name="sort" className="field-control" defaultValue={filters.sort}><option value="Newest">החדשות ביותר</option><option value="MoveDate">תאריך ההובלה</option></select></label>
       </div>
-
-      <div className="filter-shell mt-6">
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-          <label className="field-label lg:col-span-2">
-            עיר איסוף
-            <input className="field-control" value={pickupCity} onChange={(event) => setPickupCity(event.target.value)} placeholder="כל עיר" />
-          </label>
-          <label className="field-label lg:col-span-2">
-            עיר יעד
-            <input className="field-control" value={destinationCity} onChange={(event) => setDestinationCity(event.target.value)} placeholder="כל עיר" />
-          </label>
-          <label className="field-label">
-            תאריך
-            <input className="field-control" type="date" aria-label="תאריך הובלה" />
-          </label>
-          <label className="field-label">
-            תקציב
-            <select className="field-control" defaultValue="any" aria-label="טווח תקציב">
-              <option value="any">כל תקציב</option>
-              <option value="1000">עד 1,000 ₪</option>
-              <option value="2000">1,000-2,000 ₪</option>
-              <option value="3000">2,000 ₪ ומעלה</option>
-            </select>
-          </label>
-        </div>
-      </div>
-
-      <div className="mt-7 flex items-center justify-between gap-4">
-        <p className="text-sm text-slate-600">
-          <strong className="text-slate-950">{visibleRequests.length}</strong>{" "}
-          {locale === "he" ? "בקשות" : "requests"}
-        </p>
-        <label className="flex items-center gap-2 text-sm font-bold text-slate-600">
-          מיון
-          <select className="field-control min-w-36" value={sort} onChange={(event) => setSort(event.target.value)}>
-            <option value="newest">החדשות ביותר</option>
-            <option value="move-date">תאריך ההובלה</option>
-          </select>
-        </label>
-      </div>
-
-      {visibleRequests.length ? (
-        <div className="mt-6 grid gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {visibleRequests.map((request) => <RequestCard key={request.id} request={request} />)}
-        </div>
-      ) : (
-        <div className="mt-6 rounded-xl border border-dashed border-slate-300 bg-white p-8 text-center">
-          <h2 className="text-xl font-bold">לא נמצאו בקשות מתאימות</h2>
-          <p className="mt-2 text-slate-600">נסו עיר אחרת או קטגוריית בקשה אחרת.</p>
-        </div>
-      )}
+      {cities.kind === "loading" ? <p role="status">טוענים את רשימת היישובים…</p> : cities.kind === "error" ? <div><p role="status">רשימת היישובים אינה זמינה. אפשר להשתמש בשאר המסננים או לנסות לטעון אותה שוב.</p><button type="button" onClick={cities.retry} className="button button-secondary mt-2">טעינת היישובים מחדש</button></div> : <p className="text-sm text-slate-600">מקור שמות היישובים: <a className="underline underline-offset-4" href="https://data.gov.il/he/datasets/population_authority/citiesandsettelments" target="_blank" rel="noopener noreferrer">רשות האוכלוסין וההגירה / data.gov.il (נפתח בלשונית חדשה)</a></p>}
+      <div className="flex flex-wrap gap-3"><button className="button button-primary" type="submit">הצגת בקשות</button><Link href={basePath} className="button button-secondary">איפוס מסננים</Link></div>
+    </form>
+    <div id="marketplace-results" className="scroll-mt-24" aria-busy={state.kind === "loading"}>
+      {state.kind === "loading" ? <p role="status" className="rounded-xl border border-slate-200 bg-white p-6">טוענים בקשות הובלה…</p> : state.kind === "error" ? <MarketplaceError error={state.error} retry={state.retry} /> : <>
+        <p role="status" className="text-base text-slate-700">{effectiveTotalCount} בקשות מתאימות · עמוד {state.data.page}</p>
+        {state.data.items.length ? <div className="mt-5 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{state.data.items.map((request) => <RequestCard request={request} key={request.id} returnQuery={query} fromMover={basePath === "/mover/requests"} />)}</div> : <section className="mt-5 rounded-xl border border-dashed border-slate-300 bg-white p-6 text-center"><h2 className="text-xl font-bold">{state.data.totalCount > 0 ? "אין בקשות בעמוד הזה" : hasFilters ? "לא נמצאו בקשות למסננים האלה" : "אין כרגע בקשות זמינות"}</h2><p className="mt-3 leading-7 text-slate-700">אפשר לשנות את המסננים או לבדוק שוב מאוחר יותר.</p><Link href={state.data.totalCount > 0 ? pageHref(1) : basePath} className="button button-secondary mt-4">{state.data.totalCount > 0 ? "חזרה לעמוד הראשון" : "חזרה לכל הבקשות"}</Link></section>}
+        <nav className="mt-6 flex flex-wrap items-center justify-between gap-3" aria-label="עמודי בקשות">{filters.page > 1 ? <Link href={pageHref(filters.page - 1)} className="button button-secondary">העמוד הקודם</Link> : <span />}{filters.page * filters.pageSize < effectiveTotalCount ? <Link href={pageHref(filters.page + 1)} className="button button-secondary">העמוד הבא</Link> : null}</nav>
+      </>}
     </div>
-  );
+  </div>;
+}
+
+function CityFilter({ field, initialValue, options }: { field: "pickupCityCode" | "destinationCityCode"; initialValue: string; options: Locality[] }) {
+  const [value, setValue] = useState(initialValue);
+  return <label className="field-label">{field === "pickupCityCode" ? "עיר איסוף" : "עיר יעד"}<select name={field} value={value} onChange={(event) => setValue(event.target.value)} className="field-control">
+    <option value="">כל היישובים</option>
+    {value && !options.some((option) => option.code === value) ? <option value={value}>היישוב שנבחר בקישור</option> : null}
+    {options.map((locality) => <option key={locality.code} value={locality.code}>{locality.name}</option>)}
+  </select></label>;
 }

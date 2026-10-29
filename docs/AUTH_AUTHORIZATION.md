@@ -85,6 +85,9 @@ Authorization must be checked on the backend for every sensitive action.
 
 ### Marketplace browsing
 
+- The implemented initial catalog requires `VerifiedMover` and the viewer's current site-policy acceptance. Anonymous visitors, customers, admins without the mover role, and PendingVerification/Suspended/Rejected businesses cannot browse it.
+- PendingVerification preview is a possible later product capability, not enabled by the current route. It requires a separately reviewed limited contract.
+- The legal release gate applies to both list and detail; draft documents do not unlock production request data.
 - mover may see only marketplace-safe request fields before purchase
 - sold-out requests remain visible but not purchasable
 - rejected or blocked movers must not be able to buy or offer on that request

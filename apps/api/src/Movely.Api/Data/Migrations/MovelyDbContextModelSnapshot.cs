@@ -234,6 +234,10 @@ namespace Movely.Api.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
+                    b.Property<string>("CanonicalLocalityCode")
+                        .HasMaxLength(6)
+                        .HasColumnType("character varying(6)");
+
                     b.Property<string>("City")
                         .HasMaxLength(120)
                         .HasColumnType("character varying(120)");
@@ -276,6 +280,8 @@ namespace Movely.Api.Data.Migrations
 
                     b.HasIndex("MoveRequestVersionId", "LocationType")
                         .IsUnique();
+
+                    b.HasIndex("CanonicalLocalityCode", "LocationType", "MoveRequestVersionId");
 
                     b.ToTable("MoveLocations", (string)null);
                 });
@@ -389,6 +395,9 @@ namespace Movely.Api.Data.Migrations
 
                     b.HasIndex("RequestType", "Status", "LeadSalesStatus");
 
+                    b.HasIndex("Status", "PublishedAt", "Id")
+                        .IsDescending(false, true, false);
+
                     b.ToTable("MoveRequests", (string)null);
                 });
 
@@ -462,8 +471,12 @@ namespace Movely.Api.Data.Migrations
 
                     b.HasIndex("CreatedByUserId");
 
+                    b.HasIndex("MoveDate", "Id");
+
                     b.HasIndex("MoveRequestId", "VersionNumber")
                         .IsUnique();
+
+                    b.HasIndex("BudgetBand", "MoveDate", "Id");
 
                     b.ToTable("MoveRequestVersions", (string)null);
                 });

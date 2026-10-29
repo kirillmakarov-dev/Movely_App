@@ -117,7 +117,7 @@ The operation must be all-or-nothing.
 
 ## Mover verification
 
-- `BusinessStatus = PendingVerification` allows limited marketplace preview and business profile setup
+- Limited marketplace preview for `BusinessStatus = PendingVerification` is deferred. The initial implemented catalog follows the API's stricter verified-mover access rule; pending businesses receive an explanation, not real request cards. Business profile setup remains a separate implementation task.
 - `PendingVerification` does not allow Buy Lead, Send Premium Offer, or access to protected customer data
 - Full business actions require `BusinessStatus = Verified`
 - `Suspended` and `Rejected` movers must not be allowed to purchase leads or contact customers

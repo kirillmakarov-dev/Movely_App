@@ -6,6 +6,7 @@ using Movely.Api.Data;
 using Movely.Api.Data.Entities;
 using Movely.Api.Shared.Errors;
 using Movely.Api.Modules.Identity;
+using Movely.Api.Modules.Localities;
 using Movely.Api.Shared.Time;
 using Npgsql;
 
@@ -29,13 +30,15 @@ public sealed class MoveRequestService : IMoveRequestService
     private readonly IClock _clock;
     private readonly IConsentReleaseGate _consentReleaseGate;
     private readonly MoveRequestOptions _options;
+    private readonly ILocalityCatalog _localities;
 
-    public MoveRequestService(MovelyDbContext dbContext, IClock clock, IOptions<MoveRequestOptions> options, IConsentReleaseGate consentReleaseGate)
+    public MoveRequestService(MovelyDbContext dbContext, IClock clock, IOptions<MoveRequestOptions> options, IConsentReleaseGate consentReleaseGate, ILocalityCatalog? localities = null)
     {
         _dbContext = dbContext;
         _clock = clock;
         _options = options.Value;
         _consentReleaseGate = consentReleaseGate;
+        _localities = localities ?? new LocalityCatalog();
     }
 
     public async Task<MoveRequestResponse> CreateDraftAsync(Guid customerUserId, CreateMoveRequestRequest request, CancellationToken cancellationToken = default)
@@ -360,18 +363,20 @@ public sealed class MoveRequestService : IMoveRequestService
         return version;
     }
 
-    private static void AddLocation(MoveRequestVersion version, MoveLocationType type, MoveLocationDto? location)
+    private void AddLocation(MoveRequestVersion version, MoveLocationType type, MoveLocationDto? location)
     {
         if (location is null)
         {
             return;
         }
 
+        var city = NormalizeOptional(location.City, 120);
         version.Locations.Add(new MoveLocation
         {
             Id = Guid.NewGuid(),
             LocationType = type,
-            City = NormalizeOptional(location.City, 120),
+            City = city,
+            CanonicalLocalityCode = _localities.ResolveName(city)?.Code,
             ExactAddress = NormalizeOptional(location.ExactAddress, 300),
             Floor = location.Floor,
             HasElevator = location.HasElevator,
@@ -511,7 +516,7 @@ public sealed class MoveRequestService : IMoveRequestService
 
         if (schedule.MoveDate is not null)
         {
-            var today = DateOnly.FromDateTime(_clock.UtcNow.Date);
+            var today = BusinessCalendar.Today(_clock.UtcNow);
             if (schedule.MoveDate < today)
             {
                 throw new ApiException("INVALID_MOVE_DATE", "Move date cannot be in the past.");

@@ -1,4 +1,7 @@
-import Link from "@/components/SafeLink";
-import RequestCard from "@/features/marketplace/RequestCard";
-import { mockMarketplaceRequests } from "@/features/marketplace/mock-requests";
-export default function MoverRequestsPage() { return <div><p className="eyebrow">תצוגת שוק למובילים</p><div className="mt-2 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"><div><h1 className="text-3xl font-bold sm:text-4xl">בקשות רלוונטיות</h1><p className="mt-3 max-w-2xl text-slate-600">כרטיסי שוק להמחשה בלבד. גישת ליד אינה מיושמת עדיין.</p></div><Link href="/requests" className="button button-secondary">פתיחת השוק הציבורי</Link></div><div className="mt-8 grid gap-5 md:grid-cols-2 xl:grid-cols-3">{mockMarketplaceRequests.slice(0, 3).map((request) => <RequestCard key={request.id} request={request} />)}</div></div>; }
+import type { Metadata } from "next";
+import MarketplaceBrowser from "@/features/marketplace/MarketplaceBrowser";
+import { parseMarketplaceFilters } from "@/lib/marketplace-api";
+export const metadata: Metadata = { title: "בקשות למובילים", robots: { index: false, follow: false } };
+export default async function MoverRequestsPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
+  return <div className="min-w-0 space-y-7"><header><p className="eyebrow">שוק הבקשות למובילים</p><h1 className="mt-2 text-3xl font-bold sm:text-4xl">בקשות הובלה</h1><p className="mt-3 max-w-2xl leading-7 text-slate-700">חפשו בקשות לפי מסלול, תאריך וסוג ההובלה. פרטי הקשר והכתובות המדויקות אינם מוצגים כאן.</p></header><MarketplaceBrowser filters={parseMarketplaceFilters(await searchParams)} basePath="/mover/requests" /></div>;
+}

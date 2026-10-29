@@ -157,6 +157,7 @@ public sealed class MovelyDbContext : DbContext
             entity.Property(x => x.DuplicateRisk);
             entity.HasIndex(x => new { x.CustomerUserId, x.Status });
             entity.HasIndex(x => new { x.RequestType, x.Status, x.LeadSalesStatus });
+            entity.HasIndex(x => new { x.Status, x.PublishedAt, x.Id }).IsDescending(false, true, false);
             entity.HasOne(x => x.CustomerUser)
                 .WithMany(x => x.MoveRequests)
                 .HasForeignKey(x => x.CustomerUserId)
@@ -177,6 +178,8 @@ public sealed class MovelyDbContext : DbContext
             entity.Property(x => x.BudgetBand).HasConversion<string>().HasMaxLength(32);
             entity.Property(x => x.CustomerComment).HasMaxLength(2000);
             entity.HasIndex(x => new { x.MoveRequestId, x.VersionNumber }).IsUnique();
+            entity.HasIndex(x => new { x.MoveDate, x.Id });
+            entity.HasIndex(x => new { x.BudgetBand, x.MoveDate, x.Id });
             entity.HasOne(x => x.MoveRequest)
                 .WithMany(x => x.Versions)
                 .HasForeignKey(x => x.MoveRequestId)
@@ -193,11 +196,13 @@ public sealed class MovelyDbContext : DbContext
             entity.HasKey(x => x.Id);
             entity.Property(x => x.LocationType).HasConversion<string>().HasMaxLength(32);
             entity.Property(x => x.City).HasMaxLength(120);
+            entity.Property(x => x.CanonicalLocalityCode).HasMaxLength(6);
             entity.Property(x => x.ExactAddress).HasMaxLength(300);
             entity.Property(x => x.ElevatorFurnitureSuitability).HasConversion<string>().HasMaxLength(32);
             entity.Property(x => x.StairsInfo).HasMaxLength(500);
             entity.Property(x => x.TruckAccessInfo).HasMaxLength(500);
             entity.HasIndex(x => new { x.MoveRequestVersionId, x.LocationType }).IsUnique();
+            entity.HasIndex(x => new { x.CanonicalLocalityCode, x.LocationType, x.MoveRequestVersionId });
             entity.HasOne(x => x.MoveRequestVersion)
                 .WithMany(x => x.Locations)
                 .HasForeignKey(x => x.MoveRequestVersionId)

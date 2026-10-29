@@ -155,12 +155,24 @@ Implemented update contract: draft saves remain compatible; `expectedCurrentVers
 - Validation: mover verification status, role, rate limits
 - Response: marketplace-safe request cards only
 
+Stage 16 read contract: query parameters are `requestType` (`ApartmentMove`/`SmallMove`), `pickupCityCode`, `destinationCityCode` (exact official locality codes), `moveDate` (exact ISO `yyyy-MM-dd`), `budgetBand` (named enum), `sort` (`Newest`, default, or `MoveDate`), `page` (default 1), and `pageSize` (default 12, maximum 50). Invalid filters return 400. The response is `{ items, page, pageSize, totalCount }`. Sorting has an ID tie-breaker; filtering and pagination execute in the database.
+
+`totalCount` is advisory during concurrent publication/closure: count and page reads do not share a repeatable-read snapshot. A valid page must not be rejected solely because its count is temporarily smaller than its items. The UI displays at least the offset plus returned item count for a nonempty page; a later navigation refreshes the current result. Pagination is not a frozen search session.
+
+Both marketplace endpoints require the current viewer's policy acceptance and an available legal release gate. Draft policies remain unavailable outside Development/Testing. A fixed per-account limit allows 60 marketplace reads per minute per application instance; exceeding it returns 429 with `Retry-After`. Multi-instance deployment still needs coordinated edge/distributed protection.
+
+Eligibility requires an Active request, Available/SoldOut sales state, a complete current version with a non-past Israeli calendar date, an active customer with verified phone and current policy acceptance, and matching owner/request/current-version/disclosure/recipient-limit/test-mode contact-sharing consent. Closed, cancelled, expired, draft and ineligible requests are absent; direct detail access returns 404. SoldOut remains visible. Browsing grants no contact access.
+
+Cards contain request ID/type, canonical pickup/destination locality objects or null, move date, publication timestamp, budget band, rooms, summed box/item quantities and lead-sales status. Names come only from the packaged locality catalog. Raw customer city text is never a fallback. Items are counted by quantity, not by distinct positions.
+
 ### GET `/api/v1/marketplace/requests/{requestId}`
 
 - Role: Authenticated verified mover
 - Purpose: Marketplace-safe request detail view
 - Validation: mover eligible to browse marketplace, request active or sold-out and visible
 - Response: marketplace DTO only, never protected contact fields
+
+Detail adds structured floor/elevator/parking fields, schedule enums, typed inventory quantities/dimensions/weight and service flags. It excludes owner ID/name, phone, email, exact addresses, raw city text, item names/descriptions, customer/access comments, photos, object keys, filenames and URLs. Metadata is generic and marked noindex. There is no purchase/contact endpoint or button in this read-only stage; later purchase operations must bind to the reviewed immutable version and enforce recipient limits atomically.
 
 ## 6. Premium offers
 

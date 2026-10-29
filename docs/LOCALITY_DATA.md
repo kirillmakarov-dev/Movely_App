@@ -41,7 +41,21 @@ Name lookup normalizes Unicode to NFC, trims outer whitespace and collapses inte
 
 Four official English aliases are ambiguous and deliberately return `null`: `ABU QUREINAT` (1342/968), `KHAWALED` (986/1321), `TARABIN AS-SANI` (970/1346), and `ZOHAR` (1136/44). Their distinct official Hebrew names and codes remain available. An ambiguous normalized name stays unresolved regardless of input row order. For example, `תל אביב` does not match the official `תל אביב - יפו`; the UI must offer the canonical selection rather than silently guessing.
 
-This foundation does not alter existing request entities or migrate legacy city text. Unknown legacy values must remain private, be shown publicly as unavailable, or be corrected through a canonical selection in a later migration. Do not send legacy raw values to the public dictionary endpoint or expose them in marketplace DTOs.
+Stage 16 adds nullable `MoveLocation.CanonicalLocalityCode` alongside the private submitted `City`. New snapshots derive it through `ResolveName`. The migration backfills only whole recognized names/aliases using the pinned reviewed snapshot, preserving the original city text and immutable request history. Unknown, ambiguous or decorated values remain null. Marketplace filtering uses the code and display names come only from `FindByCode`; the raw value never becomes a display fallback. A dictionary update must explicitly consider saved codes and migrations pinned to earlier snapshots.
+
+The migration pins **2,620 unambiguous whole-name aliases**, excluding the four ambiguous English aliases across all source names collectively. PostgreSQL normalization uses NFC, the explicit Unicode whitespace code points recognized by .NET, and ASCII case folding with deterministic `C` collation. It preserves punctuation and format/control characters: private suffixes and bidirectional controls do not match. The runtime resolver's `OrdinalIgnoreCase` may recognize additional Unicode case equivalents; SQL deliberately leaves unusual non-ASCII case variants unresolved instead of guessing. The migration requires a UTF-8 database and PostgreSQL 13 or later; CI uses PostgreSQL 17.
+
+Verify the immutable SQL against its pinned source with:
+
+```powershell
+python tools/generate_locality_backfill.py --migration apps/api/src/Movely.Api/Data/Migrations/20261029165124_AddCanonicalLocalityCodes.cs --check
+```
+
+The generator escapes literals and rejects a changed catalog checksum; a future catalog must not rewrite this historical migration. Indexes cover canonical locality/location type/version, move date, budget with date, and request status with publication time descending and request ID ascending. Their presence is tested on PostgreSQL; actual performance still requires query-plan measurements.
+
+The PostgreSQL backfill test migrates to the preceding schema, seeds every official Hebrew/English name plus private, malformed and ambiguous examples, applies the migration, checks derived codes and unchanged raw text, executes the city/date/budget join, and verifies rollback/reapplication. New-write tests verify that changing a city creates a new projection without changing historical versions.
+
+Before production, measure this schema/backfill/index migration on a staging copy and take a verified backup. It acquires database locks; do not promise a zero-downtime rollout. Stop old-version request writers for the migration/deployment window so they cannot insert an unprojected location after the backfill. Reverting only this migration removes derived codes/indexes while retaining private source text; the marketplace application requires the new schema. Do not downgrade through the separate versioned-consent migration without its documented preflight.
 
 ## Reproducible verification and update procedure
 

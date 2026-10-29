@@ -83,6 +83,8 @@ It must never contain:
 - exact pickup address
 - exact destination address
 
+The initial implemented marketplace also excludes raw city values, customer/access comments, item names and descriptions, all photo metadata/URLs and customer IDs. Cities are looked up by persisted canonical code in the pinned official catalog; an unresolved city is null. SQL projection selects only the safe fields rather than loading an owner DTO for later redaction. Eligibility binds the current immutable version to its explicit consent and checks the owner's current account/phone/policy state. The endpoints require a verified mover with current policy acceptance and the legal release gate.
+
 ### Purchased contact DTO
 
 Must only be returned after successful `ContactAccess`.
