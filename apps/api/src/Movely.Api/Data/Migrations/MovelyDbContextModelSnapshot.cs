@@ -725,6 +725,132 @@ namespace Movely.Api.Data.Migrations
                     b.ToTable("PolicyAcceptances");
                 });
 
+            modelBuilder.Entity("Movely.Api.Data.Entities.SupportRequest", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("ClientMutationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("LastSequenceNumber")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("OwnerUserId")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RevisionId")
+                        .IsConcurrencyToken()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Status")
+                        .IsConcurrencyToken()
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("Subject")
+                        .IsRequired()
+                        .HasMaxLength(160)
+                        .HasColumnType("character varying(160)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("OwnerUserId", "ClientMutationId")
+                        .IsUnique();
+
+                    b.HasIndex("OwnerUserId", "UpdatedAt", "Id")
+                        .IsDescending(false, true, false);
+
+                    b.HasIndex("Status", "UpdatedAt", "Id")
+                        .IsDescending(false, true, false);
+
+                    b.ToTable("SupportRequests");
+                });
+
+            modelBuilder.Entity("Movely.Api.Data.Entities.SupportRequestEvent", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Actor")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("ActorUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Body")
+                        .HasMaxLength(4000)
+                        .HasColumnType("character varying(4000)");
+
+                    b.Property<Guid>("ClientMutationId")
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ExpectedRevisionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Kind")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("PreviousStatus")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<string>("RequestedStatus")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("RevisionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("SequenceNumber")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
+
+                    b.Property<Guid>("SupportRequestId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ActorUserId");
+
+                    b.HasIndex("SupportRequestId", "SequenceNumber")
+                        .IsUnique()
+                        .IsDescending(false, true);
+
+                    b.HasIndex("SupportRequestId", "ActorUserId", "ClientMutationId")
+                        .IsUnique()
+                        .HasDatabaseName("IX_SupportRequestEvents_ActorMutation");
+
+                    b.ToTable("SupportRequestEvents");
+                });
+
             modelBuilder.Entity("Movely.Api.Data.Entities.UserAuthIdentity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -954,6 +1080,34 @@ namespace Movely.Api.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("Movely.Api.Data.Entities.SupportRequest", b =>
+                {
+                    b.HasOne("Movely.Api.Data.Entities.MovelyUser", "OwnerUser")
+                        .WithMany()
+                        .HasForeignKey("OwnerUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("OwnerUser");
+                });
+
+            modelBuilder.Entity("Movely.Api.Data.Entities.SupportRequestEvent", b =>
+                {
+                    b.HasOne("Movely.Api.Data.Entities.MovelyUser", null)
+                        .WithMany()
+                        .HasForeignKey("ActorUserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Movely.Api.Data.Entities.SupportRequest", "Request")
+                        .WithMany("Events")
+                        .HasForeignKey("SupportRequestId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("Request");
+                });
+
             modelBuilder.Entity("Movely.Api.Data.Entities.UserAuthIdentity", b =>
                 {
                     b.HasOne("Movely.Api.Data.Entities.MovelyUser", "User")
@@ -1012,6 +1166,11 @@ namespace Movely.Api.Data.Migrations
                     b.Navigation("PhoneVerifications");
 
                     b.Navigation("Sessions");
+                });
+
+            modelBuilder.Entity("Movely.Api.Data.Entities.SupportRequest", b =>
+                {
+                    b.Navigation("Events");
                 });
 #pragma warning restore 612, 618
         }

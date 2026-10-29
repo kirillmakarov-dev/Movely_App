@@ -12,7 +12,7 @@ public static class ConsentPolicy
 {
     // Keep this version aligned with the reviewed document source. Drafts are
     // available only for local/testing workflows, never public registration.
-    public const string Version = "draft-2026-10-29";
+    public const string Version = "draft-2026-10-29-v2";
     public static bool IsDraft => Version.StartsWith("draft-", StringComparison.Ordinal);
 
     public static void EnsureAvailable(IHostEnvironment environment)

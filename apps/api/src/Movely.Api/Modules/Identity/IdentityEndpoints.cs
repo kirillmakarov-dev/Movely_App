@@ -15,7 +15,7 @@ public static class IdentityEndpoints
         {
             var google = configuration.GetSection("Auth:Google").Get<GoogleAuthOptions>() ?? new();
             var policyAvailable = !ConsentPolicy.IsDraft || environment.IsDevelopment() || environment.IsEnvironment("Testing");
-            var googleAvailable = policyAvailable && google.IsGoogleConfigured;
+            var googleAvailable = google.IsGoogleConfigured;
             context.Response.Headers.CacheControl = "no-store";
             // Development OTP logging does not constitute real SMS delivery.
             return Results.Ok(new AuthCapabilities(policyAvailable, googleAvailable, googleAvailable ? google.ClientId : null, false));

@@ -2,12 +2,14 @@ using System.Net;
 using System.Net.Http.Json;
 using Google.Apis.Auth;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Movely.Api.Data;
+using Movely.Api.Data.Entities;
 using Movely.Api.Infrastructure.Authentication;
 using Movely.Api.Modules.Identity;
 using Movely.Api.Shared.Errors;
@@ -91,7 +93,7 @@ public sealed class GoogleAuthenticationTests(ApiFactory factory) : IClassFixtur
     [InlineData("Testing", "Development", false, true)]
     [InlineData("Production", "Development", false, false)]
     [InlineData("Testing", "Google", true, true)]
-    [InlineData("Production", "Google", false, false)]
+    [InlineData("Production", "Google", true, false)]
     [InlineData("Testing", "Disabled", false, true)]
     public async Task CapabilitiesReflectRealProviderAndLegalAvailability(string environment, string mode, bool available, bool policyAvailable)
     {
@@ -196,6 +198,173 @@ public sealed class GoogleAuthenticationTests(ApiFactory factory) : IClassFixtur
         Assert.Equal(HttpStatusCode.Unauthorized, (await first.GetAsync("/api/v1/auth/me")).StatusCode);
         using var check = factory.Services.CreateScope();
         Assert.Equal(sessionCount, await check.ServiceProvider.GetRequiredService<MovelyDbContext>().UserSessions.CountAsync(x => x.UserId == user.Id));
+    }
+
+    [Theory]
+    [InlineData("Testing", UserRole.Customer, null)]
+    [InlineData("Production", UserRole.Customer, null)]
+    [InlineData("Production", UserRole.Customer, "draft-2026-10-29")]
+    [InlineData("Production", UserRole.Mover, "draft-2026-10-29")]
+    [InlineData("Production", UserRole.Admin, "draft-2026-10-29")]
+    [InlineData("Production", UserRole.Customer, "current")]
+    public async Task ExistingLoginDoesNotRequireCurrentPolicyOrInvokeCreateCapableLinker(string environment, UserRole role, string? acceptedVersion)
+    {
+        var validator = new AcceptedValidator();
+        using var app = GoogleApp(environment, validator, forbidLinking: true);
+        var version = acceptedVersion == "current" ? ConsentPolicy.Version : acceptedVersion;
+        var user = await SeedLinkedUser(app, validator, role, version);
+        using var client = SecureClient(app);
+        var response = await GoogleLogin(client, null);
+        response.EnsureSuccessStatusCode();
+        var signedIn = (await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
+        Assert.Equal(user.Id, signedIn.Id);
+        Assert.Equal(role, signedIn.Role);
+        Assert.False(signedIn.PhoneVerified);
+        Assert.Equal(acceptedVersion == "current", signedIn.HasCurrentPolicyAcceptance);
+        var me = (await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options))!;
+        Assert.Equal(user.Id, me.Id);
+        Assert.Equal(signedIn.HasCurrentPolicyAcceptance, me.HasCurrentPolicyAcceptance);
+        Assert.Equal(1, validator.Calls);
+        Assert.True(response.Headers.CacheControl!.NoStore);
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        var acceptances = await db.PolicyAcceptances.Where(x => x.UserId == user.Id).ToListAsync();
+        if (version is null) Assert.Empty(acceptances);
+        else {
+            var previous = Assert.Single(acceptances);
+            Assert.Equal(version, previous.TermsVersion);
+            Assert.Equal(version, previous.PrivacyVersion);
+            Assert.Equal(user.CreatedAt, previous.AcceptedAt);
+        }
+        Assert.Equal(1, await db.UserAuthIdentities.CountAsync(x => x.ProviderSubject == validator.Subject));
+        Assert.Equal(1, await db.UserSessions.CountAsync(x => x.UserId == user.Id));
+    }
+
+    [Theory]
+    [InlineData("Testing", false, HttpStatusCode.BadRequest, "POLICY_ACCEPTANCE_REQUIRED")]
+    [InlineData("Production", false, HttpStatusCode.ServiceUnavailable, "LEGAL_NOT_READY")]
+    [InlineData("Production", true, HttpStatusCode.ServiceUnavailable, "LEGAL_NOT_READY")]
+    public async Task UnknownIdentityStillCannotRegisterWithoutApprovedExplicitAcceptance(string environment, bool accept, HttpStatusCode status, string code)
+    {
+        var validator = new AcceptedValidator();
+        using var app = GoogleApp(environment, validator);
+        using var client = SecureClient(app);
+        var response = await GoogleLogin(client, accept ? ConsentFixtures.Acceptance : null);
+        Assert.Equal(status, response.StatusCode);
+        Assert.Contains(code, await response.Content.ReadAsStringAsync());
+        Assert.Equal(HttpStatusCode.Unauthorized, (await client.GetAsync("/api/v1/auth/me")).StatusCode);
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        Assert.False(await db.UserAuthIdentities.AnyAsync(x => x.ProviderSubject == validator.Subject));
+        Assert.False(await db.Users.AnyAsync(x => x.Email == $"{validator.Subject}@example.com"));
+    }
+
+    [Theory]
+    [InlineData("Testing", "valid", HttpStatusCode.OK)]
+    [InlineData("Testing", "outdated", HttpStatusCode.Conflict)]
+    [InlineData("Testing", "unchecked", HttpStatusCode.BadRequest)]
+    [InlineData("Production", "valid", HttpStatusCode.ServiceUnavailable)]
+    public async Task ExistingAccountExplicitAcceptanceStillRequiresLegalGateAndValidation(string environment, string choice, HttpStatusCode expected)
+    {
+        var validator = new AcceptedValidator();
+        using var app = GoogleApp(environment, validator, forbidLinking: true);
+        var user = await SeedLinkedUser(app, validator, UserRole.Customer, "draft-2026-10-29");
+        using var client = SecureClient(app);
+        var acceptance = choice switch {
+            "outdated" => ConsentFixtures.Acceptance with { PrivacyVersion = "draft-2026-10-29" },
+            "unchecked" => ConsentFixtures.Acceptance with { AdultConfirmed = false },
+            _ => ConsentFixtures.Acceptance,
+        };
+        var response = await GoogleLogin(client, acceptance);
+        Assert.Equal(expected, response.StatusCode);
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        var history = await db.PolicyAcceptances.Where(x => x.UserId == user.Id).ToListAsync();
+        Assert.Single(history, x => x.TermsVersion == "draft-2026-10-29" && x.PrivacyVersion == "draft-2026-10-29" && x.AcceptedAt == user.CreatedAt);
+        Assert.Equal(expected == HttpStatusCode.OK ? 2 : 1, history.Count);
+        Assert.Equal(expected == HttpStatusCode.OK, await ConsentPolicy.HasCurrentAsync(db, user.Id));
+        Assert.Equal(expected == HttpStatusCode.OK ? 1 : 0, await db.UserSessions.CountAsync(x => x.UserId == user.Id));
+        if (expected == HttpStatusCode.ServiceUnavailable) Assert.Contains("LEGAL_NOT_READY", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task SuspendedExistingAccountWithoutAcceptanceRemainsBlockedWhenRegistrationIsClosed()
+    {
+        var validator = new AcceptedValidator();
+        using var app = GoogleApp("Production", validator, forbidLinking: true);
+        var user = await SeedLinkedUser(app, validator, UserRole.Customer, null, status: UserStatus.Suspended);
+        using var client = SecureClient(app);
+        var response = await GoogleLogin(client, null);
+        Assert.Equal(HttpStatusCode.Forbidden, response.StatusCode);
+        Assert.Contains("ACCOUNT_UNAVAILABLE", await response.Content.ReadAsStringAsync());
+        Assert.Equal(HttpStatusCode.Unauthorized, (await client.GetAsync("/api/v1/auth/me")).StatusCode);
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        Assert.False(await db.UserSessions.AnyAsync(x => x.UserId == user.Id));
+        Assert.False(await db.PolicyAcceptances.AnyAsync(x => x.UserId == user.Id));
+    }
+
+    [Fact]
+    public async Task MatchingEmailDoesNotTurnUnknownSubjectIntoConsentFreeExistingLogin()
+    {
+        var validator = new AcceptedValidator();
+        using var app = GoogleApp("Testing", validator, forbidLinking: true);
+        var user = await SeedLinkedUser(app, validator, UserRole.Admin, null, providerSubject: $"different-{validator.Subject}");
+        using var client = SecureClient(app);
+        var response = await GoogleLogin(client, null);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Contains("POLICY_ACCEPTANCE_REQUIRED", await response.Content.ReadAsStringAsync());
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        Assert.False(await db.UserSessions.AnyAsync(x => x.UserId == user.Id));
+        Assert.Equal(1, await db.Users.CountAsync(x => x.Email == user.Email));
+        Assert.False(await db.UserAuthIdentities.AnyAsync(x => x.ProviderSubject == validator.Subject));
+    }
+
+    private WebApplicationFactory<Program> GoogleApp(string environment, AcceptedValidator validator, bool forbidLinking = false)
+        => factory.WithWebHostBuilder(builder => {
+            builder.UseEnvironment(environment);
+            builder.ConfigureAppConfiguration((_, config) => config.AddInMemoryCollection(new Dictionary<string, string?> {
+                ["Auth:Google:Mode"] = "Google", ["Auth:Google:ClientId"] = ClientId,
+            }));
+            builder.ConfigureTestServices(services => {
+                services.RemoveAll<IGoogleTokenValidator>();
+                services.AddSingleton<IGoogleTokenValidator>(validator);
+                if (forbidLinking) {
+                    services.RemoveAll<IGoogleIdentityLinker>();
+                    services.AddSingleton<IGoogleIdentityLinker>(new UnexpectedLinker());
+                }
+            });
+        });
+    private static HttpClient SecureClient(WebApplicationFactory<Program> app)
+        => app.CreateClient(new WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost") });
+    private static async Task<MovelyUser> SeedLinkedUser(WebApplicationFactory<Program> app, AcceptedValidator validator, UserRole role,
+        string? acceptedVersion, string? providerSubject = null, UserStatus status = UserStatus.Active)
+    {
+        using var scope = app.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        var now = DateTimeOffset.UtcNow.AddDays(-3);
+        var user = new MovelyUser { Id = Guid.NewGuid(), FirstName = "Existing", LastName = "Account", Email = $"{validator.Subject}@example.com",
+            Role = role, Status = status, PhoneVerified = false, CreatedAt = now, UpdatedAt = now };
+        db.Users.Add(user);
+        db.UserAuthIdentities.Add(new UserAuthIdentity { Id = Guid.NewGuid(), UserId = user.Id, Provider = AuthProvider.Google,
+            ProviderSubject = providerSubject ?? validator.Subject, CreatedAt = now });
+        if (acceptedVersion is not null) db.PolicyAcceptances.Add(new PolicyAcceptance { Id = Guid.NewGuid(), UserId = user.Id,
+            TermsVersion = acceptedVersion, PrivacyVersion = acceptedVersion, AdultConfirmed = true, IsTestOnly = true, AcceptedAt = now });
+        await db.SaveChangesAsync();
+        return user;
+    }
+    private static async Task<HttpResponseMessage> GoogleLogin(HttpClient client, PolicyAcceptanceRequest? acceptance)
+    {
+        var csrf = await client.GetFromJsonAsync<CsrfResponse>("/api/v1/auth/csrf");
+        client.DefaultRequestHeaders.Remove("X-CSRF-TOKEN");
+        client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", csrf!.RequestToken);
+        return await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest("opaque-credential-from-google", acceptance));
+    }
+    private sealed class UnexpectedLinker : IGoogleIdentityLinker
+    {
+        public Task<MovelyUser> LinkOrCreateUserAsync(GoogleIdentity identity, CancellationToken cancellationToken = default)
+            => throw new InvalidOperationException("Existing consent-free login must never call a create-capable identity linker.");
     }
 
     private static async Task<HttpResponseMessage> SignIn(HttpClient client, string subject, string email)

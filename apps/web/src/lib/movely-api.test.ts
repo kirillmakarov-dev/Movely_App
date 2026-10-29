@@ -114,6 +114,50 @@ test("expired session clears the cached identity token before the next login", a
   expect(issued).toBe(2);
 });
 
+test("a successful account recheck detects cross-tab identity changes and refreshes CSRF only when needed", async () => {
+  let identity = "owner-a", issued = 0;
+  const used: string[] = [];
+  vi.stubGlobal("fetch", vi.fn(async (url: string, init: RequestInit) => {
+    if (url.endsWith("/me")) return json({ id: identity });
+    if (url.endsWith("/csrf")) { issued++; return json({ requestToken: identity }); }
+    used.push(new Headers(init.headers).get("X-CSRF-TOKEN")!);
+    return json({});
+  }));
+  const api = await import("./movely-api");
+  await api.getCurrentUser(); await api.requestPhoneCode("0501234567");
+  await api.getCurrentUser(); await api.requestPhoneCode("0501234567");
+  expect(issued).toBe(1);
+  identity = "owner-b";
+  await api.getCurrentUser(); await api.requestPhoneCode("0501234567");
+  expect(issued).toBe(2);
+  expect(used).toEqual(["owner-a", "owner-a", "owner-b"]);
+});
+
+test("a late CSRF response from the previous identity cannot populate cache or send a mutation", async () => {
+  let identity = "owner-a", csrfReads = 0;
+  let finish!: (value: Response) => void;
+  const used: string[] = [];
+  vi.stubGlobal("fetch", vi.fn(async (url: string, init: RequestInit) => {
+    if (url.endsWith("/me")) return json({ id: identity });
+    if (url.endsWith("/csrf")) {
+      if (++csrfReads === 1) return new Promise<Response>((resolve) => { finish = resolve; });
+      return json({ requestToken: "owner-b-token" });
+    }
+    used.push(new Headers(init.headers).get("X-CSRF-TOKEN")!);
+    return json({});
+  }));
+  const api = await import("./movely-api");
+  await api.getCurrentUser();
+  const pending = api.requestPhoneCode("0501234567");
+  const assertion = expect(pending).rejects.toMatchObject({ errorCode: "CSRF_CONTEXT_CHANGED" });
+  identity = "owner-b";
+  await api.getCurrentUser();
+  finish(json({ requestToken: "owner-a-token" })); await assertion;
+  expect(used).toEqual([]);
+  await api.requestPhoneCode("0501234567");
+  expect(used).toEqual(["owner-b-token"]);
+});
+
 test("provider failures use a customer-facing Hebrew message", async () => {
   vi.stubGlobal("fetch", vi.fn(async (url: string) => url.endsWith("/csrf")
     ? json({ requestToken: "token" })

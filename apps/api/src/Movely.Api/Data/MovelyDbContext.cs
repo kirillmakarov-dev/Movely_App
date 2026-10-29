@@ -25,10 +25,40 @@ public sealed class MovelyDbContext : DbContext
     public DbSet<MovePhoto> MovePhotos => Set<MovePhoto>();
     public DbSet<PolicyAcceptance> PolicyAcceptances => Set<PolicyAcceptance>();
     public DbSet<ContactSharingAcceptance> ContactSharingAcceptances => Set<ContactSharingAcceptance>();
+    public DbSet<SupportRequest> SupportRequests => Set<SupportRequest>();
+    public DbSet<SupportRequestEvent> SupportRequestEvents => Set<SupportRequestEvent>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<SupportRequest>(entity => {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Subject).HasMaxLength(160).IsRequired();
+            entity.Property(x => x.Type).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32).IsConcurrencyToken();
+            entity.Property(x => x.OwnerUserId).IsConcurrencyToken();
+            entity.Property(x => x.RevisionId).IsConcurrencyToken();
+            entity.Property(x => x.LastSequenceNumber).IsConcurrencyToken();
+            entity.HasIndex(x => new { x.OwnerUserId, x.ClientMutationId }).IsUnique();
+            entity.HasIndex(x => new { x.OwnerUserId, x.UpdatedAt, x.Id }).IsDescending(false, true, false);
+            entity.HasIndex(x => new { x.Status, x.UpdatedAt, x.Id }).IsDescending(false, true, false);
+            entity.HasOne(x => x.OwnerUser).WithMany().HasForeignKey(x => x.OwnerUserId).OnDelete(DeleteBehavior.Restrict);
+        });
+        modelBuilder.Entity<SupportRequestEvent>(entity => {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.Actor).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.Kind).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.PreviousStatus).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.RequestedStatus).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.Body).HasMaxLength(4000);
+            entity.HasIndex(x => new { x.SupportRequestId, x.SequenceNumber }).IsUnique().IsDescending(false, true);
+            entity.HasIndex(x => new { x.SupportRequestId, x.ActorUserId, x.ClientMutationId }).IsUnique()
+                .HasDatabaseName("IX_SupportRequestEvents_ActorMutation");
+            entity.HasOne(x => x.Request).WithMany(x => x.Events).HasForeignKey(x => x.SupportRequestId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<MovelyUser>().WithMany().HasForeignKey(x => x.ActorUserId).OnDelete(DeleteBehavior.Restrict);
+        });
 
         modelBuilder.Entity<PolicyAcceptance>(entity =>
         {

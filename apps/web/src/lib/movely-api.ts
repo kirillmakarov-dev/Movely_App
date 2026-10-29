@@ -306,6 +306,19 @@ export type VerifyPhoneCodeResponse = {
 };
 
 let csrfTokenCache: string | null = null;
+let csrfGeneration = 0;
+let observedIdentity: string | null | undefined;
+function clearCsrfIdentity() {
+  csrfTokenCache = null;
+  csrfGeneration += 1;
+  observedIdentity = undefined;
+}
+function observeIdentity(id: string | null) {
+  if (observedIdentity !== id) {
+    clearCsrfIdentity();
+    observedIdentity = id;
+  }
+}
 
 async function readJson(response: Response) {
   const contentType = response.headers.get("content-type") ?? "";
@@ -376,10 +389,13 @@ async function ensureCsrfToken(signal?: AbortSignal) {
     return csrfTokenCache;
   }
 
+  const generation = csrfGeneration;
   const payload = await requestJson<{ requestToken: string }>("/api/v1/auth/csrf", {
     method: "GET",
     signal,
   });
+  if (signal?.aborted) throw new DOMException("Aborted", "AbortError");
+  if (generation !== csrfGeneration) throw new MovelyApiError("מצב החיבור השתנה. בדקו את החשבון לפני ניסיון נוסף.", { status: 400, errorCode: "CSRF_CONTEXT_CHANGED" });
   csrfTokenCache = payload.requestToken;
   return payload.requestToken;
 }
@@ -424,10 +440,12 @@ async function requestAuthWithCsrf<TResponse>(path: string, body: unknown): Prom
 
 export async function getCurrentUser(signal?: AbortSignal) {
   try {
-    return await requestJson<CurrentUser>("/api/v1/auth/me", { method: "GET", signal });
+    const user = await requestJson<CurrentUser>("/api/v1/auth/me", { method: "GET", signal });
+    if (!signal?.aborted) observeIdentity(user.id);
+    return user;
   } catch (error) {
     if (error instanceof MovelyApiError && error.status === 401) {
-      csrfTokenCache = null;
+      if (!signal?.aborted) observeIdentity(null);
       return null;
     }
 
@@ -446,7 +464,7 @@ export async function signInWithGoogle(credential: string, acceptance?: PolicyAc
   } finally {
     // Antiforgery tokens are bound to the authenticated identity. The session may
     // also have changed if the response was lost after the server issued it.
-    csrfTokenCache = null;
+    clearCsrfIdentity();
   }
 }
 
@@ -464,11 +482,11 @@ export async function verifyPhoneCode(phone: string, code: string) {
 }
 
 export async function logout() {
-  csrfTokenCache = null;
+  clearCsrfIdentity();
   try {
     return await requestAuthWithCsrf<void>("/api/v1/auth/logout", {});
   } finally {
-    csrfTokenCache = null;
+    clearCsrfIdentity();
   }
 }
 

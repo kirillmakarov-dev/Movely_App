@@ -7,6 +7,7 @@ using Movely.Api.Modules.MoveRequests;
 using Movely.Api.Modules.Localities;
 using Movely.Api.Modules.Marketplace;
 using Movely.Api.Modules.Businesses;
+using Movely.Api.Modules.Support;
 using Movely.Api.Shared.Errors;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -29,6 +30,7 @@ builder.Services.AddMoveRequestsModule(builder.Configuration);
 builder.Services.AddLocalitiesModule();
 builder.Services.AddMarketplaceModule();
 builder.Services.AddBusinessesModule();
+builder.Services.AddSupportModule(builder.Configuration);
 builder.Services.AddCors(options =>
 {
     var allowedOrigins =
@@ -79,6 +81,7 @@ app.MapMoveRequestEndpoints();
 app.MapLocalityEndpoints();
 app.MapMarketplaceEndpoints();
 app.MapBusinessEndpoints();
+app.MapSupportEndpoints();
 
 app.Run();
 

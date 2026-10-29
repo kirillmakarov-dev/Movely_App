@@ -189,6 +189,8 @@ Only admin role holders may perform administrative moderation or configuration.
 
 ## 10. Recommended implementation pattern
 
+Implemented support/privacy access does not require a verified phone or current policy acceptance. An existing linked active Google identity can authenticate without creating new consent; a new identity still needs explicit age/terms acceptance and an available legal gate. Support owner routes allow Customer/Mover with resource ownership; support administration requires Admin. Disabled or suspended accounts remain rejected by session authentication, so an external staffed channel for people without account access is still a release requirement.
+
 Use backend authorization policies and resource checks together:
 
 - role-based policy for coarse gate

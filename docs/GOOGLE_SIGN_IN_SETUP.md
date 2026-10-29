@@ -17,7 +17,7 @@ The client ID is public configuration, not a client secret. This ID-token flow d
 
 `Development` mode accepts synthetic credentials only in Development/Testing. Google mode never falls back to synthetic authentication when its client ID is missing. Production never selects the development verifier or development SMS sender. Unconfigured services return structured 503 errors.
 
-The existing draft legal-policy gate still blocks sign-in and registration in Production. Configuring Google does not bypass it. Do not switch production to Development or change the policy version merely to make login work.
+The draft legal-policy gate blocks new registration, accepting policies and publication in Production. An already linked active Google account may sign in without submitting acceptance, including when its previous policy is outdated; this creates no consent record and grants no publication or marketplace permission. Explicitly supplied acceptance still requires the legal gate and current version. This lets an existing user reach support/privacy requests without agreeing to new policies. Configuring Google never bypasses registration/publication checks. Do not switch production to Development or remove the draft prefix merely to enable the service.
 
 ## Browser integration contract
 
@@ -38,7 +38,7 @@ In production, an unset or blank `NEXT_PUBLIC_API_BASE_URL` makes API requests r
 
 Keep frontend and API on the same origin through a proxy, or deliberately configure a supported same-site deployment with explicit `Cors:AllowedOrigins`. The API allows credentialed requests only from that origin allowlist; never use a wildcard. Cross-site third-party-cookie behavior is not a supported deployment assumption. Live deployment cookie and proxy checks remain required.
 
-The web API client clears its cached antiforgery token after sign-in, logout (including a lost response), or an expired-session response. The next mutation retrieves a token bound to the current identity.
+The web API client clears its cached antiforgery token after sign-in, logout (including a lost response), an expired session, or a successful account check that observes a different identity. A late token response from before invalidation cannot refill the cache or send its pending mutation. The next deliberate mutation retrieves a token bound to the current identity. Support writes also bind the reviewed actor on the server; a browser preflight alone is not an atomic guarantee against cross-tab account switching.
 
 ## Phone verification readiness
 

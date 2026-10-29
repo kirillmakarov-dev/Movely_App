@@ -45,7 +45,7 @@ export default function CurrentPolicyAcceptance({ disabled = false, onAccepted, 
   if (!capabilities.policyAcceptanceAvailable) return <AuthServiceStatus message="אישור התנאים המעודכנים עדיין אינו זמין. אין צורך לצאת מהחשבון; אפשר לבדוק שוב מאוחר יותר." retry={retry} />;
   return <form onSubmit={(event) => { event.preventDefault(); void accept(); }} aria-label="אישור התנאים המעודכנים" aria-busy={busy} className="space-y-4 border-t border-slate-200 pt-5">
     <h2 className="text-xl font-bold">אישור התנאים המעודכנים</h2>
-    <p className="text-base leading-7">לפני המשך הפעילות בחשבון, קראו את תנאי השימוש ואת הודעת הפרטיות ואשרו את שני הסעיפים. אין צורך להירשם מחדש.</p>
+    <p className="text-base leading-7">לפני פרסום בקשה או פעילות עסקית, קראו את תנאי השימוש ואת הודעת הפרטיות ואשרו את שני הסעיפים. אין צורך להירשם מחדש. האישור אינו תנאי לכניסה לחשבון או לעיון בפניות האישיות.</p>
     <PolicyConsentFields value={choice} onChange={setChoice} disabled={busy || disabled} />
     {error && <p role="alert" className="rounded-xl border border-red-200 bg-red-50 p-3 text-red-900">{error}</p>}
     {busy && <p role="status">שומרים את האישורים…</p>}

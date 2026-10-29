@@ -301,19 +301,30 @@ public sealed class AuthService : IAuthService
 
     public async Task<CurrentUserDto> SignInWithGoogleAsync(string credential, HttpContext httpContext, CancellationToken cancellationToken = default, PolicyAcceptanceRequest? acceptance = null)
     {
-        _consentReleaseGate.EnsureAvailable();
+        if (acceptance is not null)
+        {
+            _consentReleaseGate.EnsureAvailable();
+            ConsentPolicy.Validate(acceptance);
+        }
         var googleIdentity = await _googleIdentityVerifier.VerifyAsync(credential, cancellationToken);
-        var existingUserId = await _dbContext.UserAuthIdentities
-            .Where(x => x.Provider == AuthProvider.Google && x.ProviderSubject == googleIdentity.ProviderSubject)
-            .Select(x => (Guid?)x.UserId).SingleOrDefaultAsync(cancellationToken);
-        var hasAcceptance = existingUserId.HasValue && await ConsentPolicy.HasCurrentAsync(_dbContext, existingUserId.Value, cancellationToken);
-        if (acceptance is not null || !hasAcceptance) ConsentPolicy.Validate(acceptance);
+        var existingIdentity = await _dbContext.UserAuthIdentities.Include(x => x.User)
+            .SingleOrDefaultAsync(x => x.Provider == AuthProvider.Google && x.ProviderSubject == googleIdentity.ProviderSubject, cancellationToken);
+        var existingUser = existingIdentity?.User;
+        // Signing into an existing account must remain possible to request help or
+        // exercise privacy choices without accepting a new policy. Creating an
+        // account and explicitly recording acceptance still require the legal gate.
+        if (existingUser is null && acceptance is null)
+        {
+            _consentReleaseGate.EnsureAvailable();
+            ConsentPolicy.Validate(acceptance);
+        }
         await using var transaction = _dbContext.Database.IsRelational()
             ? await _dbContext.Database.BeginTransactionAsync(cancellationToken) : null;
-        var user = await _googleIdentityLinker.LinkOrCreateUserAsync(googleIdentity, cancellationToken);
+        // Never invoke a create-capable linker on the consent-free login path.
+        var user = existingUser ?? await _googleIdentityLinker.LinkOrCreateUserAsync(googleIdentity, cancellationToken);
         if (user.Status != UserStatus.Active)
             throw new ApiException("ACCOUNT_UNAVAILABLE", "This account is unavailable.", 403);
-        if (!hasAcceptance)
+        if (acceptance is not null && !await ConsentPolicy.HasCurrentAsync(_dbContext, user.Id, cancellationToken))
         {
             ConsentPolicy.Add(_dbContext, user.Id, _clock.UtcNow);
             await _dbContext.SaveChangesAsync(cancellationToken);

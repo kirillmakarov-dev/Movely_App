@@ -70,14 +70,14 @@ test("returning login sends no repeated acceptance and ignores duplicate callbac
   expect(onBusy.mock.calls).toEqual([[true], [false]]);
 });
 
-test("login without required policy acceptance returns to explicit registration", async () => {
+test("a new Google identity without required policy acceptance returns to explicit registration", async () => {
   mocks.signIn.mockRejectedValue(new MovelyApiError("Acceptance needed", { errorCode: "POLICY_ACCEPTANCE_REQUIRED", status: 400 }));
   render(<AccountSignIn onSignedIn={vi.fn()} />);
   fireEvent.click(await screen.findByRole("button", { name: "כבר יש לי חשבון" }));
   await waitFor(() => expect(mocks.mount).toHaveBeenCalledOnce());
   await act(async () => callback("token"));
   expect(screen.getAllByRole("checkbox")).toHaveLength(2);
-  expect(screen.getByRole("alert")).toHaveTextContent("לחשבון חדש או לעדכון האישורים");
+  expect(screen.getByRole("alert")).toHaveTextContent("ליצירת חשבון חדש");
   expect(mocks.signIn).toHaveBeenCalledOnce();
 });
 
@@ -87,6 +87,32 @@ test("failed service lookup can retry without losing the page", async () => {
   fireEvent.click(await screen.findByRole("button", { name: "בדיקה נוספת" }));
   expect(await screen.findAllByRole("checkbox")).toHaveLength(2);
   expect(mocks.capabilities).toHaveBeenCalledTimes(2);
+});
+
+test("configured existing login remains available while registration and policy acceptance are closed", async () => {
+  mocks.capabilities.mockResolvedValue({ ...enabled, policyAcceptanceAvailable: false });
+  const signedIn = vi.fn();
+  const existing = { id: "existing", hasCurrentPolicyAcceptance: false };
+  mocks.signIn.mockResolvedValue(existing);
+  render(<AccountSignIn onSignedIn={signedIn} />);
+  await waitFor(() => expect(mocks.mount).toHaveBeenCalledOnce());
+  expect(screen.getByRole("button", { name: "יצירת חשבון" })).toBeDisabled();
+  expect(screen.getByRole("button", { name: "כבר יש לי חשבון" })).toHaveAttribute("aria-pressed", "true");
+  expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+  await act(async () => callback("verified-existing-token"));
+  expect(mocks.signIn).toHaveBeenCalledExactlyOnceWith("verified-existing-token", undefined);
+  expect(signedIn).toHaveBeenCalledWith(existing);
+});
+
+test("a closed registration response never offers unusable consent or retries login automatically", async () => {
+  mocks.capabilities.mockResolvedValue({ ...enabled, policyAcceptanceAvailable: false });
+  mocks.signIn.mockRejectedValue(new MovelyApiError("Registration blocked", { errorCode: "LEGAL_NOT_READY", status: 503 }));
+  render(<AccountSignIn onSignedIn={vi.fn()} />);
+  await waitFor(() => expect(mocks.mount).toHaveBeenCalledOnce());
+  await act(async () => callback("new-identity-token"));
+  expect(screen.getByRole("alert")).toHaveTextContent("הכניסה עצמה אינה מאשרת תנאים חדשים");
+  expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+  expect(mocks.signIn).toHaveBeenCalledOnce();
 });
 
 test("revoking consent removes the button and ignores its stale callback", async () => {

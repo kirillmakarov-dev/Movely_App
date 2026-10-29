@@ -620,7 +620,7 @@ test("Verified phone and accepted terms do not imply contact-sharing consent", a
   await user.click(sharing);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
   await waitFor(() => expect(apiMocks.publishMoveRequest).toHaveBeenCalledWith("request-1", {
-    shareContacts: true, disclosureVersion: "draft-2026-10-29", maxRecipients: 3,
+    shareContacts: true, disclosureVersion: "draft-2026-10-29-v2", maxRecipients: 3,
   }));
 });
 

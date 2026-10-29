@@ -4,6 +4,7 @@ const navigation = [
   ["/mover", "לוח בקרה"],
   ["/mover/requests", "שוק הבקשות"],
   ["/mover/profile", "פרופיל עסקי"],
+  ["/account/support", "פניות ועזרה אישית"],
 ];
 
 export default function MoverShell({ children }: { children: React.ReactNode }) {
@@ -29,7 +30,7 @@ export default function MoverShell({ children }: { children: React.ReactNode }) 
             <p className="text-[10px] font-bold uppercase tracking-widest text-sky-700">עסק מובילים</p>
           </div>
           <p className="hidden text-sm text-slate-500 lg:block">סביבת העבודה העסקית</p>
-          <Link href="/auth" className="button button-ghost">התחברות</Link>
+          <div className="flex flex-wrap items-center gap-2"><Link href="/account/support" className="button button-ghost">עזרה אישית</Link><Link href="/auth" className="button button-ghost">התחברות</Link></div>
         </header>
         <main id="main-content" className="px-4 py-8 pb-24 sm:px-6 lg:px-10 lg:pb-10">{children}</main>
       </div>

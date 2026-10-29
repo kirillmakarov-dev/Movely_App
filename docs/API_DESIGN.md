@@ -429,3 +429,7 @@ Important error codes:
 - PHONE_NOT_VERIFIED
 
 Frontend maps these codes to UX states rather than guessing by HTTP status alone.
+
+## Implemented support/privacy workflow
+
+See [SUPPORT_PRIVACY_WORKFLOW.md](SUPPORT_PRIVACY_WORKFLOW.md) for the owner/admin routes, paged history, intake flag, idempotent operation keys, expected actor/revision binding, status transitions and operational limits. The interface records requests and operator replies; it does not automatically export or delete data. Access to this workflow does not require new policy acceptance or verified phone. An existing linked active Google user can authenticate without silently recording new consent; new registration and explicit acceptance remain gated.
