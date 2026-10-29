@@ -1,9 +1,10 @@
+import { migrateLegacyDraftStep } from "./request-flow-steps";
 import type { FormState } from "./request-flow-types";
 
 const KEY = "movely.anonymous-draft.v1";
 const TTL = 24 * 60 * 60 * 1000;
 const MAX_LENGTH = 250_000;
-type Draft = { version: 1; expiresAt: number; step: number; form: FormState };
+type Draft = { version: 2; expiresAt: number; step: number; form: FormState };
 type RecordValue = Record<string, unknown>;
 const record = (v: unknown): v is RecordValue => typeof v === "object" && v !== null && !Array.isArray(v);
 const text = (v: unknown) => typeof v === "string" && v.length <= 10_000;
@@ -59,23 +60,24 @@ export function readLocalDraft(now = Date.now()): Draft | null {
     if (!raw) return null;
     if (raw.length > MAX_LENGTH) { clearLocalDraft(); return null; }
     const data: unknown = JSON.parse(raw);
-    if (!record(data) || data.version !== 1 || !number(data.expiresAt) ||
+    if (!record(data) || (data.version !== 1 && data.version !== 2) || !number(data.expiresAt) ||
         (data.expiresAt as number) <= now || (data.expiresAt as number) > now + TTL ||
-        !Number.isInteger(data.step) || (data.step as number) < 0 || (data.step as number) > 9 ||
+        !Number.isInteger(data.step) || (data.step as number) < 0 || (data.step as number) > (data.version === 1 ? 9 : 5) ||
         !fields(data.form, rules)) {
       clearLocalDraft(); return null;
     }
-    return { version: 1, expiresAt: data.expiresAt as number, step: data.step as number,
-      form: draftFields(data.form as RecordValue) as unknown as FormState };
+    const form = draftFields(data.form as RecordValue) as unknown as FormState;
+    const step = data.version === 1 ? migrateLegacyDraftStep(form.requestType, data.step as number) : data.step as number;
+    return { version: 2, expiresAt: data.expiresAt as number, step, form };
   } catch { clearLocalDraft(); return null; }
 }
 
 export function saveLocalDraft(form: FormState, step: number, now = Date.now()): boolean {
   try {
-    if (!fields(form, rules) || !Number.isInteger(step) || step < 0 || step > 9) {
+    if (!fields(form, rules) || !Number.isInteger(step) || step < 0 || step > 5) {
       clearLocalDraft(); return false;
     }
-    const value = JSON.stringify({ version: 1, expiresAt: now + TTL, step, form: draftFields(form as unknown as RecordValue) });
+    const value = JSON.stringify({ version: 2, expiresAt: now + TTL, step, form: draftFields(form as unknown as RecordValue) });
     if (value.length > MAX_LENGTH) { clearLocalDraft(); return false; }
     window.sessionStorage.setItem(KEY, value);
     return true;

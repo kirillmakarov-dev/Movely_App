@@ -39,3 +39,8 @@ Typography: Noto Sans Hebrew, variable, Hebrew + Latin, self-hosted through Next
 ## Outstanding release work
 
 This is a visual foundation, not accessibility certification. Form simplification, persistent drafts, legal pages, account consent, real device checks, keyboard/screen-reader audit, and production flows remain tracked in the release plan. Do not mark them complete based on a homepage screenshot.
+
+
+## Request flow refinement (2026-10-29)
+
+Six form stages with a separate publication result. Related access fields belong with each address; comments belong with date/budget. Additional services use a native optional disclosure with selected count. Mobile inventory uses two columns, room choices four compact columns. Keep one publication action in the footer. Label navigation by current stage rather than claiming percentage completion. Existing anonymous drafts migrate to the matching stage without losing content; new draft storage excludes publication confirmation.

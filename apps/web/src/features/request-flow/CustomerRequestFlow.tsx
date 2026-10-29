@@ -6,6 +6,7 @@ import PolicyConsentFields, { emptyPolicyChoice, policyPayload } from "@/compone
 import { LEGAL_DRAFT_VERSION } from "@/lib/legal-content";
 import { acceptPolicies } from "@/lib/movely-api";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { flowStepsForType } from "./request-flow-steps";
 import type { FormState } from "./request-flow-types";
 import { clearLocalDraft, readLocalDraft, saveLocalDraft } from "./local-draft";
 import SiteHeader from "@/components/SiteHeader";
@@ -60,12 +61,6 @@ type PublishState = {
   moveRequest: MoveRequestResponse;
   potentialDuplicateExists: boolean;
 } | null;
-
-type FlowStep = {
-  key: string;
-  title: string;
-  description: string;
-};
 
 const dateFormatter = new Intl.DateTimeFormat("he-IL", {
   month: "short",
@@ -132,106 +127,6 @@ function preferredTimeLabel(value: PreferredMoveTime | null | undefined) {
 function dateFlexibilityLabel(value: MoveDateFlexibility | null | undefined) {
   if (!value) return "";
   return DATE_FLEXIBILITY_OPTIONS.find((option) => option.value === value)?.label ?? value;
-}
-
-function flowStepsForType(requestType: MoveRequestType | null): FlowStep[] {
-  if (requestType === "SmallMove") {
-    return [
-      {
-        key: "move-type",
-        title: "סוג הובלה",
-        description: "אשרו את קטגוריית הבקשה.",
-      },
-      {
-        key: "items",
-        title: "פריטים",
-        description: "הוסיפו פריט אחד או יותר עם כמות ומידות משוערות.",
-      },
-      {
-        key: "route",
-        title: "איסוף ויעד",
-        description: "הוסיפו ערים, כתובות מדויקות ופרטי גישה.",
-      },
-      {
-        key: "access",
-        title: "גישה",
-        description: "ציינו קומות, מעלית, מדרגות וגישה למשאית.",
-      },
-      {
-        key: "schedule",
-        title: "תאריך ותקציב",
-        description: "בחרו תאריך, שעה, גמישות וטווח תקציב.",
-      },
-      {
-        key: "review",
-        title: "בדיקה",
-        description: "עברו על הפרטים ותקנו אותם לפני הפרסום.",
-      },
-      {
-        key: "account",
-        title: "חשבון / אימות טלפון",
-        description: "התחברו ואמתו את מספר הטלפון אם צריך.",
-      },
-      {
-        key: "publish",
-        title: "פרסום",
-        description: "שלחו את הבקשה לפרסום.",
-      },
-    ];
-  }
-
-  return [
-    {
-      key: "move-type",
-      title: "סוג הובלה",
-      description: "אשרו את קטגוריית הבקשה.",
-    },
-    {
-      key: "route",
-      title: "איסוף ויעד",
-      description: "הוסיפו ערים, כתובות מדויקות ופרטי גישה.",
-    },
-    {
-      key: "apartment",
-      title: "פרטי הדירה",
-      description: "בחרו מספר חדרים וארגזים.",
-    },
-    {
-      key: "inventory",
-      title: "ארגזים ותכולה",
-      description: "הוסיפו פריטים נפוצים וכמויות.",
-    },
-    {
-      key: "services",
-      title: "שירותים ופריטים מיוחדים",
-      description: "הוסיפו אריזה, פירוק ופריטים רגישים.",
-    },
-    {
-      key: "schedule",
-      title: "תאריך ותקציב",
-      description: "בחרו תאריך, שעה, גמישות וטווח תקציב.",
-    },
-    {
-      key: "photos",
-      title: "תמונות והערות",
-      description: "הוסיפו הערות שחשוב למוביל לדעת. העלאת תמונות תיפתח בהמשך.",
-    },
-    {
-      key: "review",
-      title: "בדיקה",
-      description: "עברו על הפרטים ותקנו אותם לפני הפרסום.",
-    },
-    {
-      key: "account",
-      title: "חשבון / אימות טלפון",
-      description: "התחברו ואמתו את מספר הטלפון אם צריך.",
-    },
-    {
-      key: "publish",
-      title: "פרסום",
-      description: "שלחו את הבקשה לפרסום.",
-    },
-  ];
 }
 
 function hydrateFromRequest(request: MoveRequestResponse): FormState {
@@ -414,33 +309,16 @@ function inferStepIndex(request: MoveRequestResponse) {
     return stepCountForType(request.requestType) - 1;
   }
 
+  const hasRoute = Boolean(version.pickup?.city && version.pickup?.exactAddress && version.destination?.city && version.destination?.exactAddress);
   if (request.requestType === "SmallMove") {
-    if (version.smallMoveItems.length === 0) {
-      return 1;
-    }
-    if (!version.pickup || !version.destination) {
-      return 2;
-    }
-    if (!version.schedule.moveDate) {
-      return 4;
-    }
-    return 5;
+    if (version.smallMoveItems.length === 0) return 1;
+    if (!hasRoute) return 2;
+  } else {
+    if (!hasRoute) return 1;
+    if (!version.apartmentMove?.numberOfRooms) return 2;
   }
-
-  if (!version.pickup || !version.destination) {
-    return 1;
-  }
-  if (!version.apartmentMove?.numberOfRooms) {
-    return 2;
-  }
-  if ((version.apartmentMove.inventoryItems?.length ?? 0) === 0) {
-    return 3;
-  }
-  if (!version.schedule.moveDate) {
-    return 5;
-  }
-
-  return 7;
+  if (!version.schedule.moveDate) return 3;
+  return 4;
 }
 
 function LoadingState() {
@@ -502,6 +380,7 @@ export default function CustomerRequestFlow({
   const accountStepIndex = Math.max(0, steps.findIndex((step) => step.key === "account"));
   const publishStepIndex = Math.max(0, steps.findIndex((step) => step.key === "publish"));
   const currentStep = steps[stepIndex] ?? steps[0];
+  const extraSelectionCount = [form.furnitureDisassembly, form.furnitureAssembly, form.packingAssistance, form.packingMaterials].filter(Boolean).length + form.specialItems.length;
 
   useEffect(() => {
     if (previousStep.current !== stepIndex) {
@@ -976,7 +855,7 @@ export default function CustomerRequestFlow({
             />
           </label>
           <label className="space-y-2">
-            {renderInputLabel("כתובת מדויקת", "השדה נשאר בתוך תהליך הלקוח עד שניתנת גישת הצגה.")}
+            {renderInputLabel("כתובת מדויקת", "רחוב, מספר בית ודירה, אם יש.")}
             <input
               aria-label={`${title} כתובת מדויקת`}
               autoComplete={`section-${prefix} street-address`}
@@ -1308,12 +1187,13 @@ export default function CustomerRequestFlow({
   function renderApartmentInventory() {
     return (
       <div className="space-y-4">
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        <div className="grid grid-cols-2 gap-3 xl:grid-cols-3">
           {APARTMENT_INVENTORY_OPTIONS.map((option) => {
             const selected = form.apartmentInventory.some((item) => item.apartmentInventoryType === option.value);
             return (
               <button
                 key={option.value}
+                aria-pressed={selected}
                 type="button"
                 onClick={() =>
                   setForm((current) => {
@@ -1368,7 +1248,7 @@ export default function CustomerRequestFlow({
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{item.apartmentInventoryType}</p>
+                    <p className="text-sm font-semibold text-slate-900">{APARTMENT_INVENTORY_OPTIONS.find((option) => option.value === item.apartmentInventoryType)?.label ?? item.name}</p>
                     <p className="text-sm leading-6 text-slate-500">נבחר עבור תכולת הדירה.</p>
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
@@ -1455,6 +1335,7 @@ export default function CustomerRequestFlow({
               <button
                 type="button"
                 key={option.key}
+                aria-pressed={option.checked}
                 onClick={() =>
                   setForm((current) => ({
                     ...current,
@@ -1595,12 +1476,14 @@ export default function CustomerRequestFlow({
       <div className="space-y-4">
         <fieldset className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
           <legend className="px-2 text-sm font-semibold text-slate-900">גודל הדירה</legend>
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+          <div className="mt-4 grid grid-cols-4 gap-2">
             {ROOM_OPTIONS.map((rooms) => (
               <button
                 type="button"
                 key={rooms}
                 onClick={() => updateForm({ apartmentRooms: rooms })}
+                aria-pressed={form.apartmentRooms === rooms}
+                aria-label={rooms === 1 ? "חדר אחד" : `${rooms} חדרים`}
                 className={`rounded-2xl border px-4 py-3 text-sm font-medium transition cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-slate-950 ${
                   form.apartmentRooms === rooms
                     ? "border-slate-900 bg-slate-950 text-white"
@@ -1622,6 +1505,8 @@ export default function CustomerRequestFlow({
                 <div className="mt-3 flex items-center gap-3">
                   <button
                     type="button"
+                    aria-label={`הפחתת ${option.label}`}
+                    disabled={form[boxKeys[option.key]] === 0}
                     onClick={() =>
                       setForm((current) => ({
                         ...current,
@@ -1637,18 +1522,21 @@ export default function CustomerRequestFlow({
                   </button>
                   <input
                     type="number"
+                    aria-label={`כמות ${option.label}`}
+                    step={1}
                     min={0}
                     value={form[boxKeys[option.key]]}
                     onChange={(event) =>
                       setForm((current) => ({
                         ...current,
-                        [boxKeys[option.key]]: Number(event.target.value),
+                        [boxKeys[option.key]]: Math.max(0, Math.trunc(Number(event.target.value) || 0)),
                       }))
                     }
                     className="w-20 rounded-2xl border border-slate-300 px-3 py-2 text-center text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
                   />
                   <button
                     type="button"
+                    aria-label={`הוספת ${option.label}`}
                     onClick={() =>
                       setForm((current) => ({
                         ...current,
@@ -1668,7 +1556,7 @@ export default function CustomerRequestFlow({
         <div className="space-y-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <div>
-              <p className="text-sm font-semibold text-slate-900">תכולה נפוצה</p>
+              <h3 className="text-lg font-bold text-slate-900">רהיטים ותכולה</h3>
               <p className="text-sm leading-6 text-slate-500">הוסיפו את הפריטים המשפיעים ביותר על הצעת המחיר.</p>
             </div>
           </div>
@@ -1756,46 +1644,15 @@ export default function CustomerRequestFlow({
     );
   }
 
-  function renderPhotosStep() {
+  function renderNotesSection() {
     return (
       <div className="space-y-4">
         <div className="rounded-xl border border-sky-200 bg-sky-50 p-4 text-sm leading-7 text-sky-950">
           העלאת תמונות עדיין אינה זמינה. בינתיים אפשר לתאר פריטים, גודל או בעיות גישה בהערות למטה.
         </div>
 
-        <div className="space-y-3">
-          {form.pendingPhotos.length ? (
-            form.pendingPhotos.map((photo) => (
-              <div
-                key={photo.id}
-                className="flex items-center justify-between rounded-[20px] border border-slate-200 bg-white px-4 py-3"
-              >
-                <div>
-                  <p className="text-sm font-semibold text-slate-900">{photo.name}</p>
-                  <p className="text-sm text-slate-500">ממתין להעלאה, {photo.sizeLabel}</p>
-                </div>
-                <button
-                  type="button"
-                  onClick={() =>
-                    updateForm({
-                      pendingPhotos: form.pendingPhotos.filter((item) => item.id !== photo.id),
-                    })
-                  }
-                  className="rounded-full border border-slate-200 px-3 py-2 text-sm font-medium text-slate-600 transition hover:bg-slate-50 cursor-pointer"
-                >
-                  הסרה
-                </button>
-              </div>
-            ))
-          ) : (
-            <div className="rounded-[24px] border border-dashed border-slate-300 p-6 text-sm leading-6 text-slate-500">
-              עדיין לא נבחרו תמונות. הוסיפו אותן כשתרצו לתעד את הגודל או הגישה של ההובלה.
-            </div>
-          )}
-        </div>
-
         <label className="space-y-2 block">
-          {renderInputLabel("הערות", "ספרו למובילים על כל דבר שלא נכנס לטופס.")}
+          {renderInputLabel("הערות (רשות)", "ספרו למובילים על כל דבר שלא נכנס לטופס.")}
           <textarea
             value={form.customerComment}
             onChange={(event) => updateForm({ customerComment: event.target.value })}
@@ -1966,7 +1823,6 @@ export default function CustomerRequestFlow({
   }
 
   function renderAccountStep() {
-    const isVerified = Boolean(user?.phoneVerified);
     return (
       <div className="space-y-6">
         {!user?.hasCurrentPolicyAcceptance && <PolicyConsentFields value={policyChoice} onChange={setPolicyChoice} />}
@@ -2059,25 +1915,7 @@ export default function CustomerRequestFlow({
               קוד פיתוח: {otpDebugCode}
             </p>
           ) : null}
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handlePublish}
-              disabled={!isVerified}
-              className={`rounded-full px-5 py-3 text-sm font-semibold transition cursor-pointer ${
-                isVerified
-                  ? "bg-slate-950 text-white hover:bg-slate-800"
-                  : "cursor-not-allowed bg-slate-200 text-slate-500"
-              }`}
-            >
-              פרסמו עכשיו
-            </button>
-            {!isVerified ? (
-              <span className="text-sm leading-6 text-slate-500">
-                כפתור הפרסום יופעל אחרי אימות הטלפון.
-              </span>
-            ) : null}
-          </div>
+          <p className="mt-4 text-base leading-7 text-slate-600">{user?.phoneVerified ? "הטלפון מאומת. בדקו את האישורים ואז בחרו בפרסום הבקשה בתחתית הטופס." : "לפני הפרסום צריך לאמת את הטלפון."}</p>
         </div>
       </div>
     );
@@ -2087,7 +1925,7 @@ export default function CustomerRequestFlow({
     return (
       <div className="space-y-4">
         <div className="rounded-[28px] border border-emerald-200 bg-emerald-50 px-5 py-5 text-emerald-950">
-          <h3 className="text-lg font-semibold">הבקשה פורסמה</h3>
+          <p className="text-lg font-semibold">תודה, הפרטים נשמרו.</p>
           <p className="mt-2 text-sm leading-6">
             הבקשה פעילה ומוכנה לשלב הבא של המוצר.
           </p>
@@ -2118,29 +1956,22 @@ export default function CustomerRequestFlow({
       case "route":
         return (
           <div className="space-y-4">
-            {renderRouteFields("pickup", "איסוף", form.requestType === "SmallMove" ? "route" : "combined")}
-            {renderRouteFields("destination", "יעד", form.requestType === "SmallMove" ? "route" : "combined")}
+            {renderRouteFields("pickup", "איסוף", "combined")}
+            {renderRouteFields("destination", "יעד", "combined")}
           </div>
         );
-      case "apartment":
-        return renderApartmentStep();
-      case "inventory":
-        return renderApartmentInventory();
-      case "services":
-        return renderSpecialItems();
+      case "contents":
+        return <div className="space-y-6">
+          {renderApartmentStep()}
+          <details className="wizard-extra-fields rounded-2xl border border-slate-200 bg-white p-4">
+            <summary className="min-h-12 cursor-pointer font-semibold">שירותים נוספים ופריטים מיוחדים (רשות){extraSelectionCount > 0 ? ` · ${extraSelectionCount} בחירות` : ""}</summary>
+            <div className="mt-4">{renderSpecialItems()}</div>
+          </details>
+        </div>;
       case "items":
         return renderSmallMoveItems();
-      case "access":
-        return (
-          <div className="space-y-4">
-            {renderRouteFields("pickup", "איסוף", "access")}
-            {renderRouteFields("destination", "יעד", "access")}
-          </div>
-        );
       case "schedule":
-        return renderScheduleStep();
-      case "photos":
-        return renderPhotosStep();
+        return <div className="space-y-6">{renderScheduleStep()}{renderNotesSection()}</div>;
       case "review":
         return renderReviewStep();
       case "account":
@@ -2152,7 +1983,10 @@ export default function CustomerRequestFlow({
     }
   }
 
-  const progressPercent = Math.max(0, Math.min(100, ((stepIndex + 1) / steps.length) * 100));
+  const formStepCount = steps.length - 1;
+  const progressStep = Math.min(stepIndex + 1, formStepCount);
+  const progressPercent = (progressStep / formStepCount) * 100;
+  const progressLabel = stepIndex === publishStepIndex ? "הבקשה פורסמה" : `שלב ${progressStep} מתוך ${formStepCount}`;
 
   return (
     <>
@@ -2177,18 +2011,15 @@ export default function CustomerRequestFlow({
             <div className="flex flex-col gap-4 border-b border-slate-200 pb-4 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p className="text-sm font-semibold text-sky-800">
-                  {locale === "he" ? `שלב ${stepIndex + 1} מתוך ${steps.length}` : `Step ${stepIndex + 1} of ${steps.length}`}
+                  {progressLabel}
                 </p>
                 <h2 ref={stepHeading} tabIndex={-1} className="wizard-heading text-xl font-bold text-slate-950">{currentStep?.title ?? "בואו נתחיל"}</h2>
                 <p className="text-sm leading-6 text-slate-500">{currentStep?.description}</p>
               </div>
-              <div className="text-sm font-medium text-slate-600">
-                {locale === "he" ? `${Math.round(progressPercent)}% מהמסלול` : `${Math.round(progressPercent)}% complete`}
-              </div>
             </div>
 
             <div className="mt-4">
-              <div role="progressbar" aria-label="התקדמות בשלבי הבקשה" aria-valuemin={1} aria-valuemax={steps.length} aria-valuenow={stepIndex + 1} aria-valuetext={`שלב ${stepIndex + 1} מתוך ${steps.length}`} className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
+              <div role="progressbar" aria-label="התקדמות בשלבי הבקשה" aria-valuemin={1} aria-valuemax={formStepCount} aria-valuenow={progressStep} aria-valuetext={progressLabel} className="h-2 w-full overflow-hidden rounded-full bg-slate-200">
                 <div
                   className="h-full rounded-full bg-sky-700 transition-all duration-300"
                   style={{ width: `${progressPercent}%` }}
@@ -2199,7 +2030,7 @@ export default function CustomerRequestFlow({
             <details ref={stepNavigation} className="wizard-navigation mt-4">
               <summary>מעבר לשלב אחר</summary>
               <nav aria-label="שלבי הבקשה" className="wizard-step-tabs grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-                {steps.filter((step) => step.key !== "publish" || publishState).map((step, index) => (
+                {steps.filter((step) => step.key !== "publish").map((step, index) => (
                   <button key={step.key} type="button" disabled={busyAction !== null || isBootstrapping}
                     aria-current={index === stepIndex ? "step" : undefined}
                     onClick={() => {
@@ -2351,7 +2182,7 @@ export default function CustomerRequestFlow({
                 />
                 <StatRow
                   label="התקדמות"
-                  value={`${Math.round(progressPercent)}%`}
+                  value={progressLabel}
                 />
                 <StatRow
                   label="מצב שמירה"

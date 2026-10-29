@@ -1,5 +1,5 @@
 import React from "react";
-import { cleanup, render, screen, waitFor } from "@testing-library/react";
+import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomerRequestFlow from "./CustomerRequestFlow";
 import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRequestType, type MoveRequestVersionResponse, type UpdateMoveRequestRequest } from "@/lib/movely-api";
@@ -360,7 +360,7 @@ test("WIZARD-006 Apartment flow shows apartment-specific fields.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledTimes(2));
-  await openStep(user, /פרטי הדירה/i);
+  await openStep(user, /תכולת הדירה/i);
   expect(screen.getByText(/גודל הדירה/i)).toBeInTheDocument();
   expect(screen.getByText(/^ארגזים$/i)).toBeInTheDocument();
 });
@@ -409,7 +409,7 @@ test("WIZARD-009 Anonymous user is sent through auth before publish.", async () 
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await openStep(user, /חשבון \/ אימות טלפון/i);
+  await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/נדרשת התחברות/i)).toBeInTheDocument();
@@ -421,7 +421,7 @@ test("WIZARD-010 Unverified phone requires OTP before publish.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await openStep(user, /חשבון \/ אימות טלפון/i);
+  await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText("נדרש אימות טלפון", { exact: true })).toBeInTheDocument();
@@ -434,7 +434,7 @@ test("WIZARD-011 Verified customer can publish valid request.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await openStep(user, /חשבון \/ אימות טלפון/i);
+  await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
@@ -453,7 +453,7 @@ test("WIZARD-012 Server validation error is rendered correctly.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await openStep(user, /חשבון \/ אימות טלפון/i);
+  await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
@@ -473,7 +473,7 @@ test("WIZARD-013 Potential duplicate warning is handled.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await openStep(user, /חשבון \/ אימות טלפון/i);
+  await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
@@ -493,7 +493,7 @@ test("WIZARD-014 Active request limit error is handled.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
-  await openStep(user, /חשבון \/ אימות טלפון/i);
+  await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
@@ -543,7 +543,7 @@ test("Publish saves the latest edits even when the user jumps directly to the ac
   const city = screen.getByRole("textbox", { name: /^איסוף עיר/ });
   await user.clear(city);
   await user.type(city, "Updated before publishing");
-  await openStep(user, /חשבון \/ אימות טלפון/);
+  await openStep(user, /אימות ופרסום/);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
   await waitFor(() => expect(apiMocks.publishMoveRequest).toHaveBeenCalledTimes(1));
@@ -557,7 +557,7 @@ test("Verified phone and accepted terms do not imply contact-sharing consent", a
   await renderApp({ user: makeUser() });
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
   await user.click(screen.getByRole("button", { name: /^המשך$/ }));
-  await openStep(user, /חשבון \/ אימות טלפון/);
+  await openStep(user, /אימות ופרסום/);
   const sharing = screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ });
   expect(sharing).not.toBeChecked();
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
@@ -574,10 +574,48 @@ test("A changed recipient limit requires a fresh decision and does not publish",
   await renderApp({ user: makeUser() });
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
   await user.click(screen.getByRole("button", { name: /^המשך$/ }));
-  await openStep(user, /חשבון \/ אימות טלפון/);
+  await openStep(user, /אימות ופרסום/);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   apiMocks.updateMoveRequest.mockResolvedValueOnce(makeRequestResponse({ maxLeadBuyers: 5 }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
   expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
   expect(screen.getByRole("checkbox", { name: /לעד 5 עסקים/ })).not.toBeChecked();
+});
+
+
+test("WIZARD-021 Both flows expose six form steps and keep confirmation out of navigation.", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  for (const typeLabel of [/הובלת דירה הובלה מלאה/, /הובלה קטנה \/ פריטים בודדים ספה/]) {
+    await user.click(screen.getByRole("button", { name: typeLabel }));
+    await user.click(screen.getByText("מעבר לשלב אחר"));
+    expect(within(screen.getByRole("navigation", { name: "שלבי הבקשה" })).getAllByRole("button")).toHaveLength(6);
+    expect(screen.getByRole("progressbar")).toHaveAttribute("aria-valuemax", "6");
+    expect(screen.queryByRole("button", { name: "הבקשה פורסמה" })).not.toBeInTheDocument();
+    await user.click(screen.getByText("מעבר לשלב אחר"));
+  }
+});
+
+test("WIZARD-022 Grouped apartment fields and notes survive moving between stages.", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await openStep(user, /תכולת הדירה/);
+  await user.click(screen.getByRole("button", { name: "3 חדרים" }));
+  await user.click(screen.getByRole("button", { name: /^ספה ספה פינתית/ }));
+  const quantity = screen.getAllByRole("spinbutton", { name: /^כמות / })[0];
+  await user.clear(quantity);
+  await user.type(quantity, "4");
+  await user.click(screen.getByText("שירותים נוספים ופריטים מיוחדים (רשות)"));
+  await user.click(screen.getByRole("button", { name: "פירוק רהיטים" }));
+  await openStep(user, /תאריך ותקציב/);
+  await user.type(screen.getByRole("textbox", { name: /הערות/ }), "יש כלב בבית");
+  await openStep(user, /תכולת הדירה/);
+  expect(screen.getByRole("button", { name: "3 חדרים" })).toHaveAttribute("aria-pressed", "true");
+  expect(screen.getAllByRole("spinbutton", { name: /^כמות / })[0]).toHaveValue(4);
+  expect(screen.getByRole("button", { name: /^ספה ספה פינתית/ })).toHaveAttribute("aria-pressed", "true");
+  await user.click(screen.getByText(/שירותים נוספים ופריטים מיוחדים \(רשות\) · 1 בחירות/));
+  expect(screen.getByRole("button", { name: "פירוק רהיטים" })).toHaveAttribute("aria-pressed", "true");
+  await openStep(user, /תאריך ותקציב/);
+  expect(screen.getByRole("textbox", { name: /הערות/ })).toHaveValue("יש כלב בבית");
 });

@@ -56,3 +56,21 @@ test("clearing a draft removes only the application draft", () => {
   expect(readLocalDraft()).toBeNull();
   expect(window.sessionStorage.getItem("unrelated")).toBe("keep");
 });
+
+
+test.each([
+  ["ApartmentMove", [0, 1, 2, 2, 2, 3, 3, 4, 5, 5]],
+  ["SmallMove", [0, 1, 2, 2, 3, 4, 5, 5]],
+] as const)("legacy %s drafts restore the correct group without losing content or extending expiry", (requestType, mapping) => {
+  mapping.forEach((expected, oldStep) => {
+    window.sessionStorage.setItem(KEY, JSON.stringify({ version: 1, expiresAt: 10000, step: oldStep, form: { ...form, requestType } }));
+    expect(readLocalDraft(1000)).toMatchObject({ version: 2, step: expected, expiresAt: 10000,
+      form: { requestType, pickup: location, apartmentRooms: 3, customerComment: "Handle carefully", pendingPhotos: [] } });
+  });
+});
+
+test("new drafts cannot restore a false publication confirmation", () => {
+  expect(saveLocalDraft(form, 6, 1000)).toBe(false);
+  window.sessionStorage.setItem(KEY, JSON.stringify({ version: 2, expiresAt: 10000, step: 6, form }));
+  expect(readLocalDraft(1000)).toBeNull();
+});
