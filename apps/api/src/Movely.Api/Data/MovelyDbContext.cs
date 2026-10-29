@@ -175,6 +175,7 @@ public sealed class MovelyDbContext : DbContext
             entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32).IsConcurrencyToken();
             entity.Property(x => x.LeadSalesStatus).HasConversion<string>().HasMaxLength(32).IsConcurrencyToken();
             entity.Property(x => x.CurrentVersionId).IsConcurrencyToken();
+            entity.Property(x => x.CustomerUserId).IsConcurrencyToken();
             entity.Property(x => x.LeadPriceAgorot);
             entity.Property(x => x.MaxLeadBuyers).IsConcurrencyToken();
             entity.Property(x => x.ActiveBuyerCount).IsConcurrencyToken();

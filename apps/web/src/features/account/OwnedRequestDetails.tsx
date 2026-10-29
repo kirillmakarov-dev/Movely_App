@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import Link from "@/components/SafeLink";
 import {
   cancelMoveRequest, closeMoveRequest, getMoveRequest, MovelyApiError,
   type MoveItemDto, type MoveLocationDto, type MoveRequestResponse,
 } from "@/lib/movely-api";
 import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/presentation";
+import PublicationStatus from "./PublicationStatus";
 import {
   APARTMENT_INVENTORY_OPTIONS, DATE_FLEXIBILITY_OPTIONS, PREFERRED_TIME_OPTIONS,
   SMALL_MOVE_CATEGORIES, SPECIAL_ITEM_OPTIONS,
@@ -98,9 +99,34 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
   const [notice, setNotice] = useState("");
   const mounted = useRef(false);
   const mutationPending = useRef(false);
+  const generation = useRef(0);
+  const [mutationBusy, setMutationBusy] = useState(false);
+  const [publicationBusy, setPublicationBusy] = useState(false);
   const confirmationHeading = useRef<HTMLHeadingElement>(null);
   const actionTrigger = useRef<HTMLButtonElement | null>(null);
   const view: LoadState = state.attempt === attempt ? state : { kind: "loading", attempt };
+  const refresh = useCallback(() => {
+    generation.current += 1;
+    setActionState(null);
+    setNotice("");
+    setPublicationBusy(false);
+    setAttempt((value) => value + 1);
+  }, []);
+  const publicationAccessDenied = useCallback((status: number) => {
+    generation.current += 1;
+    setState({ kind: "error", attempt, failure: status === 401 ? "unauthorized" : status === 403 ? "forbidden" : "missing" });
+    setActionState(null); setNotice("");
+  }, [attempt]);
+
+  useEffect(() => {
+    let foreground = document.visibilityState === "visible" && document.hasFocus();
+    const focus = () => { if (document.visibilityState === "visible" && !foreground) { foreground = true; refresh(); } };
+    const blur = () => { foreground = false; };
+    const visibility = () => { if (document.visibilityState === "hidden") blur(); else focus(); };
+    const restored = (event: PageTransitionEvent) => { if (event.persisted) { blur(); focus(); } };
+    window.addEventListener("focus", focus); window.addEventListener("blur", blur); window.addEventListener("pageshow", restored); document.addEventListener("visibilitychange", visibility);
+    return () => { window.removeEventListener("focus", focus); window.removeEventListener("blur", blur); window.removeEventListener("pageshow", restored); document.removeEventListener("visibilitychange", visibility); };
+  }, [refresh]);
 
   useEffect(() => {
     mounted.current = true;
@@ -142,19 +168,15 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
     else if (actionState === null) actionTrigger.current?.focus();
   }, [actionState]);
 
-  function refresh() {
-    setActionState(null);
-    setNotice("");
-    setAttempt((value) => value + 1);
-  }
-
   async function confirmAction(action: Action) {
-    if (mutationPending.current) return;
+    if (mutationPending.current || publicationBusy) return;
     mutationPending.current = true;
+    setMutationBusy(true);
+    const startedGeneration = generation.current;
     setActionState({ kind: "busy", action });
     try {
       const request = await (action === "close" ? closeMoveRequest(requestId) : cancelMoveRequest(requestId));
-      if (!mounted.current) return;
+      if (!mounted.current || generation.current !== startedGeneration) return;
       if (!isRequestForRoute(request, requestId) || request.status !== (action === "close" ? "Closed" : "Cancelled")) {
         setActionState({ kind: "uncertain" });
         return;
@@ -163,7 +185,7 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
       setActionState(null);
       setNotice(action === "close" ? "חיפוש המוביל נסגר. פרטי הבקשה נשארים זמינים כאן." : "הבקשה בוטלה. פרטי הבקשה נשארים זמינים כאן.");
     } catch (error) {
-      if (!mounted.current) return;
+      if (!mounted.current || generation.current !== startedGeneration) return;
       if (error instanceof MovelyApiError && [401, 403, 404].includes(error.status)) {
         const failure = error.status === 401 ? "unauthorized" : error.status === 403 ? "forbidden" : "missing";
         setState({ kind: "error", failure, attempt });
@@ -173,6 +195,7 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
       setActionState({ kind: error instanceof MovelyApiError && error.status > 0 ? "error" : "uncertain" });
     } finally {
       mutationPending.current = false;
+      if (mounted.current) setMutationBusy(false);
     }
   }
 
@@ -208,8 +231,8 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
       {request.status === "Draft" || canClose || canCancel ? <Panel title="ניהול הבקשה">
         <div hidden={!!actionState} className={actionState ? "hidden" : "flex flex-wrap gap-3"}>
           {request.status === "Draft" ? <Link href={`/request/new?requestId=${encodeURIComponent(request.id)}`} className="button button-primary">המשך עריכת הטיוטה</Link> : null}
-          {canClose ? <button type="button" className="button button-primary" onClick={(event) => { actionTrigger.current = event.currentTarget; setActionState({ kind: "confirm", action: "close" }); }}>סיום חיפוש מוביל</button> : null}
-          {canCancel ? <button type="button" className="button button-secondary" onClick={(event) => { actionTrigger.current = event.currentTarget; setActionState({ kind: "confirm", action: "cancel" }); }}>ביטול הבקשה</button> : null}
+          {canClose ? <button type="button" className="button button-primary" disabled={mutationBusy || publicationBusy} onClick={(event) => { actionTrigger.current = event.currentTarget; setActionState({ kind: "confirm", action: "close" }); }}>סיום חיפוש מוביל</button> : null}
+          {canCancel ? <button type="button" className="button button-secondary" disabled={mutationBusy || publicationBusy} onClick={(event) => { actionTrigger.current = event.currentTarget; setActionState({ kind: "confirm", action: "cancel" }); }}>ביטול הבקשה</button> : null}
         </div>
         {actionState?.kind === "confirm" || actionState?.kind === "busy" ? <div role="group" aria-labelledby="request-action-heading" aria-busy={actionState.kind === "busy"}>
           <h3 id="request-action-heading" ref={confirmationHeading} tabIndex={-1} className="text-lg font-bold">{actionState.action === "close" ? "לסיים את חיפוש המוביל?" : "לבטל את הבקשה?"}</h3>
@@ -227,6 +250,8 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
         </div> : null}
       </Panel> : null}
 
+      <PublicationStatus key={`${request.currentVersion?.id ?? "empty"}-${request.status}-${attempt}`} requestId={request.id} reviewedVersionId={request.currentVersion?.id ?? null} requestStatus={request.status} disabled={mutationBusy || publicationBusy || !!actionState} onRefreshRequest={refresh} onAccessDenied={publicationAccessDenied} onBusyChange={setPublicationBusy} />
+
       <Panel title="מצב הבקשה"><dl className="grid gap-4 sm:grid-cols-2">
         <Detail label="נוצרה בתאריך">{displayDate(request.createdAt)}</Detail><Detail label="עודכנה בתאריך">{displayDate(request.updatedAt)}</Detail>
         {request.publishedAt ? <Detail label="פורסמה בתאריך">{displayDate(request.publishedAt)}</Detail> : null}
@@ -234,7 +259,7 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
         {request.cancelledAt ? <Detail label="בוטלה בתאריך">{displayDate(request.cancelledAt)}</Detail> : null}
       </dl></Panel>
 
-      {version ? <>
+      {version ? <div id="owned-request-content" tabIndex={-1} className="scroll-mt-24 space-y-6">
         <div className="grid min-w-0 gap-6 xl:grid-cols-2"><LocationDetails title="מאיפה מובילים" location={version.pickup} /><LocationDetails title="לאן מובילים" location={version.destination} /></div>
         <Panel title="מועד ותקציב"><dl className="grid gap-4 sm:grid-cols-2">
           <Detail label="תאריך ההובלה">{displayDate(version.schedule?.moveDate, true)}</Detail>
@@ -252,7 +277,7 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
         <Items title="פריטים מיוחדים" items={version.specialItems ?? []} />
         <Panel title="שירותים נוספים">{selectedServices.length ? <ul className="list-inside list-disc space-y-2 text-slate-700">{selectedServices.map((service) => <li key={String(service)}>{service}</li>)}</ul> : <p className="text-slate-600">לא נבחרו שירותים נוספים.</p>}</Panel>
         <Panel title="הערות שלכם"><p className="whitespace-pre-wrap break-words leading-7 text-slate-700">{version.customerComment || "לא נוספו הערות."}</p></Panel>
-      </> : <Panel title="פרטי ההובלה"><p className="leading-7 text-slate-700">עדיין לא נשמרו פרטי הובלה בבקשה הזאת.</p></Panel>}
+      </div> : <Panel title="פרטי ההובלה"><p className="leading-7 text-slate-700">עדיין לא נשמרו פרטי הובלה בבקשה הזאת.</p></Panel>}
       <Panel title="תמונות"><p className="leading-7 text-slate-600">הצגת תמונות אינה זמינה כרגע.</p></Panel>
     </> : null}
   </div>;

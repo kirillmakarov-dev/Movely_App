@@ -1,4 +1,6 @@
 using Movely.Api.Shared.Authorization;
+using System.Threading.RateLimiting;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Movely.Api.Modules.MoveRequests;
 
@@ -8,6 +10,13 @@ public static class MoveRequestsModule
     {
         services.Configure<MoveRequestOptions>(configuration.GetSection("MoveRequests"));
         services.AddScoped<IMoveRequestService, MoveRequestService>();
+        services.AddRateLimiter(options => {
+            Add("PublicationRead", 60, TimeSpan.FromMinutes(1));
+            Add("ContactSharingWrite", 10, TimeSpan.FromMinutes(5));
+            void Add(string name, int limit, TimeSpan window) => options.AddPolicy(name, context => RateLimitPartition.GetFixedWindowLimiter(
+                context.User.Identity?.IsAuthenticated == true ? context.User.FindFirst("movely_user_id")?.Value ?? "anonymous" : "anonymous",
+                _ => new FixedWindowRateLimiterOptions { PermitLimit = limit, Window = window, QueueLimit = 0, AutoReplenishment = true }));
+        });
         return services;
     }
 
@@ -15,6 +24,13 @@ public static class MoveRequestsModule
     {
         var group = app.MapGroup("/api/v1/move-requests")
             .RequireAuthorization(AuthorizationExtensions.CustomerOnly);
+
+        group.MapGet("/{requestId:guid}/publication-status", async (Guid requestId, ICurrentUser user, IMoveRequestService service, CancellationToken ct)
+            => user.UserId is { } id ? Results.Ok(await service.GetPublicationStatusAsync(id, requestId, ct)) : Results.Unauthorized())
+            .RequireRateLimiting("PublicationRead");
+        group.MapPost("/{requestId:guid}/contact-sharing", async (Guid requestId, RenewContactSharingRequest request, ICurrentUser user, IMoveRequestService service, CancellationToken ct)
+            => user.UserId is { } id ? Results.Ok(await service.RenewContactSharingAsync(id, requestId, request, ct)) : Results.Unauthorized())
+            .RequireRateLimiting("ContactSharingWrite");
 
         group.MapPost("/", async (
             CreateMoveRequestRequest request,

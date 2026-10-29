@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/components/SafeLink";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { getCurrentUser, getMyMoveRequests, MovelyApiError, type CurrentUser, type MoveRequestSummaryResponse } from "@/lib/movely-api";
 import { formatRequestStatus, formatRequestType } from "@/lib/presentation";
 
@@ -18,9 +18,40 @@ export default function AccountRequests() {
   const [state, setState] = useState<LoadState>("loading");
   const [attempt, setAttempt] = useState(0);
   const [filter, setFilter] = useState<Filter>("all");
+  const activeRead = useRef<AbortController | null>(null);
+  const refresh = useCallback(() => {
+    activeRead.current?.abort();
+    setUser(null);
+    setRequests([]);
+    setState("loading");
+    setAttempt((value) => value + 1);
+  }, []);
+
+  useEffect(() => {
+    let foreground = document.visibilityState === "visible" && document.hasFocus();
+    const focus = () => {
+      if (document.visibilityState !== "visible" || foreground) return;
+      foreground = true;
+      refresh();
+    };
+    const blur = () => { foreground = false; };
+    const visibility = () => { if (document.visibilityState === "hidden") blur(); else focus(); };
+    const restored = (event: PageTransitionEvent) => { if (event.persisted) { blur(); focus(); } };
+    window.addEventListener("focus", focus);
+    window.addEventListener("blur", blur);
+    window.addEventListener("pageshow", restored);
+    document.addEventListener("visibilitychange", visibility);
+    return () => {
+      window.removeEventListener("focus", focus);
+      window.removeEventListener("blur", blur);
+      window.removeEventListener("pageshow", restored);
+      document.removeEventListener("visibilitychange", visibility);
+    };
+  }, [refresh]);
 
   useEffect(() => {
     const controller = new AbortController();
+    activeRead.current = controller;
     const timeout = setTimeout(() => { controller.abort(); setState("error"); }, 10_000);
     async function load() {
       try {
@@ -39,7 +70,10 @@ export default function AccountRequests() {
       } finally { clearTimeout(timeout); }
     }
     void load();
-    return () => { controller.abort(); clearTimeout(timeout); };
+    return () => {
+      controller.abort(); clearTimeout(timeout);
+      if (activeRead.current === controller) activeRead.current = null;
+    };
   }, [attempt]);
 
   if (state !== "ready") {
@@ -54,7 +88,7 @@ export default function AccountRequests() {
           <Link href="/auth" className="button button-secondary mt-6">מעבר לחשבון המתאים</Link>
         </> : <>
           <p role="alert" className="mt-4 text-base leading-7">לא הצלחנו לטעון את הבקשות. בדקו את החיבור ונסו שוב. הבקשות השמורות לא השתנו.</p>
-          <button type="button" onClick={() => { setState("loading"); setAttempt((value) => value + 1); }} className="button button-primary mt-6">ניסיון נוסף</button>
+          <button type="button" onClick={refresh} className="button button-primary mt-6">ניסיון נוסף</button>
         </>}
     </div>;
   }
@@ -66,7 +100,7 @@ export default function AccountRequests() {
     <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
       <div><p className="break-words text-base text-slate-600">ברוכים השבים, {user?.firstName}</p>
         <h1 className="mt-1 text-3xl font-bold">הבקשות שלי</h1>
-        <p className="mt-3 text-base leading-7 text-slate-600">כאן אפשר להמשיך טיוטה, לבדוק בקשה ולעצור את החיפוש.</p>
+        <p className="mt-3 text-base leading-7 text-slate-600">כאן אפשר להמשיך טיוטה, לבדוק את מצב הפרסום ולעצור את החיפוש.</p>
       </div>
       <Link href="/request/new" className="button button-primary shrink-0">יצירת בקשה</Link>
     </div>
@@ -84,7 +118,7 @@ export default function AccountRequests() {
           <p className="text-base font-bold text-sky-800">{formatRequestType(request.requestType)}</p>
           <h2 className="mt-2 text-xl font-bold">{formatRequestStatus(request.status)}</h2>
           <p className="mt-3 text-base text-slate-600">מספר בקשה: <bdi dir="ltr">{request.id.slice(0, 8)}</bdi></p>
-          {Number.isFinite(updated.getTime()) && <p className="mt-2 text-base text-slate-600">עודכן <time dateTime={request.updatedAt}>{new Intl.DateTimeFormat("he", { dateStyle: "medium" }).format(updated)}</time></p>}
+          {Number.isFinite(updated.getTime()) && <p className="mt-2 text-base text-slate-600">עודכן <time dateTime={request.updatedAt}>{new Intl.DateTimeFormat("he", { dateStyle: "medium", timeZone: "Asia/Jerusalem" }).format(updated)}</time></p>}
           <div className="mt-5 flex flex-wrap gap-3">
             <Link href={`/account/requests/${encodeURIComponent(request.id)}`} className="button button-secondary">צפייה בבקשה</Link>
             {request.status === "Draft" && <Link href={`/request/new?requestId=${encodeURIComponent(request.id)}`} className="button button-primary">המשך הטיוטה</Link>}

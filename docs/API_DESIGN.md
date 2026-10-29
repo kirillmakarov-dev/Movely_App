@@ -27,14 +27,14 @@ Base convention:
 
 ### POST `/api/v1/auth/phone/request-otp`
 
-- Role: Anonymous or authenticated
+- Role: Authenticated Customer or Mover; Admin is excluded
 - Purpose: Send SMS OTP for phone verification
 - Validation: rate-limited, phone format valid, abuse checks pass
 - Response: challenge created
 
 ### POST `/api/v1/auth/phone/verify-otp`
 
-- Role: Anonymous or authenticated
+- Role: Authenticated Customer or Mover; Admin is excluded
 - Purpose: Verify OTP and mark phone as verified
 - Validation: OTP matches, challenge not expired, attempt limit not exceeded
 - Response: phone verification result, session remains valid
@@ -76,7 +76,7 @@ Base convention:
 ### GET `/api/v1/businesses/me`
 
 - Role: Authenticated owner Customer or Mover
-- Purpose: Return business profile, verification state, subscription state
+- Purpose: Return owned business profile, verification state and owner-facing review message
 
 ### PATCH `/api/v1/businesses/me`
 
@@ -109,6 +109,26 @@ Business reads allow 60/minute/account/instance; owner writes 10/5 minutes; admi
 - Purpose: Return full editable request aggregate, including draft/version state
 - Validation: ownership; the owner endpoint does not grant an admin bypass
 - Response: full request DTO for the owner
+
+### GET `/api/v1/move-requests/{requestId}/publication-status`
+
+- Role: Authenticated owner Customer; missing/foreign requests return 404
+- Purpose: Explain current marketplace eligibility using the same SQL predicates as the catalog
+- Response: request/version IDs, request/sales status, `maxRecipients`, `disclosureVersion`, `isTestOnly`, `checkedAt`, `eligibleForMarketplace`, `hasCurrentContactSharing`, `contactSharingAcceptedAt`, `canRenewContactSharing`, `blockers`
+- No contact details, private content or other owners' acceptance records are included. A closed legal gate is a blocker in a successful owner diagnostic response, not permission to submit.
+- Limit: 60 reads/minute/account/instance
+
+### POST `/api/v1/move-requests/{requestId}/contact-sharing`
+
+- Role: Authenticated owner Customer, CSRF required
+- Body: `{ expectedCurrentVersionId, contactSharing: { shareContacts: true, disclosureVersion, maxRecipients } }`
+- Validation: actual current version/recipient limit/current disclosure, active account with verified phone/current policies, legal gate, otherwise eligible Active request
+- Response: `{ publicationStatus, alreadyAccepted }`; a valid repeat preserves the original acceptance record and timestamp
+- Effect: transactionally append consent for current content and verify parent concurrency; preserve content/version, publication time, lifecycle, pricing and buyer counts
+- Conflicts require refresh/review. A matching unique-key consent from another owner is not overwritten or treated as permission; `CONTACT_SHARING_HISTORY_CONFLICT` blocks renewal.
+- Limit: 10 writes/5 minutes/account/instance. Unknown network outcomes require a read, never automatic write replay.
+
+The recovery UI is separate from editing Active content. See `CONSENT_VERSIONING.md` for history, eligibility and deployment constraints.
 
 ### PUT `/api/v1/move-requests/{requestId}`
 

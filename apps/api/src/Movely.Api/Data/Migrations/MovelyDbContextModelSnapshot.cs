@@ -449,6 +449,7 @@ namespace Movely.Api.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CustomerUserId")
+                        .IsConcurrencyToken()
                         .HasColumnType("uuid");
 
                     b.Property<bool>("DuplicateRisk")

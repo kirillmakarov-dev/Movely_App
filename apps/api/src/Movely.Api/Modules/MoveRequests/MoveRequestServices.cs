@@ -17,13 +17,15 @@ public interface IMoveRequestService
     Task<IReadOnlyList<MoveRequestSummaryResponse>> ListOwnedAsync(Guid customerUserId, CancellationToken cancellationToken = default);
     Task<MoveRequestResponse> UpdateOwnedAsync(Guid customerUserId, Guid requestId, UpdateMoveRequestRequest request, CancellationToken cancellationToken = default);
     Task<PublishMoveRequestResponse> PublishOwnedAsync(Guid customerUserId, Guid requestId, ContactSharingRequest? acceptance, CancellationToken cancellationToken = default);
+    Task<RequestPublicationStatusDto> GetPublicationStatusAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
+    Task<RenewContactSharingResponse> RenewContactSharingAsync(Guid customerUserId, Guid requestId, RenewContactSharingRequest request, CancellationToken cancellationToken = default);
     Task<MoveRequestResponse> CancelOwnedAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
     Task<MoveRequestResponse> CloseOwnedAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<MoveRequestVersionResponse>> ListVersionsAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
     Task<MoveRequestVersionResponse> GetVersionAsync(Guid customerUserId, Guid requestId, Guid versionId, CancellationToken cancellationToken = default);
 }
 
-public sealed class MoveRequestService : IMoveRequestService
+public sealed partial class MoveRequestService : IMoveRequestService
 {
     private const string Currency = "ILS";
     private readonly MovelyDbContext _dbContext;

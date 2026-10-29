@@ -18,17 +18,6 @@ public interface IMarketplaceService
 
 public sealed class MarketplaceService(MovelyDbContext db, IClock clock, IConsentReleaseGate legalGate, ILocalityCatalog localities, ICurrentUser currentUser) : IMarketplaceService
 {
-    private static readonly PreferredMoveTime[] Times = Enum.GetValues<PreferredMoveTime>();
-    private static readonly MoveDateFlexibility[] Flexibilities = Enum.GetValues<MoveDateFlexibility>();
-    private static readonly MoveBudgetBand[] Budgets = Enum.GetValues<MoveBudgetBand>();
-    private static readonly MoveItemKind[] Kinds = Enum.GetValues<MoveItemKind>();
-    private static readonly ApartmentInventoryItemType[] InventoryTypes = Enum.GetValues<ApartmentInventoryItemType>();
-    private static readonly SpecialItemType[] SpecialTypes = Enum.GetValues<SpecialItemType>();
-    private static readonly SmallMoveItemCategory[] Categories = Enum.GetValues<SmallMoveItemCategory>();
-    private static readonly ElevatorFurnitureSuitability[] ElevatorSuitabilities = Enum.GetValues<ElevatorFurnitureSuitability>();
-    // Match .NET whitespace semantics; PostgreSQL's default btrim does not remove Unicode whitespace.
-    private const string Whitespace = "\t\n\v\f\r \u0085\u00a0\u1680\u2000\u2001\u2002\u2003\u2004\u2005\u2006\u2007\u2008\u2009\u200a\u2028\u2029\u202f\u205f\u3000";
-
     public async Task<MarketplacePageDto> ListAsync(MarketplaceSearch search, CancellationToken ct = default)
     {
         await EnsureViewerAsync(ct);
@@ -88,38 +77,7 @@ public sealed class MarketplaceService(MovelyDbContext db, IClock clock, IConsen
     }
 
     private IQueryable<MoveRequest> Eligible()
-    {
-        var today = BusinessCalendar.Today(clock.UtcNow);
-        var version = ConsentPolicy.Version;
-        var testOnly = ConsentPolicy.IsDraft;
-        return db.MoveRequests.AsNoTracking().Where(x =>
-            x.Status == MoveRequestStatus.Active && (x.LeadSalesStatus == LeadSalesStatus.Available || x.LeadSalesStatus == LeadSalesStatus.SoldOut) &&
-            x.PublishedAt != null && x.MaxLeadBuyers > 0 && x.ActiveBuyerCount >= 0 &&
-            x.CustomerUser != null && x.CustomerUser.Status == UserStatus.Active && x.CustomerUser.Role == UserRole.Customer && x.CustomerUser.PhoneVerified &&
-            x.CurrentVersion != null && x.CurrentVersion.MoveRequestId == x.Id && x.CurrentVersion.RequestType == x.RequestType &&
-            x.CurrentVersion.MoveDate >= today && x.CurrentVersion.PreferredTime.HasValue && Times.Contains(x.CurrentVersion.PreferredTime.Value) &&
-            x.CurrentVersion.DateFlexibility.HasValue && Flexibilities.Contains(x.CurrentVersion.DateFlexibility.Value) &&
-            (!x.CurrentVersion.BudgetBand.HasValue || Budgets.Contains(x.CurrentVersion.BudgetBand.Value)) &&
-            ((x.RequestType == MoveRequestType.ApartmentMove && x.CurrentVersion.NumberOfRooms >= 1 && x.CurrentVersion.NumberOfRooms <= 20) ||
-             (x.RequestType == MoveRequestType.SmallMove && x.CurrentVersion.Items.Any(i => i.Kind == MoveItemKind.SmallMoveItem))) &&
-            x.CurrentVersion.SmallBoxCount >= 0 && x.CurrentVersion.MediumBoxCount >= 0 && x.CurrentVersion.LargeBoxCount >= 0 &&
-            x.CurrentVersion.Locations.Any(l => l.LocationType == MoveLocationType.Pickup && l.City != null && l.City.Trim(Whitespace.ToCharArray()) != "" && l.ExactAddress != null && l.ExactAddress.Trim(Whitespace.ToCharArray()) != "") &&
-            x.CurrentVersion.Locations.Any(l => l.LocationType == MoveLocationType.Destination && l.City != null && l.City.Trim(Whitespace.ToCharArray()) != "" && l.ExactAddress != null && l.ExactAddress.Trim(Whitespace.ToCharArray()) != "") &&
-            x.CurrentVersion.Locations.All(l => ElevatorSuitabilities.Contains(l.ElevatorFurnitureSuitability) &&
-                (!l.Floor.HasValue || (l.Floor >= -5 && l.Floor <= 200)) && (!l.ParkingDistanceMeters.HasValue || l.ParkingDistanceMeters >= 0)) &&
-            x.CurrentVersion.Items.All(i => Kinds.Contains(i.Kind) && i.Quantity > 0 &&
-                ((i.Kind == MoveItemKind.ApartmentInventory && i.ApartmentInventoryType.HasValue) ||
-                 (i.Kind == MoveItemKind.SmallMoveItem && i.SmallMoveCategory.HasValue) ||
-                 (i.Kind == MoveItemKind.SpecialItem && i.SpecialItemType.HasValue)) &&
-                (!i.LengthCm.HasValue || i.LengthCm >= 0) && (!i.WidthCm.HasValue || i.WidthCm >= 0) &&
-                (!i.HeightCm.HasValue || i.HeightCm >= 0) && (!i.ApproximateWeightKg.HasValue || i.ApproximateWeightKg >= 0) &&
-                (!i.ApartmentInventoryType.HasValue || InventoryTypes.Contains(i.ApartmentInventoryType.Value)) &&
-                (!i.SpecialItemType.HasValue || SpecialTypes.Contains(i.SpecialItemType.Value)) &&
-                (!i.SmallMoveCategory.HasValue || Categories.Contains(i.SmallMoveCategory.Value))) &&
-            db.PolicyAcceptances.Any(a => a.UserId == x.CustomerUserId && a.AdultConfirmed && a.TermsVersion == version && a.PrivacyVersion == version && a.IsTestOnly == testOnly) &&
-            db.ContactSharingAcceptances.Any(a => a.UserId == x.CustomerUserId && a.MoveRequestId == x.Id && a.RequestVersionId == x.CurrentVersionId &&
-                a.DisclosureVersion == version && a.MaxRecipients == x.MaxLeadBuyers && a.IsTestOnly == testOnly));
-    }
+        => Movely.Api.Modules.MoveRequests.RequestPublicationEligibility.Eligible(db, BusinessCalendar.Today(clock.UtcNow));
 
     // Dedicated SQL projection: private strings occur only in eligibility predicates, never in returned columns.
     private static readonly Expression<Func<MoveRequest, MarketplaceRow>> CardProjection = x => new MarketplaceRow {

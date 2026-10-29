@@ -10,7 +10,7 @@ function request(status: MoveRequestSummaryResponse["status"], id = draftId) {
   return { id, status, requestType: "ApartmentMove", updatedAt: "2026-10-29T10:00:00Z" } as MoveRequestSummaryResponse;
 }
 beforeEach(() => { vi.resetAllMocks(); mocks.me.mockResolvedValue(user); mocks.list.mockResolvedValue([]); });
-afterEach(() => { cleanup(); vi.useRealTimers(); });
+afterEach(() => { cleanup(); vi.useRealTimers(); vi.restoreAllMocks(); });
 
 test("list failure is recoverable and never presented as empty", async () => {
   mocks.list.mockRejectedValueOnce(new TypeError("offline"));
@@ -62,4 +62,58 @@ test("unmount cancels both reads through shared signal", async () => {
   await waitFor(() => expect(mocks.list).toHaveBeenCalledOnce());
   const signal = mocks.list.mock.calls[0][0] as AbortSignal;
   expect(mocks.me.mock.calls[0][0]).toBe(signal); rendered.unmount(); expect(signal.aborted).toBe(true);
+});
+
+test("returning to the tab hides the previous owner's list until session revalidation", async () => {
+  mocks.list.mockResolvedValue([request("Draft")]);
+  render(<AccountRequests />);
+  expect(await screen.findByRole("link", { name: "המשך הטיוטה" })).toBeVisible();
+  let finish!: (value: CurrentUser | null) => void;
+  mocks.me.mockReturnValueOnce(new Promise((resolve) => { finish = resolve; }));
+  fireEvent.blur(window);
+  fireEvent.focus(window);
+  expect(screen.queryByRole("link", { name: "המשך הטיוטה" })).not.toBeInTheDocument();
+  expect(screen.queryByText(/ברוכים השבים/)).not.toBeInTheDocument();
+  expect(screen.getByRole("status")).toHaveTextContent("טוענים");
+  fireEvent(document, new Event("visibilitychange"));
+  expect(mocks.me).toHaveBeenCalledTimes(2);
+  await act(async () => finish(null));
+  expect(await screen.findByRole("link", { name: "התחברות" })).toBeVisible();
+  expect(mocks.list).toHaveBeenCalledTimes(1);
+});
+
+test("foreground refresh aborts an old read and never restores its private rows", async () => {
+  let finish!: (value: MoveRequestSummaryResponse[]) => void;
+  mocks.list.mockReturnValueOnce(new Promise((resolve) => { finish = resolve; }));
+  render(<AccountRequests />);
+  await waitFor(() => expect(mocks.list).toHaveBeenCalledOnce());
+  const previousSignal = mocks.list.mock.calls[0][0] as AbortSignal;
+  mocks.me.mockResolvedValue({ ...user, id: "new-owner", firstName: "דנה" });
+  fireEvent.blur(window);
+  fireEvent.focus(window);
+  expect(previousSignal.aborted).toBe(true);
+  expect(await screen.findByText("עדיין אין בקשות")).toBeVisible();
+  expect(screen.getByText(/ברוכים השבים, דנה/)).toBeVisible();
+  await act(async () => finish([request("Active")]));
+  expect(screen.queryByRole("link", { name: "צפייה בבקשה" })).not.toBeInTheDocument();
+});
+
+test("BFcache restore rechecks the list but ordinary pageshow and unmounted events do not", async () => {
+  vi.spyOn(document, "hasFocus").mockReturnValue(true);
+  mocks.list.mockResolvedValueOnce([request("Draft")]);
+  const rendered = render(<AccountRequests />);
+  await screen.findByRole("link", { name: "המשך הטיוטה" });
+  fireEvent(window, new Event("pageshow"));
+  expect(mocks.me).toHaveBeenCalledTimes(1);
+  const restored = new Event("pageshow");
+  Object.defineProperty(restored, "persisted", { value: true });
+  fireEvent(window, restored);
+  expect(screen.queryByRole("link", { name: "המשך הטיוטה" })).not.toBeInTheDocument();
+  expect(await screen.findByText("עדיין אין בקשות")).toBeVisible();
+  expect(mocks.me).toHaveBeenCalledTimes(2);
+  rendered.unmount();
+  fireEvent.blur(window);
+  fireEvent.focus(window);
+  fireEvent(window, restored);
+  expect(mocks.me).toHaveBeenCalledTimes(2);
 });

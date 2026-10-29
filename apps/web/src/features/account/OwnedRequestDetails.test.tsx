@@ -2,6 +2,8 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import OwnedRequestDetails from "./OwnedRequestDetails";
 import { MovelyApiError, type MoveRequestResponse } from "@/lib/movely-api";
+// Publication integration and consent are covered with the real parent in PublicationStatus.test.tsx.
+vi.mock("./PublicationStatus", () => ({ default: () => null }));
 
 const api = vi.hoisted(() => ({ get: vi.fn(), close: vi.fn(), cancel: vi.fn() }));
 vi.mock("@/lib/movely-api", async () => ({
