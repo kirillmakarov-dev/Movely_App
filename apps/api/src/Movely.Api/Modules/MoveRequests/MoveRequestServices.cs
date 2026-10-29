@@ -63,10 +63,18 @@ public sealed class MoveRequestService : IMoveRequestService
             RequestType = request.RequestType
         };
 
-        moveRequest.CurrentVersionId = version.Id;
+        // The request and its first version reference each other. Persist the
+        // request without CurrentVersionId first, then attach the version in
+        // the same transaction so relational FK ordering has no insert cycle.
+        await using var transaction = _dbContext.Database.IsRelational()
+            ? await _dbContext.Database.BeginTransactionAsync(cancellationToken) : null;
         _dbContext.MoveRequests.Add(moveRequest);
-        _dbContext.MoveRequestVersions.Add(version);
         await _dbContext.SaveChangesAsync(cancellationToken);
+
+        _dbContext.MoveRequestVersions.Add(version);
+        moveRequest.CurrentVersionId = version.Id;
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        if (transaction is not null) await transaction.CommitAsync(cancellationToken);
 
         return Map(moveRequest, version);
     }

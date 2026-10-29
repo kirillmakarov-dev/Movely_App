@@ -108,13 +108,43 @@ public sealed class PostgreSqlConsentTests(PostgreSqlIntegrationFixture fixture)
         var consent = await verify.ContactSharingAcceptances.SingleAsync(x => x.MoveRequestId == draft.Id);
         Assert.Equal(result.MoveRequest.CurrentVersion!.Id, consent.RequestVersionId);
         Assert.Equal(result.MoveRequest.MaxLeadBuyers, consent.MaxRecipients);
-        Assert.Equal(result.MoveRequest.PublishedAt, consent.AcceptedAt);
-        Assert.Equal(MoveRequestStatus.Active, (await verify.MoveRequests.FindAsync(draft.Id))!.Status);
+        var persistedRequest = (await verify.MoveRequests.FindAsync(draft.Id))!;
+        // PostgreSQL timestamps have microsecond precision; compare the two
+        // stored records, not a pre-rounding .NET response timestamp.
+        Assert.Equal(persistedRequest.PublishedAt, consent.AcceptedAt);
+        Assert.Equal(MoveRequestStatus.Active, persistedRequest.Status);
         verify.ContactSharingAcceptances.Add(new ContactSharingAcceptance {
             Id = Guid.NewGuid(), UserId = user.Id, MoveRequestId = draft.Id, RequestVersionId = consent.RequestVersionId,
             DisclosureVersion = ConsentPolicy.Version, MaxRecipients = consent.MaxRecipients, AcceptedAt = DateTimeOffset.UtcNow, IsTestOnly = true,
         });
         await Assert.ThrowsAsync<DbUpdateException>(() => verify.SaveChangesAsync());
+    }
+
+    [SkippableFact]
+    public async Task FailedInitialVersionSaveRollsBackDraft()
+    {
+        RequireDatabase();
+        using var app = CreateApp(new RejectInitialVersionSave());
+        using var client = app.CreateClient();
+        var response = await SignIn(client, Credential(), ConsentFixtures.Acceptance);
+        response.EnsureSuccessStatusCode();
+        var user = (await response.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        await Csrf(client);
+        var create = await client.PostAsJsonAsync("/api/v1/move-requests", new CreateMoveRequestRequest(MoveRequestType.SmallMove));
+        Assert.Equal(HttpStatusCode.InternalServerError, create.StatusCode);
+        await using var db = fixture.CreateDbContext();
+        Assert.False(await db.MoveRequests.AnyAsync(x => x.CustomerUserId == user.Id));
+        Assert.False(await db.MoveRequestVersions.AnyAsync(x => x.CreatedByUserId == user.Id));
+    }
+
+    private sealed class RejectInitialVersionSave : SaveChangesInterceptor
+    {
+        public override ValueTask<InterceptionResult<int>> SavingChangesAsync(DbContextEventData eventData, InterceptionResult<int> result, CancellationToken cancellationToken = default)
+        {
+            if (eventData.Context!.ChangeTracker.Entries<MoveRequestVersion>().Any(x => x.State == EntityState.Added))
+                throw new InvalidOperationException("Deliberate failure to verify draft transaction rollback.");
+            return base.SavingChangesAsync(eventData, result, cancellationToken);
+        }
     }
 
     private WebApplicationFactory<Program> CreateApp(SaveChangesInterceptor? interceptor = null)
