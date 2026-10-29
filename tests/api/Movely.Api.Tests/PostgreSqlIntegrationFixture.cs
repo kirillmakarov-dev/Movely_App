@@ -19,6 +19,8 @@ public sealed class PostgreSqlIntegrationFixture : IAsyncLifetime
         var configuredConnectionString = Environment.GetEnvironmentVariable(ConnectionStringEnvironmentVariable);
         if (string.IsNullOrWhiteSpace(configuredConnectionString))
         {
+            if (string.Equals(Environment.GetEnvironmentVariable("MOVELY_REQUIRE_POSTGRES_TESTS"), "true", StringComparison.OrdinalIgnoreCase))
+                throw new InvalidOperationException("PostgreSQL tests are required but MOVELY_TEST_POSTGRES_CONNECTION_STRING is missing.");
             return;
         }
 
@@ -82,6 +84,8 @@ public sealed class PostgreSqlIntegrationFixture : IAsyncLifetime
         await using var db = CreateDbContext();
         await db.Database.ExecuteSqlRawAsync("""
             TRUNCATE TABLE
+                "ContactSharingAcceptances",
+                "PolicyAcceptances",
                 "MovePhotos",
                 "MoveItems",
                 "MoveLocations",

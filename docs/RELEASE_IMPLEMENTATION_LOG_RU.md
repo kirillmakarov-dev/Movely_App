@@ -168,3 +168,17 @@
 Источники: [Next 16.4.3](https://github.com/vercel/next.js/releases/tag/v16.4.3), [fflate 0.8.3](https://github.com/101arrowz/fflate/releases/tag/v0.8.3), текущий npm audit и metadata реестра npm.
 
 Предыдущий этап NuGet-аудита отправлен коммитом `722f324`.
+
+
+## 9. CI и настоящие PostgreSQL-проверки
+
+Реализовано 2026-10-29:
+
+- Добавлен workflow Release checks: каждый push/PR проверяет lockfile-install, npm audit, lint, веб-тесты, Next и Sites builds, NuGet restore, API-тесты и отдельную PostgreSQL suite, затем Release publish API.
+- Контейнер PostgreSQL 17 изолирован; каждый fixture создаёт и удаляет только свою случайно названную тестовую БД. В CI отсутствие connection string вызывает ошибку вместо skipped suite.
+- Добавлены реальные реляционные тесты: применение consent migration и соответствие модели, сохранение согласия и сессии в разных контекстах, rollback уже сохранённого пользователя/identity при ошибке записи согласия, публикация и уникальность записи передачи контактов.
+- Workflow использует read-only permissions и закреплённые SHA официальных Actions; публикацию сайта и изменение branch protection не выполняет.
+
+Локально: 79/79 обычных API-тестов прошли; YAML разобран; отсутствие обязательного PostgreSQL connection string проверено как отказ. Docker Desktop не запустился из-за ошибки Inference Manager. Первый настоящий PostgreSQL-прогон и статус GitHub Actions нужно проверить после push; на этом этапе они ещё не заявлены успешными.
+
+Инструкции: `docs/CI_RELEASE_CHECKS.md`. Предыдущий этап веб-зависимостей отправлен `6ddae8f`.
