@@ -1,1 +1,0 @@
-import{f as e}from"../../index.js";var t=e();function n({href:e,target:n,...r}){return(0,t.jsx)(`a`,{href:e,target:n??`_top`,...r})}export{n as t};
