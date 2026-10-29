@@ -1,11 +1,12 @@
 import React from "react";
-import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomerRequestFlow from "./CustomerRequestFlow";
 import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRequestType, type MoveRequestVersionResponse, type UpdateMoveRequestRequest } from "@/lib/movely-api";
 
 const apiMocks = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),
+  getAuthCapabilities: vi.fn(),
   acceptPolicies: vi.fn(),
   getMyMoveRequests: vi.fn(),
   getMoveRequest: vi.fn(),
@@ -17,6 +18,9 @@ const apiMocks = vi.hoisted(() => ({
   verifyPhoneCode: vi.fn(),
   logout: vi.fn(),
 }));
+
+const googleMocks = vi.hoisted(() => ({ mount: vi.fn() }));
+vi.mock("@/lib/google-identity", () => ({ mountGoogleButton: googleMocks.mount }));
 
 vi.mock("@/lib/movely-api", async () => {
   const actual = await vi.importActual<typeof import("@/lib/movely-api")>(
@@ -214,6 +218,7 @@ async function renderApp({
   drafts?: MoveRequestResponse[];
 } = {}) {
   apiMocks.getCurrentUser.mockResolvedValue(user);
+  apiMocks.getAuthCapabilities.mockResolvedValue({ policyAcceptanceAvailable: true, googleSignInAvailable: false, googleClientId: null, phoneVerificationAvailable: false });
   apiMocks.getMyMoveRequests.mockResolvedValue(drafts);
   apiMocks.getMoveRequest.mockResolvedValue(drafts[0] ?? makeRequestResponse());
   apiMocks.createMoveRequest.mockImplementation(async (requestType: MoveRequestType) =>
@@ -289,6 +294,29 @@ async function fillRequiredApartmentFields(user: ReturnType<typeof userEvent.set
 beforeEach(() => {
   window.sessionStorage.clear();
   Object.values(apiMocks).forEach((mock) => mock.mockReset());
+  googleMocks.mount.mockReset();
+});
+
+test("Real sign-in component replaces developer fields and preserves the prepared route", async () => {
+  const user = userEvent.setup();
+  let credentialCallback!: (credential: string) => void;
+  googleMocks.mount.mockImplementation(async (_element, _clientId, callback) => { credentialCallback = callback; return vi.fn(); });
+  await renderApp();
+  apiMocks.getAuthCapabilities.mockResolvedValue({ policyAcceptanceAvailable: true, googleSignInAvailable: true, googleClientId: "test.apps.googleusercontent.com", phoneVerificationAvailable: false });
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await openStep(user, /^איסוף ויעד$/);
+  fireEvent.change(screen.getByLabelText("איסוף עיר"), { target: { value: "Haifa" } });
+  await openStep(user, /אימות ופרסום/);
+  await user.click(await screen.findByRole("button", { name: "כבר יש לי חשבון" }));
+  await waitFor(() => expect(googleMocks.mount).toHaveBeenCalledOnce());
+  expect(screen.queryByLabelText(/פרטי Google/)).not.toBeInTheDocument();
+  expect(document.body.textContent).not.toContain("dev-google:");
+  await act(async () => credentialCallback("google-id-token"));
+  expect(apiMocks.signInWithGoogle).toHaveBeenCalledWith("google-id-token", undefined);
+  expect(await screen.findByRole("button", { name: "התנתקות" })).toBeEnabled();
+  expect(screen.getByRole("button", { name: /פרסום הבקשה/ })).toBeEnabled();
+  await openStep(user, /^איסוף ויעד$/);
+  expect(screen.getByLabelText("איסוף עיר")).toHaveValue("Haifa");
 });
 
 test("WIZARD-001 Customer can select Apartment Move.", async () => {

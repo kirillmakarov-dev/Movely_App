@@ -49,3 +49,7 @@ Six form stages with a separate publication result. Related access fields belong
 ## Field validation (2026-10-29)
 
 Incomplete drafts remain editable. On review/publication, show a linked error summary and a plain-language message beside each invalid field. Use stable field IDs with aria-invalid/aria-describedby; give numerical rows names independent of CSS layout. Focus the first relevant field, open enclosing disclosures, and scroll instantly clear of the sticky header. Do not silently replace invalid numbers or require optional budget/access details. Values from another move type must remain accessible for correction when still included in the request.
+
+## Account entry (2026-10-29)
+
+Use the same account and phone controls in the request flow and /auth. Separate new registration from returning login, with visible pressed state and one-column choices on mobile. Load the official Google button only after required registration choices or the user's switch to returning login; do not recreate its brand in CSS. Match its width to the container on resize. Service lookup, provider loading, busy, error/retry and unavailable states use readable Hebrew copy and a stable help link. Never show developer credentials, prefilled sample phones or debug OTPs. OTP appears after successful send; editing the phone clears the old code, and expiry/resend limits remain visible. Browser and real-device visual validation of these new controls remains outstanding when local browser access is disabled.

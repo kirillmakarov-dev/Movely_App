@@ -11,6 +11,8 @@ import { validateRequest, type RequestIssue } from "./request-validation";
 import type { FormState } from "./request-flow-types";
 import { clearLocalDraft, readLocalDraft, saveLocalDraft } from "./local-draft";
 import SiteHeader from "@/components/SiteHeader";
+import AccountSignIn from "@/components/AccountSignIn";
+import PhoneVerification from "@/components/PhoneVerification";
 import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/presentation";
 import {
   type CurrentUser,
@@ -30,10 +32,7 @@ import {
   getMyMoveRequests,
   logout,
   publishMoveRequest,
-  requestPhoneCode,
-  signInWithGoogle,
   updateMoveRequest,
-  verifyPhoneCode,
 } from "@/lib/movely-api";
 import {
   APARTMENT_INVENTORY_KIND,
@@ -364,12 +363,6 @@ export default function CustomerRequestFlow({
   const stepHeading = useRef<HTMLHeadingElement>(null);
   const stepNavigation = useRef<HTMLDetailsElement>(null);
   const previousStep = useRef(0);
-  const [pendingGoogleCredential, setPendingGoogleCredential] = useState(
-    "dev-google:demo-subject:customer@example.com:Alex:Customer",
-  );
-  const [phone, setPhone] = useState("050-123-4567");
-  const [otpCode, setOtpCode] = useState("");
-  const [otpDebugCode, setOtpDebugCode] = useState("");
   const [banner, setBanner] = useState<Banner | null>(null);
   const [statusText, setStatusText] = useState("מוכנים להתחיל.");
   const [busyAction, setBusyAction] = useState<string | null>(null);
@@ -628,29 +621,13 @@ export default function CustomerRequestFlow({
     }
   }
 
-  async function handleSignIn() {
-    setBusyAction("מתחברים");
-    try {
-      const signedIn = await signInWithGoogle(pendingGoogleCredential.trim(), policyPayload(policyChoice));
-      clearLocalDraft();
-      setRememberDraft(false);
-      setUser(signedIn);
-      setStatusText(`מחוברים כ-${signedIn.firstName}.`);
-      setBanner({
-        tone: "success",
-        title: "התחברות הצליחה",
-        message: signedIn.phoneVerified
-          ? "מספר הטלפון כבר מאומת."
-          : "אמתו את מספר הטלפון לפני הפרסום.",
-      });
-      await refreshDrafts();
-    } catch (error) {
-      const normalized = normalizeApiError(error);
-      setBanner(normalized);
-      setStatusText(normalized.message);
-    } finally {
-      setBusyAction(null);
-    }
+  function handleSignedIn(signedIn: CurrentUser) {
+    clearLocalDraft();
+    setRememberDraft(false);
+    setUser(signedIn);
+    setStatusText(`מחוברים כ-${signedIn.firstName}.`);
+    setBanner({ tone: "success", title: "התחברות הצליחה", message: signedIn.phoneVerified ? "מספר הטלפון כבר מאומת." : "אמתו את מספר הטלפון לפני הפרסום." });
+    void refreshDrafts();
   }
 
   async function handleLogoutClick() {
@@ -664,9 +641,6 @@ export default function CustomerRequestFlow({
       setFocusRequest(null);
       setStepIndex(0);
       setDrafts([]);
-      setPhone("");
-      setOtpCode("");
-      setOtpDebugCode("");
       setPublishState(null);
       setUser(null);
       setPolicyChoice(emptyPolicyChoice);
@@ -678,59 +652,6 @@ export default function CustomerRequestFlow({
         title: "התנתקתם",
         message: "פרטי הבקשה הוסרו מהעמוד. טיוטות שנשמרו בחשבון יישארו בחשבון.",
       });
-    } catch (error) {
-      const normalized = normalizeApiError(error);
-      setBanner(normalized);
-    } finally {
-      setBusyAction(null);
-    }
-  }
-
-  async function handleRequestOtp() {
-    setBusyAction("מבקשים קוד");
-    try {
-      const response = await requestPhoneCode(phone);
-      setOtpDebugCode(response.debugCode ?? "");
-      setStatusText(`קוד האימות נשלח ל-${response.normalizedPhone}.`);
-      setBanner({
-        tone: "info",
-        title: "קוד נשלח",
-        message: response.debugCode
-          ? `קוד פיתוח: ${response.debugCode}`
-          : "בדקו את הטלפון שלכם לקוד האימות.",
-      });
-    } catch (error) {
-      const normalized = normalizeApiError(error);
-      setBanner(normalized);
-    } finally {
-      setBusyAction(null);
-    }
-  }
-
-  async function handleVerifyOtp() {
-    setBusyAction("מאמתים קוד");
-    try {
-      const response = await verifyPhoneCode(phone, otpCode.trim());
-      setStatusText(
-        response.phoneVerified
-          ? "הטלפון אומת."
-          : "התקבלה תשובת האימות, אך הטלפון עדיין לא מאומת.",
-      );
-      setUser((current) =>
-        current
-          ? {
-              ...current,
-              phone: response.normalizedPhone,
-              phoneVerified: response.phoneVerified,
-            }
-          : current,
-      );
-      setBanner({
-        tone: "success",
-        title: "הטלפון אומת",
-        message: "אפשר לפרסם את הבקשה עכשיו.",
-      });
-      await refreshDrafts();
     } catch (error) {
       const normalized = normalizeApiError(error);
       setBanner(normalized);
@@ -1933,98 +1854,25 @@ export default function CustomerRequestFlow({
   function renderAccountStep() {
     return (
       <div className="space-y-6">
-        {!user?.hasCurrentPolicyAcceptance && <PolicyConsentFields value={policyChoice} onChange={setPolicyChoice} />}
+        <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6" aria-label="אימות החשבון">
+          <h3 className="text-xl font-bold text-slate-900">{user ? "החשבון שלכם" : "כניסה או יצירת חשבון"}</h3>
+          {user ? <>
+            <p className="text-base leading-7">מחוברים כ-{user.firstName}. {user.phoneVerified ? "מספר הטלפון מאומת." : "לפני פרסום הבקשה צריך לאמת את מספר הטלפון."}</p>
+            <button type="button" disabled={Boolean(busyAction)} onClick={handleLogoutClick} className="button button-secondary">התנתקות</button>
+            {!user.hasCurrentPolicyAcceptance && <PolicyConsentFields value={policyChoice} onChange={setPolicyChoice} disabled={Boolean(busyAction)} />}
+          </> : <AccountSignIn disabled={Boolean(busyAction)} onSignedIn={handleSignedIn} onBusyChange={(busy) => setBusyAction(busy ? "מתחברים" : null)} />}
+        </section>
+        {user && !user.phoneVerified && <section className="space-y-4 rounded-3xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6" aria-label="אימות טלפון">
+          <h3 className="text-xl font-bold text-slate-900">אימות טלפון</h3>
+          <PhoneVerification key={user.id} initialPhone={user.phone ?? ""} disabled={Boolean(busyAction)}
+            onBusyChange={(busy) => setBusyAction(busy ? "מאמתים טלפון" : null)}
+            onVerified={(result) => {
+              setUser((current) => current ? { ...current, phone: result.normalizedPhone, phoneVerified: result.phoneVerified } : current);
+              setStatusText("הטלפון אומת. בדקו את האישורים לפני הפרסום.");
+              void refreshDrafts();
+            }} />
+        </section>}
         {renderContactSharing()}
-        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900">אימות החשבון</p>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            הפרסום משתמש בתשתית האימות האמיתית. התחברו קודם, ואז אמתו את מספר הטלפון אם צריך.
-          </p>
-          <div className="mt-4 grid gap-3 md:grid-cols-[1.4fr_0.8fr]">
-            <label className="space-y-2">
-              {renderInputLabel("פרטי Google", "פורמט התחברות לפיתוח: dev-google:subject:email:first:last")}
-              <input
-                value={pendingGoogleCredential}
-                onChange={(event) => setPendingGoogleCredential(event.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
-              />
-            </label>
-            <div className="flex items-end">
-              <button
-                type="button"
-                disabled={!policyChoice.adultConfirmed || !policyChoice.acceptTerms}
-                onClick={handleSignIn}
-                className="w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 cursor-pointer"
-              >
-                התחברות
-              </button>
-            </div>
-          </div>
-          <div className="mt-4 flex flex-wrap gap-3">
-            <button
-              type="button"
-              onClick={handleLogoutClick}
-              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50 cursor-pointer"
-            >
-              התנתקות
-            </button>
-            <Link
-              href="/auth"
-              className="rounded-full border border-slate-300 px-4 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-            >
-              פתיחת עמוד האימות
-            </Link>
-          </div>
-        </div>
-
-        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <p className="text-sm font-semibold text-slate-900">אימות טלפון</p>
-          <p className="mt-2 text-sm leading-6 text-slate-600">
-            הפרסום חסום עד שמספר הטלפון מאומת.
-          </p>
-          <div className="mt-4 grid gap-3 md:grid-cols-[1.2fr_0.8fr]">
-            <label className="space-y-2">
-              {renderInputLabel("מספר טלפון", "השתמשו באותו מספר שיאומת.")}
-              <input
-                value={phone}
-                onChange={(event) => setPhone(event.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
-              />
-            </label>
-            <div className="flex items-end">
-              <button
-                type="button"
-                onClick={handleRequestOtp}
-                className="w-full rounded-full border border-slate-300 px-5 py-3 text-sm font-semibold text-slate-700 transition hover:bg-slate-50 cursor-pointer"
-              >
-                בקשת קוד
-              </button>
-            </div>
-            <label className="space-y-2">
-              {renderInputLabel("קוד אימות", "הזינו את הקוד שקיבלתם.")}
-              <input
-                value={otpCode}
-                onChange={(event) => setOtpCode(event.target.value)}
-                className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
-              />
-            </label>
-            <div className="flex items-end">
-              <button
-                type="button"
-                onClick={handleVerifyOtp}
-                className="w-full rounded-full bg-emerald-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-500 cursor-pointer"
-              >
-                אימות טלפון
-              </button>
-            </div>
-          </div>
-          {otpDebugCode ? (
-            <p className="mt-4 rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm font-medium text-amber-950">
-              קוד פיתוח: {otpDebugCode}
-            </p>
-          ) : null}
-          <p className="mt-4 text-base leading-7 text-slate-600">{user?.phoneVerified ? "הטלפון מאומת. בדקו את האישורים ואז בחרו בפרסום הבקשה בתחתית הטופס." : "לפני הפרסום צריך לאמת את הטלפון."}</p>
-        </div>
       </div>
     );
   }

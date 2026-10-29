@@ -1,5 +1,21 @@
 export const MOVELY_API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:5000";
+  (process.env.NEXT_PUBLIC_API_BASE_URL?.trim() || (process.env.NODE_ENV === "development" ? "http://localhost:5000" : "")).replace(/\/+$/, "");
+
+export type AuthCapabilities = {
+  policyAcceptanceAvailable: boolean;
+  googleSignInAvailable: boolean;
+  googleClientId: string | null;
+  phoneVerificationAvailable: boolean;
+};
+
+export async function getAuthCapabilities(signal?: AbortSignal) {
+  const result = await requestJson<AuthCapabilities>("/api/v1/auth/capabilities", { method: "GET", signal });
+  if (!result || typeof result.policyAcceptanceAvailable !== "boolean" || typeof result.googleSignInAvailable !== "boolean"
+    || typeof result.phoneVerificationAvailable !== "boolean" || (result.googleSignInAvailable && (typeof result.googleClientId !== "string" || !result.googleClientId.endsWith(".apps.googleusercontent.com")))) {
+    throw new Error("Invalid authentication capabilities response.");
+  }
+  return result;
+}
 
 type ApiErrorShape = {
   errorCode?: string;
@@ -258,6 +274,7 @@ export type RequestPhoneCodeResponse = {
   normalizedPhone: string;
   debugCode: string | null;
   expiresAt: string;
+  resendAvailableAt?: string | null;
 };
 
 export type VerifyPhoneCodeResponse = {
@@ -289,6 +306,12 @@ function toApiError(status: number, payload: unknown, fallbackMessage: string) {
     INVALID_AUTH_CREDENTIAL: "לא הצלחנו לאמת את הכניסה. נסו שוב דרך Google.",
     ACCOUNT_UNAVAILABLE: "הכניסה לחשבון הזה אינה זמינה.",
     SMS_NOT_CONFIGURED: "אימות טלפון עדיין אינו זמין. אפשר להמשיך לערוך את הטיוטה.",
+    INVALID_PHONE_NUMBER: "בדקו את מספר הטלפון, כולל קידומת.",
+    OTP_RESEND_COOLDOWN: "המתינו לפני בקשת קוד נוסף.",
+    OTP_ATTEMPT_LIMIT_REACHED: "הגעתם למספר הניסיונות המותר. נסו שוב מאוחר יותר.",
+    OTP_NOT_FOUND: "בקשו קוד חדש למספר הטלפון הזה.",
+    OTP_EXPIRED: "תוקף הקוד פג. בקשו קוד חדש.",
+    OTP_CODE_INVALID: "הקוד אינו תקין. בדקו את הקוד שקיבלתם ונסו שוב.",
   };
   return new MovelyApiError(consentMessages[shape.errorCode ?? ""] ?? shape.message ?? fallbackMessage, {
     errorCode: shape.errorCode ?? "HTTP_ERROR",
@@ -323,13 +346,14 @@ async function requestJson<TResponse>(
   return payload as TResponse;
 }
 
-async function ensureCsrfToken() {
+async function ensureCsrfToken(signal?: AbortSignal) {
   if (csrfTokenCache) {
     return csrfTokenCache;
   }
 
   const payload = await requestJson<{ requestToken: string }>("/api/v1/auth/csrf", {
     method: "GET",
+    signal,
   });
   csrfTokenCache = payload.requestToken;
   return payload.requestToken;
@@ -339,10 +363,12 @@ async function requestWithCsrf<TResponse>(
   path: string,
   body: unknown,
   method: "POST" | "PUT" | "PATCH" | "DELETE" = "POST",
+  signal?: AbortSignal,
 ): Promise<TResponse> {
-  const token = await ensureCsrfToken();
+  const token = await ensureCsrfToken(signal);
   return await requestJson<TResponse>(path, {
     method,
+    signal,
     headers: {
       "Content-Type": "application/json",
       "X-CSRF-TOKEN": token,
@@ -351,9 +377,29 @@ async function requestWithCsrf<TResponse>(
   });
 }
 
-export async function getCurrentUser() {
+async function requestAuthWithCsrf<TResponse>(path: string, body: unknown): Promise<TResponse> {
+  // One deadline covers both the CSRF fetch and the mutation. Never retry a
+  // mutation automatically: the server may have completed it before timing out.
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20_000);
   try {
-    return await requestJson<CurrentUser>("/api/v1/auth/me", { method: "GET" });
+    return await requestWithCsrf<TResponse>(path, body, "POST", controller.signal);
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new MovelyApiError("לא התקבלה תשובה בזמן. בדקו את החיבור ונסו שוב.", {
+        errorCode: "AUTH_REQUEST_TIMEOUT",
+        status: 0,
+      });
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+export async function getCurrentUser(signal?: AbortSignal) {
+  try {
+    return await requestJson<CurrentUser>("/api/v1/auth/me", { method: "GET", signal });
   } catch (error) {
     if (error instanceof MovelyApiError && error.status === 401) {
       csrfTokenCache = null;
@@ -366,12 +412,12 @@ export async function getCurrentUser() {
 
 export type PolicyAcceptance = { adultConfirmed: boolean; acceptTerms: boolean; termsVersion: string; privacyVersion: string };
 export async function acceptPolicies(acceptance: PolicyAcceptance) {
-  return await requestWithCsrf<void>("/api/v1/auth/consents", acceptance);
+  return await requestAuthWithCsrf<void>("/api/v1/auth/consents", acceptance);
 }
 
 export async function signInWithGoogle(credential: string, acceptance?: PolicyAcceptance) {
   try {
-    return await requestWithCsrf<CurrentUser>("/api/v1/auth/google/sign-in", { credential, acceptance });
+    return await requestAuthWithCsrf<CurrentUser>("/api/v1/auth/google/sign-in", { credential, acceptance });
   } finally {
     // Antiforgery tokens are bound to the authenticated identity. The session may
     // also have changed if the response was lost after the server issued it.
@@ -380,13 +426,13 @@ export async function signInWithGoogle(credential: string, acceptance?: PolicyAc
 }
 
 export async function requestPhoneCode(phone: string) {
-  return await requestWithCsrf<RequestPhoneCodeResponse>("/api/v1/auth/phone/request-code", {
+  return await requestAuthWithCsrf<RequestPhoneCodeResponse>("/api/v1/auth/phone/request-code", {
     phone,
   });
 }
 
 export async function verifyPhoneCode(phone: string, code: string) {
-  return await requestWithCsrf<VerifyPhoneCodeResponse>("/api/v1/auth/phone/verify-code", {
+  return await requestAuthWithCsrf<VerifyPhoneCodeResponse>("/api/v1/auth/phone/verify-code", {
     phone,
     code,
   });
@@ -395,7 +441,7 @@ export async function verifyPhoneCode(phone: string, code: string) {
 export async function logout() {
   csrfTokenCache = null;
   try {
-    return await requestWithCsrf<void>("/api/v1/auth/logout", {}, "POST");
+    return await requestAuthWithCsrf<void>("/api/v1/auth/logout", {});
   } finally {
     csrfTokenCache = null;
   }

@@ -154,6 +154,7 @@ main { min-width: 0; }
 main:focus { outline: none; }
 svg { flex-shrink: 0; }
 button:disabled { cursor: not-allowed; }
+.button:disabled { opacity: .55; }
 .button { min-height: 48px; border-radius: 12px; gap: .65rem; text-align: center; }
 .button-large { min-height: 56px; padding: .9rem 1.4rem; }
 .button:active { filter: brightness(.96); }

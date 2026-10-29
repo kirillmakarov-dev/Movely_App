@@ -68,6 +68,9 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
         var requestCode = await requestResponse.Content.ReadFromJsonAsync<RequestPhoneCodeResponse>();
         Assert.NotNull(requestCode);
         Assert.False(string.IsNullOrWhiteSpace(requestCode!.DebugCode));
+        Assert.NotNull(requestCode.ResendAvailableAt);
+        Assert.True(requestCode.ResendAvailableAt > DateTimeOffset.UtcNow);
+        Assert.True(requestCode.ResendAvailableAt < requestCode.ExpiresAt);
 
         await IssueCsrfTokenAsync(client);
         var verifyResponse = await client.PostAsJsonAsync(

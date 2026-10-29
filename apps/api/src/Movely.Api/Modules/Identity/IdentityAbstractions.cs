@@ -25,7 +25,7 @@ public sealed record PhoneRequestCodeRequest(string Phone);
 
 public sealed record PhoneVerifyCodeRequest(string Phone, string Code);
 
-public sealed record RequestPhoneCodeResponse(string NormalizedPhone, string? DebugCode, DateTimeOffset ExpiresAt);
+public sealed record RequestPhoneCodeResponse(string NormalizedPhone, string? DebugCode, DateTimeOffset ExpiresAt, DateTimeOffset? ResendAvailableAt = null);
 
 public sealed record VerifyPhoneCodeResponse(bool PhoneVerified, string NormalizedPhone);
 

@@ -394,7 +394,8 @@ public sealed class AuthService : IAuthService
         return new RequestPhoneCodeResponse(
             normalizedPhone,
             includeDebugCode && (_environment.IsDevelopment() || _environment.IsEnvironment("Testing")) ? code : null,
-            challenge.ExpiresAt);
+            challenge.ExpiresAt,
+            challenge.ResendAvailableAt);
     }
 
     public async Task<VerifyPhoneCodeResponse> VerifyPhoneCodeAsync(Guid userId, string phone, string code, CancellationToken cancellationToken = default)
