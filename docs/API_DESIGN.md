@@ -4,6 +4,8 @@ Base convention:
 
 - REST-style JSON API
 - Versioned under `/api/v1`
+- HTTP JSON enum values use their string names, e.g. `ApartmentMove`, `Draft`, `Morning`; numeric input remains accepted for compatibility. Database enum storage is unchanged.
+- `/api/v1` responses carry `Cache-Control: no-store`, including authentication failures and errors. This does not replace authorization.
 - All authorization is enforced server-side
 - Marketplace-safe DTOs and purchased-contact DTOs are separate contracts
 

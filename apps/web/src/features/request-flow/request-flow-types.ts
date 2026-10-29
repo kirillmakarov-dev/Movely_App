@@ -36,6 +36,13 @@ type LocalSpecialItem = {
   name: string;
   description: string;
   quantity: number;
+  // Retain server measurements while this form only edits the item's name and quantity.
+  savedMeasurements?: {
+    lengthCm: number | null;
+    widthCm: number | null;
+    heightCm: number | null;
+    approximateWeightKg: number | null;
+  };
 };
 
 export type FormState = {

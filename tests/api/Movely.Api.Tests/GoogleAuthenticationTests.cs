@@ -70,9 +70,9 @@ public sealed class GoogleAuthenticationTests(ApiFactory factory) : IClassFixtur
             Assert.False(await scope.ServiceProvider.GetRequiredService<MovelyDbContext>().UserAuthIdentities.AnyAsync(x => x.ProviderSubject == validator.Subject));
         var success = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", request);
         success.EnsureSuccessStatusCode();
-        var created = (await success.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var created = (await success.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         Assert.True(created.HasCurrentPolicyAcceptance);
-        Assert.Equal(created.Id, (await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me"))!.Id);
+        Assert.Equal(created.Id, (await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options))!.Id);
         var staleToken = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", request with { Acceptance = null });
         Assert.Equal(HttpStatusCode.BadRequest, staleToken.StatusCode);
         var signedInCsrf = await client.GetFromJsonAsync<CsrfResponse>("/api/v1/auth/csrf");
@@ -80,7 +80,7 @@ public sealed class GoogleAuthenticationTests(ApiFactory factory) : IClassFixtur
         client.DefaultRequestHeaders.Add("X-CSRF-TOKEN", signedInCsrf!.RequestToken);
         var returning = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", request with { Acceptance = null });
         returning.EnsureSuccessStatusCode();
-        Assert.Equal(created.Id, (await returning.Content.ReadFromJsonAsync<CurrentUserDto>())!.Id);
+        Assert.Equal(created.Id, (await returning.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!.Id);
         using var check = configured.Services.CreateScope();
         var db = check.ServiceProvider.GetRequiredService<MovelyDbContext>();
         Assert.Equal(1, await db.UserAuthIdentities.CountAsync(x => x.ProviderSubject == validator.Subject));
@@ -147,7 +147,7 @@ public sealed class GoogleAuthenticationTests(ApiFactory factory) : IClassFixtur
         using var owner = factory.CreateClient();
         var ownerResponse = await SignIn(owner, Guid.NewGuid().ToString(), email);
         ownerResponse.EnsureSuccessStatusCode();
-        var original = (await ownerResponse.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var original = (await ownerResponse.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         using (var scope = factory.Services.CreateScope())
         {
             var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
@@ -160,13 +160,13 @@ public sealed class GoogleAuthenticationTests(ApiFactory factory) : IClassFixtur
         using var other = factory.CreateClient();
         var response = await SignIn(other, Guid.NewGuid().ToString(), email);
         response.EnsureSuccessStatusCode();
-        var created = (await response.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var created = (await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         Assert.NotEqual(original.Id, created.Id);
         Assert.Equal(UserRole.Customer, created.Role);
         Assert.False(created.PhoneVerified);
         Assert.Null(created.Phone);
-        Assert.Equal(UserRole.Admin, (await owner.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me"))!.Role);
-        Assert.Equal(created.Id, (await other.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me"))!.Id);
+        Assert.Equal(UserRole.Admin, (await owner.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options))!.Role);
+        Assert.Equal(created.Id, (await other.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options))!.Id);
         using var check = factory.Services.CreateScope();
         Assert.Equal(2, await check.ServiceProvider.GetRequiredService<MovelyDbContext>().Users.CountAsync(x => x.Email == email));
     }
@@ -179,7 +179,7 @@ public sealed class GoogleAuthenticationTests(ApiFactory factory) : IClassFixtur
         using var first = factory.CreateClient();
         var initial = await SignIn(first, subject, email);
         initial.EnsureSuccessStatusCode();
-        var user = (await initial.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var user = (await initial.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         int sessionCount;
         using (var scope = factory.Services.CreateScope())
         {

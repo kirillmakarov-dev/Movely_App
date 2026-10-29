@@ -327,6 +327,7 @@ async function requestJson<TResponse>(
 ): Promise<TResponse> {
   const response = await fetch(`${MOVELY_API_BASE_URL}${path}`, {
     credentials: "include",
+    cache: "no-store",
     ...init,
     headers: {
       ...(init.headers ?? {}),
@@ -447,9 +448,10 @@ export async function logout() {
   }
 }
 
-export async function getMyMoveRequests() {
+export async function getMyMoveRequests(signal?: AbortSignal) {
   return await requestJson<MoveRequestSummaryResponse[]>("/api/v1/me/move-requests", {
     method: "GET",
+    signal,
   });
 }
 
@@ -457,10 +459,34 @@ export async function createMoveRequest(requestType: MoveRequestType) {
   return await requestWithCsrf<MoveRequestResponse>("/api/v1/move-requests", { requestType });
 }
 
-export async function getMoveRequest(requestId: string) {
-  return await requestJson<MoveRequestResponse>(`/api/v1/move-requests/${requestId}`, {
+export async function getMoveRequest(requestId: string, signal?: AbortSignal) {
+  return await requestJson<MoveRequestResponse>(`/api/v1/move-requests/${encodeURIComponent(requestId)}`, {
     method: "GET",
+    signal,
   });
+}
+
+async function changeMoveRequestStatus(requestId: string, action: "close" | "cancel") {
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 20_000);
+  try {
+    return await requestWithCsrf<MoveRequestResponse>(`/api/v1/move-requests/${encodeURIComponent(requestId)}/${action}`, {}, "POST", controller.signal);
+  } catch (error) {
+    if (controller.signal.aborted) {
+      throw new MovelyApiError("לא התקבלה תשובה בזמן. ייתכן שהפעולה בוצעה. רעננו את הבקשה כדי לבדוק את מצבה.", { errorCode: "REQUEST_ACTION_TIMEOUT", status: 0 });
+    }
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
+}
+
+export async function closeMoveRequest(requestId: string) {
+  return await changeMoveRequestStatus(requestId, "close");
+}
+
+export async function cancelMoveRequest(requestId: string) {
+  return await changeMoveRequestStatus(requestId, "cancel");
 }
 
 export async function updateMoveRequest(

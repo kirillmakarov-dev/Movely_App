@@ -187,6 +187,36 @@ test.each([200, 503])("clears the deadline after an immediate HTTP %s response",
   expect(vi.getTimerCount()).toBe(0);
 });
 
+test("owner reads forward cancellation and encode identifiers", async () => {
+  const fetchMock = vi.fn<(url: string, init: RequestInit) => Promise<Response>>(async () => json({}));
+  vi.stubGlobal("fetch", fetchMock);
+  const api = await import("./movely-api");
+  const controller = new AbortController();
+  await api.getMyMoveRequests(controller.signal);
+  await api.getMoveRequest("id/with?path", controller.signal);
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+  expect(fetchMock.mock.calls[1][0]).toContain("/move-requests/id%2Fwith%3Fpath");
+  for (const [, init] of fetchMock.mock.calls) { expect(init.signal).toBe(controller.signal); expect(init.cache).toBe("no-store"); expect(init.credentials).toBe("include"); }
+});
+
+test.each(["closeMoveRequest", "cancelMoveRequest"] as const)("%s uses CSRF; timeout does not retry", async (operation) => {
+  vi.useFakeTimers();
+  const fetchMock = vi.fn(async (url: string, init: RequestInit) => url.endsWith("/csrf") ? json({ requestToken: "owner-token" }) : waitUntilAborted(init));
+  vi.stubGlobal("fetch", fetchMock);
+  const api = await import("./movely-api");
+  const pending = api[operation]("owner-id");
+  const rejected = expect(pending).rejects.toMatchObject({ errorCode: "REQUEST_ACTION_TIMEOUT", status: 0 });
+  await vi.advanceTimersByTimeAsync(20_000);
+  await rejected;
+  expect(fetchMock).toHaveBeenCalledTimes(2);
+  const [url, init] = fetchMock.mock.calls[1];
+  expect(url).toContain(`/move-requests/owner-id/${operation === "closeMoveRequest" ? "close" : "cancel"}`);
+  expect(init.method).toBe("POST");
+  expect(new Headers(init.headers).get("X-CSRF-TOKEN")).toBe("owner-token");
+  expect(init.signal?.aborted).toBe(true);
+  expect(vi.getTimerCount()).toBe(0);
+});
+
 test("does not add auth timeout behavior to move-request mutations", async () => {
   vi.useFakeTimers();
   const fetchMock = vi.fn<(url: string, init: RequestInit) => Promise<Response>>(async (url) =>

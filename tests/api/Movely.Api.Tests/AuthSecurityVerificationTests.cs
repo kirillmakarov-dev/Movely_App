@@ -158,12 +158,12 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
         var subject = NewSubject();
         await SignInAsync(client, $"dev-google:{subject}:first@example.com:Alice:One");
-        var firstUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var firstUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(firstUser);
 
         await IssueCsrfTokenAsync(client);
         await SignInAsync(client, $"dev-google:{subject}:second@example.com:Alice:Two");
-        var secondUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var secondUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(secondUser);
 
         Assert.Equal(firstUser!.Id, secondUser!.Id);
@@ -182,12 +182,12 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
         var subject = NewSubject();
         await SignInAsync(client, $"dev-google:{subject}:alpha@example.com:Alpha:User");
-        var firstUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var firstUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(firstUser);
 
         await IssueCsrfTokenAsync(client);
         await SignInAsync(client, $"dev-google:{subject}:beta@example.com:Alpha:User");
-        var secondUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var secondUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(secondUser);
 
         Assert.Equal(firstUser!.Id, secondUser!.Id);
@@ -297,14 +297,14 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
     {
         var (client, userId) = await SignInVerifiedCustomerAsync();
 
-        var before = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var before = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(before);
         Assert.True(before!.PhoneVerified);
 
         var freshClient = CreateCookieClient(_factory);
         await AttachSessionAsync(_factory, freshClient, userId);
 
-        var after = await freshClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var after = await freshClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(after);
         Assert.True(after!.PhoneVerified);
     }
@@ -323,7 +323,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
             await db.SaveChangesAsync();
         }
 
-        var currentUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var currentUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(currentUser);
         Assert.False(currentUser!.PhoneVerified);
     }
@@ -341,7 +341,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
         requestResponse.EnsureSuccessStatusCode();
 
-        var currentUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var currentUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(currentUser);
         Assert.False(currentUser!.PhoneVerified);
         Assert.Equal(userId, currentUser.Id);
@@ -537,7 +537,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
         var client = CreateCookieClient(_factory);
         client.DefaultRequestHeaders.Add("Cookie", $"movely.session={sessionToken}");
 
-        var initial = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var initial = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(initial);
         Assert.Equal(UserRole.Mover, initial!.Role);
         Assert.Equal(BusinessStatus.PendingVerification, initial.BusinessStatus);
@@ -550,7 +550,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
             await db.SaveChangesAsync();
         }
 
-        var afterBusinessChange = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var afterBusinessChange = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(afterBusinessChange);
         Assert.Equal(UserRole.Mover, afterBusinessChange!.Role);
         Assert.Equal(BusinessStatus.Verified, afterBusinessChange.BusinessStatus);
@@ -563,7 +563,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
             await db.SaveChangesAsync();
         }
 
-        var afterRoleChange = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var afterRoleChange = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(afterRoleChange);
         Assert.Equal(UserRole.Admin, afterRoleChange!.Role);
         Assert.Equal(BusinessStatus.Verified, afterRoleChange.BusinessStatus);
@@ -628,14 +628,14 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
         var verify = await client.PostAsJsonAsync("/api/v1/auth/phone/verify-code", new PhoneVerifyCodeRequest(phone, otp.DebugCode!));
         verify.EnsureSuccessStatusCode();
 
-        var current = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var current = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(current);
         Assert.True(current!.PhoneVerified);
 
         var freshClient = CreateCookieClient(_factory);
         await AttachSessionAsync(_factory, freshClient, userId);
 
-        var freshCurrent = await freshClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var freshCurrent = await freshClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(freshCurrent);
         Assert.True(freshCurrent!.PhoneVerified);
     }
@@ -688,7 +688,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
         var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential, ConsentFixtures.Acceptance));
         response.EnsureSuccessStatusCode();
 
-        var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>();
+        var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options);
         Assert.NotNull(user);
 
         await IssueCsrfTokenAsync(client);
@@ -714,7 +714,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
         var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential, ConsentFixtures.Acceptance));
         response.EnsureSuccessStatusCode();
 
-        var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>();
+        var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options);
         Assert.NotNull(user);
         return (client, user!.Id);
     }

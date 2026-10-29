@@ -37,7 +37,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
     public async Task Request002_DraftIsOwnedByCreatingCustomer()
     {
         var client = await CreateSignedInClientAsync("request-002");
-        var me = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var me = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
 
         var draft = await CreateDraftAsync(client, MoveRequestType.ApartmentMove);
 
@@ -200,7 +200,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await UpdateAsync(client, draft.Id, ValidApartmentUpdate(dateA));
         await UpdateAsync(client, draft.Id, ValidApartmentUpdate(dateB));
 
-        var versions = (await client.GetFromJsonAsync<List<MoveRequestVersionResponse>>($"/api/v1/move-requests/{draft.Id}/versions"))!;
+        var versions = (await client.GetFromJsonAsync<List<MoveRequestVersionResponse>>($"/api/v1/move-requests/{draft.Id}/versions", ApiJson.Options))!;
 
         Assert.Equal(dateA, versions.Single(x => x.VersionNumber == 2).Schedule.MoveDate);
         Assert.Equal(dateB, versions.Single(x => x.VersionNumber == 3).Schedule.MoveDate);
@@ -215,7 +215,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await UpdateAsync(client, draft.Id, ValidApartmentUpdate(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(20))));
         var latest = await UpdateAsync(client, draft.Id, ValidApartmentUpdate(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(25))));
 
-        var current = await client.GetFromJsonAsync<MoveRequestResponse>($"/api/v1/move-requests/{draft.Id}");
+        var current = await client.GetFromJsonAsync<MoveRequestResponse>($"/api/v1/move-requests/{draft.Id}", ApiJson.Options);
 
         Assert.Equal(4, latest.CurrentVersion!.VersionNumber);
         Assert.Equal(latest.CurrentVersion.Id, current!.CurrentVersion!.Id);
@@ -242,7 +242,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var response = await client.PostAsync($"/api/v1/move-requests/{active.MoveRequest.Id}/cancel", null);
         response.EnsureSuccessStatusCode();
-        var cancelled = await response.Content.ReadFromJsonAsync<MoveRequestResponse>();
+        var cancelled = await response.Content.ReadFromJsonAsync<MoveRequestResponse>(ApiJson.Options);
 
         Assert.Equal(MoveRequestStatus.Cancelled, cancelled!.Status);
     }
@@ -255,7 +255,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
 
         await IssueCsrfTokenAsync(client);
         var response = await client.PostAsync($"/api/v1/move-requests/{active.MoveRequest.Id}/cancel", null);
-        var cancelled = await response.Content.ReadFromJsonAsync<MoveRequestResponse>();
+        var cancelled = await response.Content.ReadFromJsonAsync<MoveRequestResponse>(ApiJson.Options);
 
         Assert.Equal(LeadSalesStatus.Closed, cancelled!.LeadSalesStatus);
     }
@@ -269,7 +269,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var response = await client.PostAsync($"/api/v1/move-requests/{active.MoveRequest.Id}/close", null);
         response.EnsureSuccessStatusCode();
-        var closed = await response.Content.ReadFromJsonAsync<MoveRequestResponse>();
+        var closed = await response.Content.ReadFromJsonAsync<MoveRequestResponse>(ApiJson.Options);
 
         Assert.Equal(MoveRequestStatus.Closed, closed!.Status);
     }
@@ -282,7 +282,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
 
         await IssueCsrfTokenAsync(client);
         var response = await client.PostAsync($"/api/v1/move-requests/{active.MoveRequest.Id}/close", null);
-        var closed = await response.Content.ReadFromJsonAsync<MoveRequestResponse>();
+        var closed = await response.Content.ReadFromJsonAsync<MoveRequestResponse>(ApiJson.Options);
 
         Assert.Equal(LeadSalesStatus.Closed, closed!.LeadSalesStatus);
     }
@@ -457,7 +457,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
 
         if (phoneVerified)
         {
-            var me = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+            var me = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
             using var scope = _factory.Services.CreateScope();
             var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
             var user = await db.Users.SingleAsync(x => x.Id == me!.Id);
@@ -481,7 +481,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var response = await client.PostAsJsonAsync("/api/v1/move-requests", new CreateMoveRequestRequest(type));
         response.EnsureSuccessStatusCode();
-        return (await response.Content.ReadFromJsonAsync<MoveRequestResponse>())!;
+        return (await response.Content.ReadFromJsonAsync<MoveRequestResponse>(ApiJson.Options))!;
     }
 
     private static async Task<MoveRequestResponse> UpdateAsync(HttpClient client, Guid requestId, UpdateMoveRequestRequest request)
@@ -489,7 +489,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var response = await client.PutAsJsonAsync($"/api/v1/move-requests/{requestId}", request);
         response.EnsureSuccessStatusCode();
-        return (await response.Content.ReadFromJsonAsync<MoveRequestResponse>())!;
+        return (await response.Content.ReadFromJsonAsync<MoveRequestResponse>(ApiJson.Options))!;
     }
 
     private static async Task<PublishMoveRequestResponse> PublishAsync(HttpClient client, Guid requestId)
@@ -497,7 +497,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var response = await client.PostAsJsonAsync($"/api/v1/move-requests/{requestId}/publish", ConsentFixtures.Sharing);
         response.EnsureSuccessStatusCode();
-        return (await response.Content.ReadFromJsonAsync<PublishMoveRequestResponse>())!;
+        return (await response.Content.ReadFromJsonAsync<PublishMoveRequestResponse>(ApiJson.Options))!;
     }
 
     private static async Task<PublishMoveRequestResponse> CreatePublishedApartmentAsync(HttpClient client, DateOnly date, string? pickupCity = null)

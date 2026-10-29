@@ -45,7 +45,7 @@ public sealed class ConsentPolicyTests(ApiFactory factory) : IClassFixture<ApiFa
         var credential = Credential();
         var response = await SignIn(client, credential, ConsentFixtures.Acceptance);
         response.EnsureSuccessStatusCode();
-        var user = (await response.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var user = (await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         Assert.True(user.HasCurrentPolicyAcceptance);
         PolicyAcceptance first;
         using (var scope = factory.Services.CreateScope())
@@ -71,7 +71,7 @@ public sealed class ConsentPolicyTests(ApiFactory factory) : IClassFixture<ApiFa
     {
         using var client = factory.CreateClient();
         var signedIn = await SignIn(client, Credential(), ConsentFixtures.Acceptance);
-        var user = (await signedIn.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var user = (await signedIn.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         Guid oldId;
         using (var scope = factory.Services.CreateScope())
         {
@@ -81,13 +81,13 @@ public sealed class ConsentPolicyTests(ApiFactory factory) : IClassFixture<ApiFa
             oldId = old.Id;
             await db.SaveChangesAsync();
         }
-        Assert.False((await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me"))!.HasCurrentPolicyAcceptance);
+        Assert.False((await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options))!.HasCurrentPolicyAcceptance);
         await Csrf(client);
         var invalid = await client.PostAsJsonAsync("/api/v1/auth/consents", ConsentFixtures.Acceptance with { AdultConfirmed = false });
         Assert.Equal(HttpStatusCode.BadRequest, invalid.StatusCode);
         var accepted = await client.PostAsJsonAsync("/api/v1/auth/consents", ConsentFixtures.Acceptance);
         Assert.Equal(HttpStatusCode.NoContent, accepted.StatusCode);
-        Assert.True((await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me"))!.HasCurrentPolicyAcceptance);
+        Assert.True((await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options))!.HasCurrentPolicyAcceptance);
         using var check = factory.Services.CreateScope();
         var entries = await check.ServiceProvider.GetRequiredService<MovelyDbContext>().PolicyAcceptances.Where(x => x.UserId == user.Id).ToListAsync();
         Assert.Equal(2, entries.Count);

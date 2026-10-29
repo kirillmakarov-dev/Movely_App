@@ -1,5 +1,8 @@
 import Link from "@/components/SafeLink";
 import SiteHeader from "@/components/SiteHeader";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { robots: { index: false, follow: false } };
 
 export default function AccountLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -11,11 +14,11 @@ export default function AccountLayout({ children }: { children: React.ReactNode 
             <p className="eyebrow">חשבון לקוח</p>
             <nav className="mt-5 grid gap-1" aria-label="ניווט חשבון הלקוח">
               <Link href="/account/requests" className="min-h-12 rounded-lg bg-slate-900 px-4 py-3 font-bold text-white">הבקשות שלי</Link>
-              <Link href="/account/requests" className="min-h-12 rounded-lg px-4 py-3 font-bold text-slate-600 hover:bg-white">טיוטות</Link>
-              <span className="min-h-12 rounded-lg px-4 py-3 font-bold text-slate-400" aria-disabled="true">פרופיל - יגיע בהמשך</span>
+              <Link href="/auth" className="min-h-12 rounded-lg px-4 py-3 font-bold text-slate-600 hover:bg-white">ניהול הכניסה לחשבון</Link>
+              <Link href="/help" className="min-h-12 rounded-lg px-4 py-3 font-bold text-slate-600 hover:bg-white">עזרה</Link>
             </nav>
           </aside>
-          <section>{children}</section>
+          <section className="min-w-0">{children}</section>
         </div>
       </main>
     </>

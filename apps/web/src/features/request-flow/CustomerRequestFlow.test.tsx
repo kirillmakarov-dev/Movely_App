@@ -2,6 +2,7 @@ import React from "react";
 import { act, cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomerRequestFlow from "./CustomerRequestFlow";
+import NewRequestPage from "@/app/request/new/page";
 import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRequestType, type MoveRequestVersionResponse, type UpdateMoveRequestRequest } from "@/lib/movely-api";
 
 const apiMocks = vi.hoisted(() => ({
@@ -759,4 +760,268 @@ test("Special item errors remain editable after changing from apartment to small
   expect(retainedQuantity).toHaveFocus();
   expect(retainedQuantity).toHaveValue(0);
   expect(retainedQuantity.closest("details")).toHaveAttribute("open");
+});
+
+const resumeId = "11111111-2222-4333-8444-555555555555";
+const otherResumeId = "aaaaaaaa-bbbb-4ccc-8ddd-eeeeeeeeeeee";
+const anonymousDraftKey = "movely.anonymous-draft.v1";
+
+function prepareResume(request: MoveRequestResponse = { ...makeRequestResponse(), id: resumeId }) {
+  apiMocks.getCurrentUser.mockResolvedValue(makeUser());
+  apiMocks.getMoveRequest.mockResolvedValue(request);
+  apiMocks.getMyMoveRequests.mockResolvedValue([]);
+  window.sessionStorage.setItem(anonymousDraftKey, "untouched-anonymous-draft");
+}
+
+function expectNoResumeMutation() {
+  expect(apiMocks.createMoveRequest).not.toHaveBeenCalled();
+  expect(apiMocks.updateMoveRequest).not.toHaveBeenCalled();
+  expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
+  expect(window.sessionStorage.getItem(anonymousDraftKey)).toBe("untouched-anonymous-draft");
+}
+
+test("Request page passes one exact id and keeps invalid query parameters separate from a new request", async () => {
+  const explicit = await NewRequestPage({ searchParams: Promise.resolve({ requestId: resumeId }) });
+  expect(explicit.props.initialRequestId).toBe(resumeId);
+  const repeated = await NewRequestPage({ searchParams: Promise.resolve({ requestId: [resumeId, otherResumeId] }) });
+  expect(repeated.props.initialRequestId).toBe("");
+  const empty = await NewRequestPage({ searchParams: Promise.resolve({ requestId: "" }) });
+  expect(empty.props.initialRequestId).toBe("");
+  const fresh = await NewRequestPage({ searchParams: Promise.resolve({}) });
+  expect(fresh.props.initialRequestId).toBeNull();
+});
+
+test("Direct resume loads the exact owned draft without creating or autosaving a request", async () => {
+  prepareResume();
+  const user = userEvent.setup();
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  expect(screen.getByRole("status")).toHaveTextContent("טוענים את הטיוטה");
+  expect(screen.queryByRole("button", { name: /^המשך$/ })).not.toBeInTheDocument();
+  await screen.findByText("הטיוטה חודשה");
+  expect(apiMocks.getMoveRequest).toHaveBeenCalledWith(resumeId, expect.any(AbortSignal));
+  expect(apiMocks.getMyMoveRequests).not.toHaveBeenCalled();
+  await openStep(user, /^איסוף ויעד$/);
+  expect(screen.getByLabelText("איסוף עיר")).toHaveValue("Tel Aviv");
+  expectNoResumeMutation();
+  apiMocks.updateMoveRequest.mockResolvedValue({ ...makeRequestResponse(), id: resumeId });
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledWith(resumeId, expect.any(Object)));
+  expect(apiMocks.createMoveRequest).not.toHaveBeenCalled();
+});
+
+test.each(["", "../account", "https://example.com", `${resumeId}/extra`])("Invalid direct resume id %j never calls the API or opens a new form", async (id) => {
+  prepareResume();
+  render(<CustomerRequestFlow initialRequestId={id} />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("הקישור לטיוטה אינו תקין");
+  expect(apiMocks.getCurrentUser).not.toHaveBeenCalled();
+  expect(apiMocks.getMoveRequest).not.toHaveBeenCalled();
+  expect(screen.queryByRole("button", { name: /^המשך$/ })).not.toBeInTheDocument();
+  expectNoResumeMutation();
+});
+
+test("Unauthenticated direct resume keeps its URL and reloads the exact draft after login", async () => {
+  prepareResume();
+  apiMocks.getCurrentUser.mockResolvedValueOnce(null);
+  const user = userEvent.setup();
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  const link = await screen.findByRole("link", { name: "כניסה לחשבון (בכרטיסייה חדשה)" });
+  expect(link).toHaveAttribute("href", "/auth");
+  expect(link).toHaveAttribute("target", "_blank");
+  expect(apiMocks.getMoveRequest).not.toHaveBeenCalled();
+  expectNoResumeMutation();
+  await user.click(screen.getByRole("button", { name: "בדיקה מחדש לאחר התחברות" }));
+  await screen.findByText("הטיוטה חודשה");
+  expect(apiMocks.getMoveRequest).toHaveBeenCalledWith(resumeId, expect.any(AbortSignal));
+  expectNoResumeMutation();
+});
+
+test.each([401, 403, 404, 500])("Direct resume HTTP %i stays blocked and offers account access/retry", async (status) => {
+  prepareResume();
+  apiMocks.getMoveRequest.mockRejectedValue(new MovelyApiError("test error", { errorCode: "TEST", status }));
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  await screen.findByRole("alert");
+  expect(screen.getByRole("link", { name: "חזרה לחשבון" })).toHaveAttribute("href", "/account");
+  expect(screen.getByRole("button", { name: status === 401 ? "בדיקה מחדש לאחר התחברות" : "נסו שוב" })).toBeEnabled();
+  expect(screen.queryByRole("button", { name: /^המשך$/ })).not.toBeInTheDocument();
+  expectNoResumeMutation();
+});
+
+test.each([
+  { customerUserId: "someone-else" },
+  { id: otherResumeId },
+])("Direct resume rejects a mismatched owner or response id: %j", async (override) => {
+  prepareResume({ ...makeRequestResponse(), id: resumeId, ...override });
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("הטיוטה לא נמצאה או שאינה שייכת לחשבון הזה");
+  expect(screen.queryByText("Pickup Street 1")).not.toBeInTheDocument();
+  expectNoResumeMutation();
+});
+
+test.each(["Published", "Active", "Closed", "Cancelled", "Expired"] as const)("Direct resume never edits a %s request", async (status) => {
+  prepareResume({ ...makeRequestResponse({ status }), id: resumeId });
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  expect(await screen.findByRole("alert")).toHaveTextContent("כבר אינה טיוטה");
+  expect(screen.queryByRole("button", { name: /^המשך$/ })).not.toBeInTheDocument();
+  expectNoResumeMutation();
+});
+
+test("Direct resume retries a temporary failure without substituting another draft", async () => {
+  prepareResume();
+  apiMocks.getMoveRequest.mockRejectedValueOnce(new Error("offline"));
+  const user = userEvent.setup();
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  await screen.findByRole("alert");
+  expectNoResumeMutation();
+  await user.click(screen.getByRole("button", { name: "נסו שוב" }));
+  await screen.findByText("הטיוטה חודשה");
+  expect(apiMocks.getMoveRequest.mock.calls.map(([id]) => id)).toEqual([resumeId, resumeId]);
+  expectNoResumeMutation();
+});
+
+test("Direct resume times out after ten seconds and ignores a late success", async () => {
+  vi.useFakeTimers();
+  try {
+    prepareResume();
+    let resolveRequest!: (request: MoveRequestResponse) => void;
+    apiMocks.getMoveRequest.mockImplementation(() => new Promise((resolve) => { resolveRequest = resolve; }));
+    render(<CustomerRequestFlow initialRequestId={resumeId} />);
+    await act(async () => {});
+    const signal = apiMocks.getMoveRequest.mock.calls[0][1] as AbortSignal;
+    await act(async () => { vi.advanceTimersByTime(10_000); });
+    expect(signal.aborted).toBe(true);
+    expect(screen.getByRole("alert")).toHaveTextContent("לא הצלחנו לטעון את הטיוטה");
+    await act(async () => { resolveRequest({ ...makeRequestResponse(), id: resumeId }); });
+    expect(screen.queryByText("הטיוטה חודשה")).not.toBeInTheDocument();
+    expectNoResumeMutation();
+  } finally {
+    cleanup();
+    vi.useRealTimers();
+  }
+});
+
+test("Changing a resume id aborts the old request and prevents its late response replacing the new draft", async () => {
+  prepareResume();
+  let resolveOld!: (request: MoveRequestResponse) => void;
+  apiMocks.getMoveRequest.mockImplementationOnce(() => new Promise((resolve) => { resolveOld = resolve; }));
+  const view = render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  await waitFor(() => expect(apiMocks.getMoveRequest).toHaveBeenCalledOnce());
+  const oldSignal = apiMocks.getMoveRequest.mock.calls[0][1] as AbortSignal;
+  apiMocks.getMoveRequest.mockResolvedValue({ ...makeRequestResponse({ requestType: "SmallMove" }), id: otherResumeId });
+  view.rerender(<CustomerRequestFlow initialRequestId={otherResumeId} />);
+  await screen.findByText("הטיוטה חודשה");
+  expect(oldSignal.aborted).toBe(true);
+  await act(async () => { resolveOld({ ...makeRequestResponse(), id: resumeId }); });
+  expect(screen.getByText(`טיוטה ${otherResumeId.slice(0, 8)} נטענה.`)).toBeInTheDocument();
+  expectNoResumeMutation();
+});
+
+test("Unmounting while checking authentication aborts direct resume and prevents the detail request", async () => {
+  prepareResume();
+  let resolveUser!: (user: CurrentUser) => void;
+  apiMocks.getCurrentUser.mockImplementation(() => new Promise((resolve) => { resolveUser = resolve; }));
+  const view = render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  const signal = apiMocks.getCurrentUser.mock.calls[0][0] as AbortSignal;
+  view.unmount();
+  expect(signal.aborted).toBe(true);
+  await act(async () => { resolveUser(makeUser()); });
+  expect(apiMocks.getMoveRequest).not.toHaveBeenCalled();
+  expectNoResumeMutation();
+});
+
+function makeDetailedResume() {
+  return {
+    ...makeRequestResponse({ currentVersion: makeApartmentVersion({
+      specialItems: [
+        { kind: "SpecialItem", apartmentInventoryType: null, specialItemType: "Piano", smallMoveCategory: null,
+          name: "Special object", description: "First item", quantity: 1,
+          lengthCm: 123.5, widthCm: 45.25, heightCm: null, approximateWeightKg: 200.75 },
+        { kind: "SpecialItem", apartmentInventoryType: null, specialItemType: "Safe", smallMoveCategory: null,
+          name: "Special object", description: "Second item", quantity: 2,
+          lengthCm: 55, widthCm: null, heightCm: 80.5, approximateWeightKg: 300 },
+      ],
+      photos: [
+        { objectKey: "private/request/photo-b", originalFileName: "do-not-render-b.jpg", contentType: "image/jpeg", sizeBytes: 2048, displayOrder: 1 },
+        { objectKey: "private/request/photo-a", originalFileName: null, contentType: "image/png", sizeBytes: 1024, displayOrder: 0 },
+      ],
+    }) }),
+    id: resumeId,
+  };
+}
+
+function echoResumeUpdates(request: MoveRequestResponse) {
+  apiMocks.updateMoveRequest.mockImplementation(async (_id: string, payload: UpdateMoveRequestRequest) => ({
+    ...request,
+    currentVersion: makeApartmentVersion({
+      ...request.currentVersion,
+      ...payload,
+      smallMoveItems: payload.smallMoveItems ?? [],
+      specialItems: payload.specialItems ?? [],
+      schedule: payload.schedule ?? makeApartmentVersion().schedule,
+      photos: payload.photos ?? [],
+    }),
+  }));
+}
+
+test("Editing a resumed route retains existing special-item measurements and photo metadata across saves", async () => {
+  const request = makeDetailedResume();
+  prepareResume(request);
+  echoResumeUpdates(request);
+  // The hidden draft list must not block successful saves, even if its API never responds.
+  apiMocks.getMyMoveRequests.mockImplementation(() => new Promise(() => {}));
+  const user = userEvent.setup();
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  await screen.findByText("הטיוטה חודשה");
+  expectNoResumeMutation();
+  await openStep(user, /^איסוף ויעד$/);
+  fireEvent.change(screen.getByLabelText("איסוף עיר"), { target: { value: "Updated route" } });
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledOnce());
+  await waitFor(() => expect(screen.getByRole("button", { name: /^המשך$/ })).toBeEnabled());
+  expect(apiMocks.updateMoveRequest).toHaveBeenLastCalledWith(resumeId, expect.objectContaining({
+    pickup: expect.objectContaining({ city: "Updated route" }),
+    specialItems: request.currentVersion!.specialItems,
+    photos: request.currentVersion!.photos,
+  }));
+  // Hydration after a successful save must retain the same data for the next edit.
+  await openStep(user, /^איסוף ויעד$/);
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledTimes(2));
+  await waitFor(() => expect(screen.getByRole("button", { name: /^המשך$/ })).toBeEnabled());
+  expect(apiMocks.updateMoveRequest.mock.calls[1][1]).toEqual(expect.objectContaining({
+    specialItems: request.currentVersion!.specialItems,
+    photos: request.currentVersion!.photos,
+  }));
+  expect(apiMocks.getMyMoveRequests).not.toHaveBeenCalled();
+  expect(apiMocks.createMoveRequest).not.toHaveBeenCalled();
+  expect(window.sessionStorage.getItem(anonymousDraftKey)).toBe("untouched-anonymous-draft");
+  expect(document.body.textContent).not.toContain("private/request/photo");
+  expect(document.body.textContent).not.toContain("do-not-render-b.jpg");
+});
+
+test("Removing and readding a resumed special item does not restore or transfer its measurements", async () => {
+  const request = makeDetailedResume();
+  prepareResume(request);
+  echoResumeUpdates(request);
+  const user = userEvent.setup();
+  render(<CustomerRequestFlow initialRequestId={resumeId} />);
+  await screen.findByText("הטיוטה חודשה");
+  await openStep(user, /תכולת הדירה/);
+  await user.click(screen.getByText(/^שירותים נוספים ופריטים מיוחדים/));
+  await user.click(screen.getByRole("button", { name: /^פסנתר/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledOnce());
+  const retainedSafe = request.currentVersion!.specialItems[1];
+  expect(apiMocks.updateMoveRequest.mock.calls[0][1].specialItems).toEqual([retainedSafe]);
+  await waitFor(() => expect(screen.getByRole("button", { name: /^המשך$/ })).toBeEnabled());
+  await openStep(user, /תכולת הדירה/);
+  await user.click(screen.getByText(/^שירותים נוספים ופריטים מיוחדים/));
+  await user.click(screen.getByRole("button", { name: /^פסנתר/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledTimes(2));
+  expect(apiMocks.updateMoveRequest.mock.calls[1][1].specialItems).toEqual([
+    retainedSafe,
+    expect.objectContaining({ specialItemType: "Piano", lengthCm: null, widthCm: null, heightCm: null, approximateWeightKg: null }),
+  ]);
+  expect(apiMocks.updateMoveRequest.mock.calls[1][1].photos).toEqual(request.currentVersion!.photos);
+  expect(window.sessionStorage.getItem(anonymousDraftKey)).toBe("untouched-anonymous-draft");
 });

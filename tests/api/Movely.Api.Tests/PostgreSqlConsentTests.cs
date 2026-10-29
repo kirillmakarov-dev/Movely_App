@@ -43,7 +43,7 @@ public sealed class PostgreSqlConsentTests(PostgreSqlIntegrationFixture fixture)
 
         var response = await SignIn(client, credential, ConsentFixtures.Acceptance);
         response.EnsureSuccessStatusCode();
-        var user = (await response.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var user = (await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         await using var db = fixture.CreateDbContext();
         var consent = await db.PolicyAcceptances.SingleAsync(x => x.UserId == user.Id);
         Assert.Equal(ConsentPolicy.Version, consent.TermsVersion);
@@ -75,7 +75,7 @@ public sealed class PostgreSqlConsentTests(PostgreSqlIntegrationFixture fixture)
         using var client = app.CreateClient();
         var signedIn = await SignIn(client, Credential(), ConsentFixtures.Acceptance);
         signedIn.EnsureSuccessStatusCode();
-        var user = (await signedIn.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var user = (await signedIn.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         await using (var db = fixture.CreateDbContext())
         {
             var storedUser = await db.Users.SingleAsync(x => x.Id == user.Id);
@@ -86,7 +86,7 @@ public sealed class PostgreSqlConsentTests(PostgreSqlIntegrationFixture fixture)
         await Csrf(client);
         var create = await client.PostAsJsonAsync("/api/v1/move-requests", new CreateMoveRequestRequest(MoveRequestType.SmallMove));
         create.EnsureSuccessStatusCode();
-        var draft = (await create.Content.ReadFromJsonAsync<MoveRequestResponse>())!;
+        var draft = (await create.Content.ReadFromJsonAsync<MoveRequestResponse>(ApiJson.Options))!;
         var location = new MoveLocationDto("Test City", "Test Street 1", 0, false, ElevatorFurnitureSuitability.Unknown, null, null, 5);
         var update = new UpdateMoveRequestRequest(MoveRequestType.SmallMove, location, location, null,
             [new MoveItemDto(MoveItemKind.SmallMoveItem, null, null, SmallMoveItemCategory.Furniture, "Desk", null, 1, 100, 60, 70, 15)],
@@ -103,7 +103,7 @@ public sealed class PostgreSqlConsentTests(PostgreSqlIntegrationFixture fixture)
         }
         var published = await client.PostAsJsonAsync($"/api/v1/move-requests/{draft.Id}/publish", ConsentFixtures.Sharing);
         published.EnsureSuccessStatusCode();
-        var result = (await published.Content.ReadFromJsonAsync<PublishMoveRequestResponse>())!;
+        var result = (await published.Content.ReadFromJsonAsync<PublishMoveRequestResponse>(ApiJson.Options))!;
         await using var verify = fixture.CreateDbContext();
         var consent = await verify.ContactSharingAcceptances.SingleAsync(x => x.MoveRequestId == draft.Id);
         Assert.Equal(result.MoveRequest.CurrentVersion!.Id, consent.RequestVersionId);
@@ -128,7 +128,7 @@ public sealed class PostgreSqlConsentTests(PostgreSqlIntegrationFixture fixture)
         using var client = app.CreateClient();
         var response = await SignIn(client, Credential(), ConsentFixtures.Acceptance);
         response.EnsureSuccessStatusCode();
-        var user = (await response.Content.ReadFromJsonAsync<CurrentUserDto>())!;
+        var user = (await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         await Csrf(client);
         var create = await client.PostAsJsonAsync("/api/v1/move-requests", new CreateMoveRequestRequest(MoveRequestType.SmallMove));
         Assert.Equal(HttpStatusCode.InternalServerError, create.StatusCode);

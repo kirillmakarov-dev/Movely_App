@@ -185,12 +185,18 @@ function hydrateFromRequest(request: MoveRequestResponse): FormState {
     name: item.name ?? "",
     description: item.description ?? "",
     quantity: item.quantity,
+    savedMeasurements: {
+      lengthCm: item.lengthCm,
+      widthCm: item.widthCm,
+      heightCm: item.heightCm,
+      approximateWeightKg: item.approximateWeightKg,
+    },
   }));
 
   return form;
 }
 
-function buildUpdatePayload(form: FormState): UpdateMoveRequestRequest {
+function buildUpdatePayload(form: FormState, existingVersion?: MoveRequestResponse["currentVersion"]): UpdateMoveRequestRequest {
   const apartmentMove =
     form.requestType === "ApartmentMove"
       ? {
@@ -247,10 +253,10 @@ function buildUpdatePayload(form: FormState): UpdateMoveRequestRequest {
     name: item.name,
     description: item.description || null,
     quantity: item.quantity,
-    lengthCm: null,
-    widthCm: null,
-    heightCm: null,
-    approximateWeightKg: null,
+    lengthCm: item.savedMeasurements?.lengthCm ?? null,
+    widthCm: item.savedMeasurements?.widthCm ?? null,
+    heightCm: item.savedMeasurements?.heightCm ?? null,
+    approximateWeightKg: item.savedMeasurements?.approximateWeightKg ?? null,
   }));
 
   const pickup = form.pickup.city || form.pickup.exactAddress ? form.pickup : null;
@@ -275,7 +281,7 @@ function buildUpdatePayload(form: FormState): UpdateMoveRequestRequest {
     schedule,
     budgetBand: form.budgetBand,
     customerComment: form.customerComment.trim() || null,
-    photos: [],
+    photos: existingVersion?.photos ?? [],
   };
 }
 
@@ -345,9 +351,17 @@ function withUiTimeout<T>(promise: Promise<T>, timeoutMs = 2500) {
 
 export default function CustomerRequestFlow({
   initialRequestType = null,
+  initialRequestId = null,
 }: {
   initialRequestType?: MoveRequestType | null;
+  initialRequestId?: string | null;
 }) {
+  const isResumeIdValid = initialRequestId === null || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(initialRequestId);
+  const [resumeAttempt, setResumeAttempt] = useState(0);
+  const [resumeState, setResumeState] = useState<{
+    requestId: string;
+    status: "loading" | "ready" | "login" | "invalid" | "unavailable" | "closed" | "failed";
+  } | null>(null);
   const [policyChoice, setPolicyChoice] = useState(emptyPolicyChoice);
   const [sharingChoice, setSharingChoice] = useState<{ requestId: string; maxRecipients: number } | null>(null);
   const [user, setUser] = useState<CurrentUser | null>(null);
@@ -432,9 +446,9 @@ export default function CustomerRequestFlow({
 
 
   useEffect(() => {
-    if (isBootstrapping || user || !rememberDraft || publishState) return;
+    if (initialRequestId !== null || isBootstrapping || user || !rememberDraft || publishState) return;
     void Promise.resolve(saveLocalDraft(form, stepIndex)).then((saved) => setDraftSaveFailed(!saved));
-  }, [form, stepIndex, rememberDraft, user, isBootstrapping, publishState]);
+  }, [form, stepIndex, rememberDraft, user, isBootstrapping, publishState, initialRequestId]);
 
   useEffect(() => {
     const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
@@ -450,6 +464,7 @@ export default function CustomerRequestFlow({
   }, [user, form, activeRequest, rememberDraft, draftSaveFailed]);
 
   useEffect(() => {
+    if (initialRequestId !== null) return;
     async function bootstrap() {
       let authenticated = false;
       try {
@@ -485,9 +500,66 @@ export default function CustomerRequestFlow({
       }
     }
     void bootstrap();
-  }, [initialRequestType]);
+  }, [initialRequestType, initialRequestId]);
+
+  useEffect(() => {
+    if (initialRequestId === null || !isResumeIdValid) return;
+    const requestId = initialRequestId;
+    const controller = new AbortController();
+    let stale = false;
+    const timeout = window.setTimeout(() => {
+      controller.abort();
+      if (!stale) {
+        setResumeState({ requestId, status: "failed" });
+        setIsBootstrapping(false);
+      }
+    }, 10_000);
+    async function resume() {
+      try {
+        const currentUser = await getCurrentUser(controller.signal);
+        if (stale || controller.signal.aborted) return;
+        if (!currentUser) {
+          setResumeState({ requestId, status: "login" });
+          return;
+        }
+        const request = await getMoveRequest(requestId, controller.signal);
+        if (stale || controller.signal.aborted) return;
+        if (request.id.toLowerCase() !== requestId.toLowerCase() || request.customerUserId !== currentUser.id) {
+          setResumeState({ requestId, status: "unavailable" });
+          return;
+        }
+        if (request.status !== "Draft") {
+          setResumeState({ requestId, status: "closed" });
+          return;
+        }
+        setUser(currentUser);
+        setActiveRequest(request);
+        setForm(hydrateFromRequest(request));
+        setValidationMode(null);
+        setFocusRequest(null);
+        setStepIndex(inferStepIndex(request));
+        setStatusText(`טיוטה ${request.id.slice(0, 8)} נטענה.`);
+        setBanner({ tone: "info", title: "הטיוטה חודשה", message: "אפשר להמשיך כעת מהמצב שנשמר בשרת." });
+        setResumeState({ requestId, status: "ready" });
+      } catch (error) {
+        if (stale || controller.signal.aborted) return;
+        const status = error instanceof MovelyApiError ? error.status : 0;
+        setResumeState({ requestId, status: status === 401 ? "login" : status === 403 || status === 404 ? "unavailable" : "failed" });
+      } finally {
+        window.clearTimeout(timeout);
+        if (!stale && !controller.signal.aborted) setIsBootstrapping(false);
+      }
+    }
+    void resume();
+    return () => {
+      stale = true;
+      window.clearTimeout(timeout);
+      controller.abort();
+    };
+  }, [initialRequestId, isResumeIdValid, resumeAttempt]);
 
   async function refreshDrafts() {
+    if (initialRequestId !== null) return;
     try {
       const requestList = await getMyMoveRequests();
       setDrafts(requestList);
@@ -546,7 +618,7 @@ export default function CustomerRequestFlow({
     }
 
     const savedRequest = await ensureSavedDraft();
-    const updated = await updateMoveRequest(savedRequest.id, buildUpdatePayload(form));
+    const updated = await updateMoveRequest(savedRequest.id, buildUpdatePayload(form, savedRequest.currentVersion));
     setActiveRequest(updated);
     setForm(hydrateFromRequest(updated));
     await refreshDrafts();
@@ -646,6 +718,7 @@ export default function CustomerRequestFlow({
       setPolicyChoice(emptyPolicyChoice);
       setSharingChoice(null);
       setActiveRequest(null);
+      if (initialRequestId !== null) setResumeState({ requestId: initialRequestId, status: "login" });
       setStatusText("התנתקתם.");
       setBanner({
         tone: "info",
@@ -1950,6 +2023,34 @@ export default function CustomerRequestFlow({
   const progressPercent = (progressStep / formStepCount) * 100;
   const progressLabel = stepIndex === publishStepIndex ? "הבקשה פורסמה" : `שלב ${progressStep} מתוך ${formStepCount}`;
 
+  if (initialRequestId !== null && (resumeState?.requestId !== initialRequestId || resumeState.status !== "ready")) {
+    const state = !isResumeIdValid ? "invalid" : resumeState?.requestId === initialRequestId ? resumeState.status : "loading";
+    const message = {
+      loading: "טוענים את הטיוטה שנבחרה…",
+      login: "כדי להמשיך את הטיוטה, התחברו לחשבון שבו נוצרה. לאחר ההתחברות חזרו לכאן ולחצו על בדיקה מחדש.",
+      invalid: "הקישור לטיוטה אינו תקין. פתחו אותה מחדש מתוך החשבון שלכם.",
+      unavailable: "הטיוטה לא נמצאה או שאינה שייכת לחשבון הזה. בדקו שהתחברתם לחשבון הנכון.",
+      closed: "הבקשה הזאת כבר אינה טיוטה ולא ניתן לערוך אותה כאן. אפשר לצפות במצב שלה בחשבון.",
+      failed: "לא הצלחנו לטעון את הטיוטה. בדקו את החיבור ונסו שוב. הפרטים השמורים לא שונו.",
+      ready: "",
+    }[state];
+    return <><SiteHeader /><main id="main-content" className="site-container py-10" tabIndex={-1}>
+      <section className="mx-auto max-w-2xl space-y-5 rounded-3xl border border-slate-200 bg-white p-6">
+        <h1 className="text-3xl font-bold">המשך טיוטת בקשה</h1>
+        <p role={state === "loading" ? "status" : "alert"} className="text-base leading-7">{message}</p>
+        <div className="flex flex-wrap gap-3">
+          {(state === "login" || state === "unavailable") && <Link href="/auth" target="_blank" rel="noopener noreferrer" className="button button-primary">כניסה לחשבון (בכרטיסייה חדשה)</Link>}
+          {(state === "login" || state === "unavailable" || state === "failed") && <button type="button" className="button button-secondary" onClick={() => {
+            setResumeState({ requestId: initialRequestId, status: "loading" });
+            setIsBootstrapping(true);
+            setResumeAttempt((attempt) => attempt + 1);
+          }}>{state === "login" ? "בדיקה מחדש לאחר התחברות" : "נסו שוב"}</button>}
+          <Link href="/account" className="button button-secondary">חזרה לחשבון</Link>
+        </div>
+      </section>
+    </main></>;
+  }
+
   return (
     <>
       <SiteHeader />
@@ -2081,7 +2182,7 @@ export default function CustomerRequestFlow({
             </div>
           </div>
 
-          <section
+          {initialRequestId === null ? <section
             id="request-list"
             className="rounded-xl border border-slate-200 bg-white p-4 sm:p-6"
           >
@@ -2127,7 +2228,7 @@ export default function CustomerRequestFlow({
                 </div>
               )}
             </div>
-          </section>
+          </section> : <Link href="/account" className="inline-link">חזרה לכל הבקשות בחשבון</Link>}
         </div>
 
         <aside className="hidden lg:block">

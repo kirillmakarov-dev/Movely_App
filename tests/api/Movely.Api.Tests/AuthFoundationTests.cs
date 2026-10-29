@@ -38,13 +38,13 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
 
         response.EnsureSuccessStatusCode();
 
-        var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>();
+        var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options);
         Assert.NotNull(user);
         Assert.Equal("Alice", user!.FirstName);
         Assert.Equal("alice@example.com", user.Email);
         Assert.Equal(UserRole.Customer, user.Role);
 
-        var me = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var me = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(me);
         Assert.Equal(user.Id, me!.Id);
     }
@@ -79,7 +79,7 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
 
         verifyResponse.EnsureSuccessStatusCode();
 
-        var currentUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var currentUser = await client.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(currentUser);
         Assert.True(currentUser!.PhoneVerified);
         Assert.Equal("+972501234567", currentUser.Phone);
@@ -121,7 +121,7 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
 
         await IssueCsrfTokenAsync(firstClient);
         await SignInAsync(firstClient, "subject-dup", "dup@example.com", "Dora", "One");
-        var firstMe = await firstClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var firstMe = await firstClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(firstMe);
 
         var secondClient = _factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -132,7 +132,7 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
 
         await IssueCsrfTokenAsync(secondClient);
         await SignInAsync(secondClient, "subject-dup", "dup@example.com", "Different", "Name");
-        var secondMe = await secondClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me");
+        var secondMe = await secondClient.GetFromJsonAsync<CurrentUserDto>("/api/v1/auth/me", ApiJson.Options);
         Assert.NotNull(secondMe);
 
         Assert.Equal(firstMe!.Id, secondMe!.Id);

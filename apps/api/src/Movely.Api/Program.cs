@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using System.Text.Json.Serialization;
 using Movely.Api.Data;
 using Movely.Api.Infrastructure.Authentication;
 using Movely.Api.Modules.Identity;
@@ -17,6 +18,8 @@ builder.Services.AddDbContext<MovelyDbContext>(options =>
 
 builder.Services.AddHealthChecks();
 builder.Services.AddRouting();
+builder.Services.ConfigureHttpJsonOptions(options =>
+    options.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddMovelyAuthentication(builder.Configuration, builder.Environment);
 builder.Services.AddMoveRequestsModule(builder.Configuration);
@@ -39,6 +42,19 @@ builder.Services.AddCors(options =>
 var app = builder.Build();
 
 app.UseMiddleware<ApiExceptionMiddleware>();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path.StartsWithSegments("/api/v1"))
+    {
+        // Apply when headers are sent, including errors whose handler clears the response.
+        context.Response.OnStarting(() =>
+        {
+            context.Response.Headers.CacheControl = "no-store";
+            return Task.CompletedTask;
+        });
+    }
+    await next();
+});
 app.UseCors("WebApp");
 app.UseMovelySecurity();
 
