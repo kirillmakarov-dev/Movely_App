@@ -6,6 +6,7 @@ import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRe
 
 const apiMocks = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),
+  acceptPolicies: vi.fn(),
   getMyMoveRequests: vi.fn(),
   getMoveRequest: vi.fn(),
   createMoveRequest: vi.fn(),
@@ -43,6 +44,7 @@ function makeUser(overrides: Partial<{
     businessStatus: null,
     subscriptionStatus: null,
     businessId: null,
+    hasCurrentPolicyAcceptance: true,
   };
 }
 
@@ -174,11 +176,13 @@ function makeRequestResponse({
   requestType = "ApartmentMove",
   status = "Draft",
   duplicateRisk = false,
+  maxLeadBuyers = 3,
   currentVersion,
 }: {
   requestType?: "ApartmentMove" | "SmallMove";
   status?: "Draft" | "Published" | "Active" | "Closed" | "Cancelled" | "Expired";
   duplicateRisk?: boolean;
+  maxLeadBuyers?: number;
   currentVersion?: MoveRequestVersionResponse;
 } = {}) {
   const version = currentVersion ?? (requestType === "SmallMove" ? makeSmallVersion() : makeApartmentVersion());
@@ -190,7 +194,7 @@ function makeRequestResponse({
     leadSalesStatus: status === "Active" ? "Available" : "Closed",
     duplicateRisk,
     leadPrice: { currency: "ILS", amountMinor: requestType === "SmallMove" ? 500 : 1000 },
-    maxLeadBuyers: 3,
+    maxLeadBuyers,
     activeBuyerCount: 0,
     createdAt: "2026-08-08T08:00:00Z",
     updatedAt: "2026-08-08T08:10:00Z",
@@ -431,6 +435,7 @@ test("WIZARD-011 Verified customer can publish valid request.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await openStep(user, /חשבון \/ אימות טלפון/i);
+  await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByRole("heading", { name: /הבקשה פורסמה/i })).toBeInTheDocument();
@@ -449,6 +454,7 @@ test("WIZARD-012 Server validation error is rendered correctly.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await openStep(user, /חשבון \/ אימות טלפון/i);
+  await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/INVALID_REQUEST_STATE/i)).toBeInTheDocument();
@@ -468,6 +474,7 @@ test("WIZARD-013 Potential duplicate warning is handled.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await openStep(user, /חשבון \/ אימות טלפון/i);
+  await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/זוהתה כפילות אפשרית/i)).toBeInTheDocument();
@@ -487,6 +494,7 @@ test("WIZARD-014 Active request limit error is handled.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await openStep(user, /חשבון \/ אימות טלפון/i);
+  await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/ACTIVE_REQUEST_LIMIT_REACHED/i)).toBeInTheDocument();
@@ -536,8 +544,40 @@ test("Publish saves the latest edits even when the user jumps directly to the ac
   await user.clear(city);
   await user.type(city, "Updated before publishing");
   await openStep(user, /חשבון \/ אימות טלפון/);
+  await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
   await waitFor(() => expect(apiMocks.publishMoveRequest).toHaveBeenCalledTimes(1));
   expect(apiMocks.updateMoveRequest).toHaveBeenLastCalledWith("request-1", expect.objectContaining({ pickup: expect.objectContaining({ city: "Updated before publishing" }) }));
   expect(apiMocks.updateMoveRequest.mock.invocationCallOrder.at(-1)).toBeLessThan(apiMocks.publishMoveRequest.mock.invocationCallOrder[0]);
+});
+
+
+test("Verified phone and accepted terms do not imply contact-sharing consent", async () => {
+  const user = userEvent.setup();
+  await renderApp({ user: makeUser() });
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await openStep(user, /חשבון \/ אימות טלפון/);
+  const sharing = screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ });
+  expect(sharing).not.toBeChecked();
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
+  expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
+  await user.click(sharing);
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
+  await waitFor(() => expect(apiMocks.publishMoveRequest).toHaveBeenCalledWith("request-1", {
+    shareContacts: true, disclosureVersion: "draft-2026-10-29", maxRecipients: 3,
+  }));
+});
+
+test("A changed recipient limit requires a fresh decision and does not publish", async () => {
+  const user = userEvent.setup();
+  await renderApp({ user: makeUser() });
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await openStep(user, /חשבון \/ אימות טלפון/);
+  await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
+  apiMocks.updateMoveRequest.mockResolvedValueOnce(makeRequestResponse({ maxLeadBuyers: 5 }));
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
+  expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
+  expect(screen.getByRole("checkbox", { name: /לעד 5 עסקים/ })).not.toBeChecked();
 });

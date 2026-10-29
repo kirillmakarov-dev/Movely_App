@@ -15,6 +15,7 @@ public static class AuthenticationExtensions
     public static IServiceCollection AddMovelyAuthentication(this IServiceCollection services, IConfiguration configuration, IHostEnvironment environment)
     {
         services.AddHttpContextAccessor();
+        services.AddSingleton<IConsentReleaseGate, ConsentReleaseGate>();
         services.AddScoped<ICurrentUser, CurrentUser>();
         services.AddSingleton<IClock, Movely.Api.Shared.Time.SystemClock>();
         var sessionPepper = configuration["Security:SessionPepper"];

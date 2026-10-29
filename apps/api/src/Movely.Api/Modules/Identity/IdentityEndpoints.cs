@@ -28,10 +28,25 @@ public static class IdentityEndpoints
                 throw new ApiException("INVALID_AUTH_CREDENTIAL", "Google credential is required.");
             }
 
-            var user = await authService.SignInWithGoogleAsync(request.Credential, context, cancellationToken);
+            var user = await authService.SignInWithGoogleAsync(request.Credential, context, cancellationToken, request.Acceptance);
             return Results.Ok(user);
         })
         .AllowAnonymous();
+
+        group.MapPost("/consents", async (
+            PolicyAcceptanceRequest request, ICurrentUser currentUser, Movely.Api.Data.MovelyDbContext db,
+            Movely.Api.Shared.Time.IClock clock, IConsentReleaseGate consentReleaseGate, CancellationToken cancellationToken) =>
+        {
+            if (currentUser.UserId is null) return Results.Unauthorized();
+            consentReleaseGate.EnsureAvailable();
+            ConsentPolicy.Validate(request);
+            if (!await ConsentPolicy.HasCurrentAsync(db, currentUser.UserId.Value, cancellationToken))
+            {
+                ConsentPolicy.Add(db, currentUser.UserId.Value, clock.UtcNow);
+                await db.SaveChangesAsync(cancellationToken);
+            }
+            return Results.NoContent();
+        }).RequireAuthorization(AuthorizationExtensions.AuthenticatedUser);
 
         group.MapGet("/me", async (
             ICurrentUser currentUser,

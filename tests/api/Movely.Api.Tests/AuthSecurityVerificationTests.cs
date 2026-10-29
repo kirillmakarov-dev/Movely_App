@@ -66,7 +66,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
         var response = await client.PostAsJsonAsync(
             "/api/v1/auth/google/sign-in",
-            new GoogleSignInRequest($"dev-google:{NewSubject()}:cookie@example.com:Cookie:User"));
+            new GoogleSignInRequest($"dev-google:{NewSubject()}:cookie@example.com:Cookie:User", ConsentFixtures.Acceptance));
 
         response.EnsureSuccessStatusCode();
 
@@ -85,7 +85,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
         var response = await client.PostAsJsonAsync(
             "/api/v1/auth/google/sign-in",
-            new GoogleSignInRequest($"dev-google:{NewSubject()}:prod-cookie@example.com:Prod:Cookie"));
+            new GoogleSignInRequest($"dev-google:{NewSubject()}:prod-cookie@example.com:Prod:Cookie", ConsentFixtures.Acceptance));
 
         response.EnsureSuccessStatusCode();
 
@@ -103,7 +103,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var signInResponse = await client.PostAsJsonAsync(
             "/api/v1/auth/google/sign-in",
-            new GoogleSignInRequest($"dev-google:{NewSubject()}:prod-otp@example.com:Prod:Otp"));
+            new GoogleSignInRequest($"dev-google:{NewSubject()}:prod-otp@example.com:Prod:Otp", ConsentFixtures.Acceptance));
         signInResponse.EnsureSuccessStatusCode();
         var sessionCookie = GetSessionCookieHeader(signInResponse);
         client.DefaultRequestHeaders.Remove("Cookie");
@@ -145,7 +145,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var response = await client.PostAsJsonAsync(
             "/api/v1/auth/google/sign-in",
-            new GoogleSignInRequest($"dev-google:{NewSubject()}:blocked@example.com:Blocked:User"));
+            new GoogleSignInRequest($"dev-google:{NewSubject()}:blocked@example.com:Blocked:User", ConsentFixtures.Acceptance));
 
         Assert.False(response.IsSuccessStatusCode);
     }
@@ -651,6 +651,8 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
                 services.RemoveAll<ISmsSender>();
                 services.AddScoped<IGoogleIdentityVerifier>(_ => new DevelopmentGoogleIdentityVerifier(new GoogleAuthOptions()));
                 services.AddScoped<ISmsSender>(_ => new NoOpSmsSender());
+                // Isolate cookie/OTP behavior from the independently tested public release gate.
+                services.AddSingleton<IConsentReleaseGate, ConsentFixtures.TestReadyGate>();
             });
         });
     }
@@ -672,7 +674,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
     private static async Task SignInAsync(HttpClient client, string credential)
     {
-        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential));
+        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential, ConsentFixtures.Acceptance));
         response.EnsureSuccessStatusCode();
     }
 
@@ -683,7 +685,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
         var subject = NewSubject();
         var credential = $"dev-google:{subject}:{subject}@example.com:Verified:Customer";
-        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential));
+        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential, ConsentFixtures.Acceptance));
         response.EnsureSuccessStatusCode();
 
         var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>();
@@ -709,7 +711,7 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
 
         var subject = NewSubject();
         var credential = $"dev-google:{subject}:{subject}@example.com:Unverified:Customer";
-        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential));
+        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest(credential, ConsentFixtures.Acceptance));
         response.EnsureSuccessStatusCode();
 
         var user = await response.Content.ReadFromJsonAsync<CurrentUserDto>();

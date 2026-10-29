@@ -2,6 +2,9 @@
 
 import Link from "@/components/SafeLink";
 import { UI_LOCALE as locale } from "@/lib/locale";
+import PolicyConsentFields, { emptyPolicyChoice, policyPayload } from "@/components/PolicyConsentFields";
+import { LEGAL_DRAFT_VERSION } from "@/lib/legal-content";
+import { acceptPolicies } from "@/lib/movely-api";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { FormState } from "./request-flow-types";
 import { clearLocalDraft, readLocalDraft, saveLocalDraft } from "./local-draft";
@@ -385,7 +388,7 @@ function normalizeApiError(error: unknown) {
   if (error instanceof MovelyApiError) {
     return {
       tone: "error" as const,
-      title: error.errorCode,
+      title: ["POLICY_ACCEPTANCE_REQUIRED", "POLICY_VERSION_CHANGED", "CONTACT_SHARING_REQUIRED", "RECIPIENT_LIMIT_CHANGED", "LEGAL_NOT_READY"].includes(error.errorCode) ? "נדרש אישור לפני המשך" : error.errorCode,
       message: error.message,
     };
   }
@@ -467,6 +470,8 @@ export default function CustomerRequestFlow({
 }: {
   initialRequestType?: MoveRequestType | null;
 }) {
+  const [policyChoice, setPolicyChoice] = useState(emptyPolicyChoice);
+  const [sharingChoice, setSharingChoice] = useState<{ requestId: string; maxRecipients: number } | null>(null);
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [drafts, setDrafts] = useState<MoveRequestSummaryResponse[]>([]);
   const [activeRequest, setActiveRequest] = useState<MoveRequestResponse | null>(null);
@@ -694,7 +699,7 @@ export default function CustomerRequestFlow({
   async function handleSignIn() {
     setBusyAction("מתחברים");
     try {
-      const signedIn = await signInWithGoogle(pendingGoogleCredential.trim());
+      const signedIn = await signInWithGoogle(pendingGoogleCredential.trim(), policyPayload(policyChoice));
       clearLocalDraft();
       setRememberDraft(false);
       setUser(signedIn);
@@ -730,6 +735,8 @@ export default function CustomerRequestFlow({
       setOtpDebugCode("");
       setPublishState(null);
       setUser(null);
+      setPolicyChoice(emptyPolicyChoice);
+      setSharingChoice(null);
       setActiveRequest(null);
       setStatusText("התנתקתם.");
       setBanner({
@@ -821,9 +828,27 @@ export default function CustomerRequestFlow({
         return;
       }
 
+      if (!user.hasCurrentPolicyAcceptance) {
+        if (!policyChoice.adultConfirmed || !policyChoice.acceptTerms) {
+          setStepIndex(accountStepIndex);
+          throw new Error("אשרו גיל 18 ומעלה ואת תנאי השימוש לאחר קריאת הודעת הפרטיות.");
+        }
+        await acceptPolicies(policyPayload(policyChoice));
+        setUser({ ...user, hasCurrentPolicyAcceptance: true });
+      }
+      if (!activeRequest || sharingChoice?.requestId !== activeRequest.id || sharingChoice.maxRecipients !== activeRequest.maxLeadBuyers) {
+        setStepIndex(accountStepIndex);
+        throw new Error("שמרו את הטיוטה ואשרו בנפרד את העברת פרטי הקשר למובילים לפני הפרסום.");
+      }
       const savedRequest = await saveCurrentStep();
       if (!savedRequest) throw new Error("לא ניתן לפרסם לפני שמירת הבקשה.");
-      const response = await publishMoveRequest(savedRequest.id);
+      if (savedRequest.id !== sharingChoice.requestId || savedRequest.maxLeadBuyers !== sharingChoice.maxRecipients) {
+        setSharingChoice(null);
+        throw new Error("מגבלת המובילים השתנתה. קראו ואשרו שוב את הודעת העברת הפרטים.");
+      }
+      const response = await publishMoveRequest(savedRequest.id, {
+        shareContacts: true, disclosureVersion: LEGAL_DRAFT_VERSION, maxRecipients: sharingChoice.maxRecipients,
+      });
       clearLocalDraft();
       setRememberDraft(false);
       setPublishState(response);
@@ -849,6 +874,7 @@ export default function CustomerRequestFlow({
   }
 
   function handleStartNewRequest() {
+    setSharingChoice(null);
     clearLocalDraft();
     setRememberDraft(false);
     setActiveRequest(null);
@@ -1795,6 +1821,7 @@ export default function CustomerRequestFlow({
 
     return (
       <div className="space-y-4">
+        {renderContactSharing()}
         {!isSaved ? (
           <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-950">
             התצוגה המקדימה עדיין מקומית. התחברו ושמרו כדי לבדוק את הבקשה שמגובה בשרת.
@@ -1914,10 +1941,36 @@ export default function CustomerRequestFlow({
     );
   }
 
+  function renderContactSharing() {
+    if (publishState || (activeRequest && activeRequest.status !== "Draft")) return null;
+    return <section className="rounded-2xl border border-sky-200 bg-sky-50 p-5 text-base leading-7">
+      <h3 className="font-bold">מי יקבל את הפרטים שלי?</h3>
+      {activeRequest ? <>
+        <p className="mt-2">לאחר הפרסום, עד {activeRequest.maxLeadBuyers} עסקים להובלה יוכלו לרכוש גישה לשם, לטלפון ולכתובות המדויקות בבקשה זו כדי ליצור איתכם קשר ולהציע מחיר. הפרטים האלה לא יוצגו בכרטיס הציבורי.</p>
+        <p className="mt-2">זו אינה הזמנת הובלה ואין התחייבות לקבל הצעה. גרסת בדיקה: רכישת הגישה עדיין אינה פעילה.</p>
+        <label className="mt-3 flex min-h-12 cursor-pointer items-start gap-3 py-2">
+          <input type="checkbox" className="mt-1.5 size-5 shrink-0 accent-slate-950"
+            checked={sharingChoice?.requestId === activeRequest.id && sharingChoice.maxRecipients === activeRequest.maxLeadBuyers}
+            onChange={(event) => setSharingChoice(event.target.checked ? { requestId: activeRequest.id, maxRecipients: activeRequest.maxLeadBuyers } : null)} />
+          <span>אני מאשר / מאשרת העברת פרטי קשר וכתובות לעד {activeRequest.maxLeadBuyers} עסקים להובלה עבור בקשה זו.</span>
+        </label>
+        <p className="text-sm">ללא אישור, הבקשה תישאר טיוטה. אפשר לחזור ולערוך לפני הפרסום.</p>
+      </> : <>
+        <p className="mt-2">לאחר התחברות ושמירת טיוטה, תוצג כאן מגבלת המובילים ותוכלו להחליט אם לאשר את העברת הפרטים.</p>
+        {user && <button type="button" className="button button-secondary mt-3" onClick={async () => {
+          setBusyAction("שומרים");
+          try { await saveCurrentStep(); } catch (error) { setBanner(normalizeApiError(error)); } finally { setBusyAction(null); }
+        }}>שמירת טיוטה לקראת פרסום</button>}
+      </>}
+    </section>;
+  }
+
   function renderAccountStep() {
     const isVerified = Boolean(user?.phoneVerified);
     return (
       <div className="space-y-6">
+        {!user?.hasCurrentPolicyAcceptance && <PolicyConsentFields value={policyChoice} onChange={setPolicyChoice} />}
+        {renderContactSharing()}
         <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-sm font-semibold text-slate-900">אימות החשבון</p>
           <p className="mt-2 text-sm leading-6 text-slate-600">
@@ -1935,6 +1988,7 @@ export default function CustomerRequestFlow({
             <div className="flex items-end">
               <button
                 type="button"
+                disabled={!policyChoice.adultConfirmed || !policyChoice.acceptTerms}
                 onClick={handleSignIn}
                 className="w-full rounded-full bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 cursor-pointer"
               >

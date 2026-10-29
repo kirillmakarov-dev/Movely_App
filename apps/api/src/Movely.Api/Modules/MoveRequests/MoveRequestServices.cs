@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using Movely.Api.Data;
 using Movely.Api.Data.Entities;
 using Movely.Api.Shared.Errors;
+using Movely.Api.Modules.Identity;
 using Movely.Api.Shared.Time;
 
 public interface IMoveRequestService
@@ -13,7 +14,7 @@ public interface IMoveRequestService
     Task<MoveRequestResponse> GetOwnedAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<MoveRequestSummaryResponse>> ListOwnedAsync(Guid customerUserId, CancellationToken cancellationToken = default);
     Task<MoveRequestResponse> UpdateOwnedAsync(Guid customerUserId, Guid requestId, UpdateMoveRequestRequest request, CancellationToken cancellationToken = default);
-    Task<PublishMoveRequestResponse> PublishOwnedAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
+    Task<PublishMoveRequestResponse> PublishOwnedAsync(Guid customerUserId, Guid requestId, ContactSharingRequest? acceptance, CancellationToken cancellationToken = default);
     Task<MoveRequestResponse> CancelOwnedAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
     Task<MoveRequestResponse> CloseOwnedAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
     Task<IReadOnlyList<MoveRequestVersionResponse>> ListVersionsAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default);
@@ -25,13 +26,15 @@ public sealed class MoveRequestService : IMoveRequestService
     private const string Currency = "ILS";
     private readonly MovelyDbContext _dbContext;
     private readonly IClock _clock;
+    private readonly IConsentReleaseGate _consentReleaseGate;
     private readonly MoveRequestOptions _options;
 
-    public MoveRequestService(MovelyDbContext dbContext, IClock clock, IOptions<MoveRequestOptions> options)
+    public MoveRequestService(MovelyDbContext dbContext, IClock clock, IOptions<MoveRequestOptions> options, IConsentReleaseGate consentReleaseGate)
     {
         _dbContext = dbContext;
         _clock = clock;
         _options = options.Value;
+        _consentReleaseGate = consentReleaseGate;
     }
 
     public async Task<MoveRequestResponse> CreateDraftAsync(Guid customerUserId, CreateMoveRequestRequest request, CancellationToken cancellationToken = default)
@@ -113,7 +116,7 @@ public sealed class MoveRequestService : IMoveRequestService
         return Map(moveRequest, version);
     }
 
-    public async Task<PublishMoveRequestResponse> PublishOwnedAsync(Guid customerUserId, Guid requestId, CancellationToken cancellationToken = default)
+    public async Task<PublishMoveRequestResponse> PublishOwnedAsync(Guid customerUserId, Guid requestId, ContactSharingRequest? acceptance, CancellationToken cancellationToken = default)
     {
         var moveRequest = await LoadOwnedRequestAsync(customerUserId, requestId, cancellationToken);
         if (moveRequest.Status != MoveRequestStatus.Draft)
@@ -132,11 +135,26 @@ public sealed class MoveRequestService : IMoveRequestService
             throw new ApiException("REQUEST_INCOMPLETE", "Request has no content version.");
         }
 
+        _consentReleaseGate.EnsureAvailable();
+        if (!await ConsentPolicy.HasCurrentAsync(_dbContext, customerUserId, cancellationToken))
+            throw new ApiException("POLICY_ACCEPTANCE_REQUIRED", "Accept the current policies before publishing.");
+        if (acceptance is null || !acceptance.ShareContacts)
+            throw new ApiException("CONTACT_SHARING_REQUIRED", "Confirm contact sharing before publishing.");
+        if (acceptance.DisclosureVersion != ConsentPolicy.Version)
+            throw new ApiException("POLICY_VERSION_CHANGED", "Read the current contact-sharing notice and confirm again.", 409);
+        if (acceptance.MaxRecipients != moveRequest.MaxLeadBuyers || acceptance.MaxRecipients < 1)
+            throw new ApiException("RECIPIENT_LIMIT_CHANGED", "The recipient limit changed. Review it and confirm again.", 409);
+
         ValidateVersionForPublish(moveRequest.CurrentVersion);
         await EnforceActiveRequestLimitAsync(customerUserId, moveRequest.Id, cancellationToken);
         var duplicateRisk = await DetectDuplicateRiskAsync(customerUserId, moveRequest, moveRequest.CurrentVersion, cancellationToken);
 
         var now = _clock.UtcNow;
+        _dbContext.ContactSharingAcceptances.Add(new ContactSharingAcceptance {
+            Id = Guid.NewGuid(), UserId = customerUserId, MoveRequestId = moveRequest.Id,
+            RequestVersionId = moveRequest.CurrentVersion.Id, DisclosureVersion = ConsentPolicy.Version,
+            MaxRecipients = moveRequest.MaxLeadBuyers, AcceptedAt = now, IsTestOnly = ConsentPolicy.IsDraft,
+        });
         moveRequest.DuplicateRisk = duplicateRisk;
         moveRequest.Status = MoveRequestStatus.Published;
         moveRequest.PublishedAt = now;

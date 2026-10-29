@@ -126,6 +126,47 @@ namespace Movely.Api.Data.Migrations
                     b.ToTable("BusinessVerifications", (string)null);
                 });
 
+            modelBuilder.Entity("Movely.Api.Data.Entities.ContactSharingAcceptance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("AcceptedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DisclosureVersion")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<bool>("IsTestOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("MaxRecipients")
+                        .HasColumnType("integer");
+
+                    b.Property<Guid>("MoveRequestId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("RequestVersionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("MoveRequestId")
+                        .IsUnique();
+
+                    b.HasIndex("RequestVersionId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("ContactSharingAcceptances");
+                });
+
             modelBuilder.Entity("Movely.Api.Data.Entities.MoveItem", b =>
                 {
                     b.Property<Guid>("Id")
@@ -529,6 +570,41 @@ namespace Movely.Api.Data.Migrations
                     b.ToTable("PhoneVerifications", (string)null);
                 });
 
+            modelBuilder.Entity("Movely.Api.Data.Entities.PolicyAcceptance", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTimeOffset>("AcceptedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("AdultConfirmed")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("IsTestOnly")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("PrivacyVersion")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<string>("TermsVersion")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "TermsVersion", "PrivacyVersion");
+
+                    b.ToTable("PolicyAcceptances");
+                });
+
             modelBuilder.Entity("Movely.Api.Data.Entities.UserAuthIdentity", b =>
                 {
                     b.Property<Guid>("Id")
@@ -630,6 +706,27 @@ namespace Movely.Api.Data.Migrations
                     b.Navigation("Business");
                 });
 
+            modelBuilder.Entity("Movely.Api.Data.Entities.ContactSharingAcceptance", b =>
+                {
+                    b.HasOne("Movely.Api.Data.Entities.MoveRequest", null)
+                        .WithMany()
+                        .HasForeignKey("MoveRequestId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Movely.Api.Data.Entities.MoveRequestVersion", null)
+                        .WithMany()
+                        .HasForeignKey("RequestVersionId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("Movely.Api.Data.Entities.MovelyUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Movely.Api.Data.Entities.MoveItem", b =>
                 {
                     b.HasOne("Movely.Api.Data.Entities.MoveRequestVersion", "MoveRequestVersion")
@@ -709,6 +806,15 @@ namespace Movely.Api.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Movely.Api.Data.Entities.PolicyAcceptance", b =>
+                {
+                    b.HasOne("Movely.Api.Data.Entities.MovelyUser", null)
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Movely.Api.Data.Entities.UserAuthIdentity", b =>

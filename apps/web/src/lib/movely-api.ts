@@ -119,6 +119,7 @@ export type CurrentUser = {
   businessStatus: BusinessStatus | null;
   subscriptionStatus: SubscriptionStatus | null;
   businessId: string | null;
+  hasCurrentPolicyAcceptance: boolean;
 };
 
 export type MoveLocationDto = {
@@ -277,7 +278,14 @@ async function readJson(response: Response) {
 
 function toApiError(status: number, payload: unknown, fallbackMessage: string) {
   const shape = (payload ?? {}) as ApiErrorShape;
-  return new MovelyApiError(shape.message ?? fallbackMessage, {
+  const consentMessages: Record<string, string> = {
+    POLICY_ACCEPTANCE_REQUIRED: "אשרו גיל 18 ומעלה ואת תנאי השימוש לאחר קריאת הודעת הפרטיות.",
+    POLICY_VERSION_CHANGED: "המסמכים השתנו. רעננו את העמוד לאחר שמירת הטיוטה, קראו ואשרו שוב.",
+    CONTACT_SHARING_REQUIRED: "נדרש אישור נפרד להעברת פרטי הקשר לפני הפרסום.",
+    RECIPIENT_LIMIT_CHANGED: "מגבלת המובילים השתנתה. בדקו את המגבלה החדשה ואשרו שוב.",
+    LEGAL_NOT_READY: "ההרשמה והפרסום לציבור עדיין אינם פתוחים. המסמכים נמצאים בהכנה.",
+  };
+  return new MovelyApiError(consentMessages[shape.errorCode ?? ""] ?? shape.message ?? fallbackMessage, {
     errorCode: shape.errorCode ?? "HTTP_ERROR",
     status,
     details: shape.details,
@@ -350,9 +358,15 @@ export async function getCurrentUser() {
   }
 }
 
-export async function signInWithGoogle(credential: string) {
+export type PolicyAcceptance = { adultConfirmed: boolean; acceptTerms: boolean; termsVersion: string; privacyVersion: string };
+export async function acceptPolicies(acceptance: PolicyAcceptance) {
+  return await requestWithCsrf<void>("/api/v1/auth/consents", acceptance);
+}
+
+export async function signInWithGoogle(credential: string, acceptance?: PolicyAcceptance) {
   return await requestWithCsrf<CurrentUser>("/api/v1/auth/google/sign-in", {
     credential,
+    acceptance,
   });
 }
 
@@ -401,9 +415,9 @@ export async function updateMoveRequest(
   );
 }
 
-export async function publishMoveRequest(requestId: string) {
+export async function publishMoveRequest(requestId: string, acceptance: { shareContacts: boolean; disclosureVersion: string; maxRecipients: number }) {
   return await requestWithCsrf<PublishMoveRequestResponse>(
     `/api/v1/move-requests/${requestId}/publish`,
-    {},
+    acceptance,
   );
 }

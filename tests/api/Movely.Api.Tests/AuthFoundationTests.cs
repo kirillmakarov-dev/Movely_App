@@ -34,7 +34,7 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
 
         await IssueCsrfTokenAsync(client);
 
-        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest("dev-google:subject-1:alice@example.com:Alice:Mover"));
+        var response = await client.PostAsJsonAsync("/api/v1/auth/google/sign-in", new GoogleSignInRequest("dev-google:subject-1:alice@example.com:Alice:Mover", ConsentFixtures.Acceptance));
 
         response.EnsureSuccessStatusCode();
 
@@ -201,7 +201,7 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
     {
         var response = await client.PostAsJsonAsync(
             "/api/v1/auth/google/sign-in",
-            new GoogleSignInRequest($"dev-google:{subject}:{email}:{firstName}:{lastName}"));
+            new GoogleSignInRequest($"dev-google:{subject}:{email}:{firstName}:{lastName}", ConsentFixtures.Acceptance));
 
         response.EnsureSuccessStatusCode();
     }

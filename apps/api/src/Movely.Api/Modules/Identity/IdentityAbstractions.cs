@@ -14,9 +14,10 @@ public sealed record CurrentUserDto(
     UserRole Role,
     BusinessStatus? BusinessStatus,
     SubscriptionStatus? SubscriptionStatus,
-    Guid? BusinessId);
+    Guid? BusinessId,
+    bool HasCurrentPolicyAcceptance = false);
 
-public sealed record GoogleSignInRequest(string Credential);
+public sealed record GoogleSignInRequest(string Credential, PolicyAcceptanceRequest? Acceptance = null);
 
 public sealed record PhoneRequestCodeRequest(string Phone);
 

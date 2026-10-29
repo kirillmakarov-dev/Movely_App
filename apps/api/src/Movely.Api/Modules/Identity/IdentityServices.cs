@@ -276,7 +276,7 @@ public sealed class GoogleIdentityLinker : IGoogleIdentityLinker
 
 public interface IAuthService
 {
-    Task<CurrentUserDto> SignInWithGoogleAsync(string credential, HttpContext httpContext, CancellationToken cancellationToken = default);
+    Task<CurrentUserDto> SignInWithGoogleAsync(string credential, HttpContext httpContext, CancellationToken cancellationToken = default, PolicyAcceptanceRequest? acceptance = null);
     Task<RequestPhoneCodeResponse> RequestPhoneCodeAsync(Guid userId, string phone, bool includeDebugCode, CancellationToken cancellationToken = default);
     Task<VerifyPhoneCodeResponse> VerifyPhoneCodeAsync(Guid userId, string phone, string code, CancellationToken cancellationToken = default);
     Task LogoutAsync(HttpContext httpContext, CancellationToken cancellationToken = default);
@@ -295,6 +295,7 @@ public sealed class AuthService : IAuthService
     private readonly IAuthAbuseGuard _authAbuseGuard;
     private readonly IClock _clock;
     private readonly IHostEnvironment _environment;
+    private readonly IConsentReleaseGate _consentReleaseGate;
 
     public AuthService(
         MovelyDbContext dbContext,
@@ -306,7 +307,7 @@ public sealed class AuthService : IAuthService
         IOtpCodeHasher otpCodeHasher,
         IAuthAbuseGuard authAbuseGuard,
         IClock clock,
-        IHostEnvironment environment)
+        IHostEnvironment environment, IConsentReleaseGate consentReleaseGate)
     {
         _dbContext = dbContext;
         _googleIdentityVerifier = googleIdentityVerifier;
@@ -318,14 +319,30 @@ public sealed class AuthService : IAuthService
         _authAbuseGuard = authAbuseGuard;
         _clock = clock;
         _environment = environment;
+        _consentReleaseGate = consentReleaseGate;
     }
 
-    public async Task<CurrentUserDto> SignInWithGoogleAsync(string credential, HttpContext httpContext, CancellationToken cancellationToken = default)
+    public async Task<CurrentUserDto> SignInWithGoogleAsync(string credential, HttpContext httpContext, CancellationToken cancellationToken = default, PolicyAcceptanceRequest? acceptance = null)
     {
+        _consentReleaseGate.EnsureAvailable();
         var googleIdentity = await _googleIdentityVerifier.VerifyAsync(credential, cancellationToken);
+        var existingUserId = await _dbContext.UserAuthIdentities
+            .Where(x => x.Provider == AuthProvider.Google && x.ProviderSubject == googleIdentity.ProviderSubject)
+            .Select(x => (Guid?)x.UserId).SingleOrDefaultAsync(cancellationToken);
+        var hasAcceptance = existingUserId.HasValue && await ConsentPolicy.HasCurrentAsync(_dbContext, existingUserId.Value, cancellationToken);
+        if (acceptance is not null || !hasAcceptance) ConsentPolicy.Validate(acceptance);
+        await using var transaction = _dbContext.Database.IsRelational()
+            ? await _dbContext.Database.BeginTransactionAsync(cancellationToken) : null;
         var user = await _googleIdentityLinker.LinkOrCreateUserAsync(googleIdentity, cancellationToken);
+        if (!hasAcceptance)
+        {
+            ConsentPolicy.Add(_dbContext, user.Id, _clock.UtcNow);
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        var currentUser = await GetCurrentUserAsync(user.Id, cancellationToken);
+        if (transaction is not null) await transaction.CommitAsync(cancellationToken);
         await IssueSessionCookieAsync(httpContext, user.Id, cancellationToken);
-        return await GetCurrentUserAsync(user.Id, cancellationToken);
+        return currentUser;
     }
 
     public async Task<RequestPhoneCodeResponse> RequestPhoneCodeAsync(Guid userId, string phone, bool includeDebugCode, CancellationToken cancellationToken = default)
@@ -483,7 +500,8 @@ public sealed class AuthService : IAuthService
             user.Role,
             business?.Status,
             business?.Subscription?.Status,
-            business?.Id);
+            business?.Id,
+            await ConsentPolicy.HasCurrentAsync(_dbContext, user.Id, cancellationToken));
     }
 
     private async Task IssueSessionCookieAsync(HttpContext httpContext, Guid userId, CancellationToken cancellationToken)

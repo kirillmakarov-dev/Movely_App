@@ -22,10 +22,30 @@ public sealed class MovelyDbContext : DbContext
     public DbSet<MoveLocation> MoveLocations => Set<MoveLocation>();
     public DbSet<MoveItem> MoveItems => Set<MoveItem>();
     public DbSet<MovePhoto> MovePhotos => Set<MovePhoto>();
+    public DbSet<PolicyAcceptance> PolicyAcceptances => Set<PolicyAcceptance>();
+    public DbSet<ContactSharingAcceptance> ContactSharingAcceptances => Set<ContactSharingAcceptance>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<PolicyAcceptance>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.TermsVersion).HasMaxLength(64).IsRequired();
+            entity.Property(x => x.PrivacyVersion).HasMaxLength(64).IsRequired();
+            entity.HasIndex(x => new { x.UserId, x.TermsVersion, x.PrivacyVersion });
+            entity.HasOne<MovelyUser>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Cascade);
+        });
+        modelBuilder.Entity<ContactSharingAcceptance>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.DisclosureVersion).HasMaxLength(64).IsRequired();
+            entity.HasIndex(x => x.MoveRequestId).IsUnique();
+            entity.HasOne<MoveRequest>().WithMany().HasForeignKey(x => x.MoveRequestId).OnDelete(DeleteBehavior.Cascade);
+            entity.HasOne<MovelyUser>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<MoveRequestVersion>().WithMany().HasForeignKey(x => x.RequestVersionId).OnDelete(DeleteBehavior.Restrict);
+        });
 
         modelBuilder.Entity<MovelyUser>(entity =>
         {

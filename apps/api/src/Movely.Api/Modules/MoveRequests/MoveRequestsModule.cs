@@ -62,6 +62,7 @@ public static class MoveRequestsModule
 
         group.MapPost("/{requestId:guid}/publish", async (
             Guid requestId,
+            Movely.Api.Modules.Identity.ContactSharingRequest? acceptance,
             ICurrentUser currentUser,
             IMoveRequestService moveRequests,
             CancellationToken cancellationToken) =>
@@ -71,7 +72,7 @@ public static class MoveRequestsModule
                 return Results.Unauthorized();
             }
 
-            return Results.Ok(await moveRequests.PublishOwnedAsync(currentUser.UserId.Value, requestId, cancellationToken));
+            return Results.Ok(await moveRequests.PublishOwnedAsync(currentUser.UserId.Value, requestId, acceptance, cancellationToken));
         });
 
         group.MapPost("/{requestId:guid}/cancel", async (

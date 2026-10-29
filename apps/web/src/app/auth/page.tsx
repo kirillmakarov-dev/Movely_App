@@ -2,6 +2,7 @@
 
 import Link from "@/components/SafeLink";
 import { useEffect, useState } from "react";
+import PolicyConsentFields, { emptyPolicyChoice, policyPayload } from "@/components/PolicyConsentFields";
 import SiteHeader from "@/components/SiteHeader";
 import {
   type CurrentUser,
@@ -19,6 +20,7 @@ export default function AuthPage() {
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [phone, setPhone] = useState("050-123-4567");
   const [otpCode, setOtpCode] = useState("");
+  const [policyChoice, setPolicyChoice] = useState(emptyPolicyChoice);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
@@ -29,7 +31,7 @@ export default function AuthPage() {
     try {
       setBusy(true);
       setStatus("מתחברים...");
-      setUser(await signInWithGoogle(developmentCredential));
+      setUser(await signInWithGoogle(developmentCredential, policyPayload(policyChoice)));
       setStatus("ההתחברות הצליחה.");
     } catch (error) {
       setStatus(error instanceof Error ? error.message : "ההתחברות נכשלה. נסו שוב.");
@@ -102,7 +104,8 @@ export default function AuthPage() {
               <div>
                 <h2 className="text-2xl font-bold">התחברות</h2>
                 <p className="mt-2 text-slate-600">המשיכו עם Google כדי לגשת לחשבון הלקוח שלכם.</p>
-                <button type="button" onClick={handleGoogleSignIn} disabled={busy} className="button button-primary mt-6 w-full disabled:opacity-60">המשך עם Google</button>
+                <PolicyConsentFields value={policyChoice} onChange={setPolicyChoice} disabled={busy} />
+                <button type="button" onClick={handleGoogleSignIn} disabled={busy || !policyChoice.adultConfirmed || !policyChoice.acceptTerms} className="button button-primary mt-6 w-full disabled:opacity-60">המשך עם Google</button>
               </div>
             )}
 

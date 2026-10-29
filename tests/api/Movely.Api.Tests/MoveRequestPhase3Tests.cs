@@ -88,7 +88,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         var draft = await CreateDraftAsync(client, MoveRequestType.ApartmentMove);
 
         await IssueCsrfTokenAsync(client);
-        var response = await client.PostAsync($"/api/v1/move-requests/{draft.Id}/publish", null);
+        var response = await client.PostAsJsonAsync($"/api/v1/move-requests/{draft.Id}/publish", ConsentFixtures.Sharing);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -101,7 +101,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await UpdateAsync(client, draft.Id, ValidApartmentUpdate(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14))));
 
         await IssueCsrfTokenAsync(client);
-        var response = await client.PostAsync($"/api/v1/move-requests/{draft.Id}/publish", null);
+        var response = await client.PostAsJsonAsync($"/api/v1/move-requests/{draft.Id}/publish", ConsentFixtures.Sharing);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -337,7 +337,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await UpdateAsync(client, fourth.Id, ValidApartmentUpdate(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(40)), pickupCity: "Ashdod"));
 
         await IssueCsrfTokenAsync(client);
-        var response = await client.PostAsync($"/api/v1/move-requests/{fourth.Id}/publish", null);
+        var response = await client.PostAsJsonAsync($"/api/v1/move-requests/{fourth.Id}/publish", ConsentFixtures.Sharing);
 
         Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
     }
@@ -370,6 +370,77 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         Assert.DoesNotContain("Dizengoff 2", summaryJson, StringComparison.OrdinalIgnoreCase);
     }
 
+    [Theory]
+    [InlineData(false, false, false, "CONTACT_SHARING_REQUIRED")]
+    [InlineData(true, false, false, "POLICY_VERSION_CHANGED")]
+    [InlineData(true, true, false, "RECIPIENT_LIMIT_CHANGED")]
+    public async Task PublicationRequiresCurrentExplicitSharing(bool consent, bool version, bool limit, string error)
+    {
+        var client = await CreateSignedInClientAsync($"consent-{Guid.NewGuid():N}", phoneVerified: true);
+        var draft = await CreateDraftAsync(client, MoveRequestType.ApartmentMove);
+        await UpdateAsync(client, draft.Id, ValidApartmentUpdate(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14))));
+        await IssueCsrfTokenAsync(client);
+        var response = await client.PostAsJsonAsync($"/api/v1/move-requests/{draft.Id}/publish",
+            new ContactSharingRequest(consent, version ? ConsentPolicy.Version : "old", limit ? draft.MaxLeadBuyers : draft.MaxLeadBuyers + 1));
+        Assert.False(response.IsSuccessStatusCode);
+        Assert.Contains(error, await response.Content.ReadAsStringAsync());
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        Assert.False(await db.ContactSharingAcceptances.AnyAsync(x => x.MoveRequestId == draft.Id));
+        Assert.Equal(MoveRequestStatus.Draft, (await db.MoveRequests.FindAsync(draft.Id))!.Status);
+    }
+
+    [Fact]
+    public async Task PublicationWithoutBodyCannotBypassSharing()
+    {
+        var client = await CreateSignedInClientAsync($"no-sharing-{Guid.NewGuid():N}", phoneVerified: true);
+        var draft = await CreateDraftAsync(client, MoveRequestType.ApartmentMove);
+        await UpdateAsync(client, draft.Id, ValidApartmentUpdate(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14))));
+        await IssueCsrfTokenAsync(client);
+        var response = await client.PostAsync($"/api/v1/move-requests/{draft.Id}/publish", null);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Contains("CONTACT_SHARING_REQUIRED", await response.Content.ReadAsStringAsync());
+    }
+
+    [Fact]
+    public async Task PublicationStoresServerSnapshotOfDisclosureAndLimit()
+    {
+        var client = await CreateSignedInClientAsync($"sharing-record-{Guid.NewGuid():N}", phoneVerified: true);
+        var published = await CreatePublishedApartmentAsync(client, DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14)));
+        using var scope = _factory.Services.CreateScope();
+        var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+        var record = await db.ContactSharingAcceptances.SingleAsync(x => x.MoveRequestId == published.MoveRequest.Id);
+        Assert.Equal(published.MoveRequest.CustomerUserId, record.UserId);
+        Assert.Equal(published.MoveRequest.CurrentVersion!.Id, record.RequestVersionId);
+        Assert.Equal(published.MoveRequest.MaxLeadBuyers, record.MaxRecipients);
+        Assert.Equal(ConsentPolicy.Version, record.DisclosureVersion);
+        Assert.True(record.IsTestOnly);
+        Assert.Equal(published.MoveRequest.PublishedAt, record.AcceptedAt);
+        await IssueCsrfTokenAsync(client);
+        var repeat = await client.PostAsJsonAsync($"/api/v1/move-requests/{published.MoveRequest.Id}/publish", ConsentFixtures.Sharing);
+        Assert.False(repeat.IsSuccessStatusCode);
+        Assert.Equal(1, await db.ContactSharingAcceptances.CountAsync(x => x.MoveRequestId == published.MoveRequest.Id));
+    }
+
+    [Fact]
+    public async Task ExistingSessionCannotPublishAfterPoliciesChange()
+    {
+        var client = await CreateSignedInClientAsync($"outdated-{Guid.NewGuid():N}", phoneVerified: true);
+        var draft = await CreateDraftAsync(client, MoveRequestType.ApartmentMove);
+        await UpdateAsync(client, draft.Id, ValidApartmentUpdate(DateOnly.FromDateTime(DateTime.UtcNow.AddDays(14))));
+        using (var scope = _factory.Services.CreateScope())
+        {
+            var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
+            var acceptance = await db.PolicyAcceptances.SingleAsync(x => x.UserId == draft.CustomerUserId);
+            acceptance.PrivacyVersion = "old";
+            await db.SaveChangesAsync();
+        }
+        await IssueCsrfTokenAsync(client);
+        var response = await client.PostAsJsonAsync($"/api/v1/move-requests/{draft.Id}/publish", ConsentFixtures.Sharing);
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.Contains("POLICY_ACCEPTANCE_REQUIRED", await response.Content.ReadAsStringAsync());
+    }
+
     private async Task<HttpClient> CreateSignedInClientAsync(string subject, bool phoneVerified = false)
     {
         var client = _factory.CreateClient(new WebApplicationFactoryClientOptions
@@ -381,7 +452,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
         await IssueCsrfTokenAsync(client);
         var signIn = await client.PostAsJsonAsync(
             "/api/v1/auth/google/sign-in",
-            new GoogleSignInRequest($"dev-google:{subject}:{subject}@example.com:Phase:Three"));
+            new GoogleSignInRequest($"dev-google:{subject}:{subject}@example.com:Phase:Three", ConsentFixtures.Acceptance));
         signIn.EnsureSuccessStatusCode();
 
         if (phoneVerified)
@@ -424,7 +495,7 @@ public sealed class MoveRequestPhase3Tests : IClassFixture<ApiFactory>
     private static async Task<PublishMoveRequestResponse> PublishAsync(HttpClient client, Guid requestId)
     {
         await IssueCsrfTokenAsync(client);
-        var response = await client.PostAsync($"/api/v1/move-requests/{requestId}/publish", null);
+        var response = await client.PostAsJsonAsync($"/api/v1/move-requests/{requestId}/publish", ConsentFixtures.Sharing);
         response.EnsureSuccessStatusCode();
         return (await response.Content.ReadFromJsonAsync<PublishMoveRequestResponse>())!;
     }
