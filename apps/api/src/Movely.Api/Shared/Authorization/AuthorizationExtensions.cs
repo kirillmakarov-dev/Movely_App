@@ -7,6 +7,7 @@ public static class AuthorizationExtensions
 {
     public const string AuthenticatedUser = "AuthenticatedUser";
     public const string CustomerOnly = "CustomerOnly";
+    public const string CustomerOrMover = "CustomerOrMover";
     public const string MoverOnly = "MoverOnly";
     public const string AdminOnly = "AdminOnly";
     public const string VerifiedMover = "VerifiedMover";
@@ -19,6 +20,7 @@ public static class AuthorizationExtensions
         {
             options.AddPolicy(AuthenticatedUser, policy => policy.RequireAuthenticatedUser());
             options.AddPolicy(CustomerOnly, policy => policy.RequireRole(UserRole.Customer.ToString()));
+            options.AddPolicy(CustomerOrMover, policy => policy.RequireRole(UserRole.Customer.ToString(), UserRole.Mover.ToString()));
             options.AddPolicy(MoverOnly, policy => policy.RequireRole(UserRole.Mover.ToString()));
             options.AddPolicy(AdminOnly, policy => policy.RequireRole(UserRole.Admin.ToString()));
             options.AddPolicy(VerifiedPhoneCustomer, policy =>
@@ -30,11 +32,13 @@ public static class AuthorizationExtensions
             {
                 policy.RequireRole(UserRole.Mover.ToString());
                 policy.RequireClaim("business_status", BusinessStatus.Verified.ToString());
+                policy.RequireClaim("phone_verified", bool.TrueString);
             });
             options.AddPolicy(PremiumVerifiedMover, policy =>
             {
                 policy.RequireRole(UserRole.Mover.ToString());
                 policy.RequireClaim("business_status", BusinessStatus.Verified.ToString());
+                policy.RequireClaim("phone_verified", bool.TrueString);
                 policy.RequireClaim("subscription_status", SubscriptionStatus.Active.ToString());
             });
         });

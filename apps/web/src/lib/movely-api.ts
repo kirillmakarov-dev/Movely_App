@@ -384,7 +384,7 @@ async function ensureCsrfToken(signal?: AbortSignal) {
   return payload.requestToken;
 }
 
-async function requestWithCsrf<TResponse>(
+export async function requestWithCsrf<TResponse>(
   path: string,
   body: unknown,
   method: "POST" | "PUT" | "PATCH" | "DELETE" = "POST",

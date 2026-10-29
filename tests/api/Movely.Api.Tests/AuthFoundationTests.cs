@@ -155,12 +155,16 @@ public sealed class AuthFoundationTests : IClassFixture<ApiFactory>
 
         var mover = BuildPrincipal(
             UserRole.Mover,
-            phoneVerified: false,
+            phoneVerified: true,
             businessStatus: BusinessStatus.Verified,
             subscriptionStatus: SubscriptionStatus.Active);
 
         Assert.True((await authorization.AuthorizeAsync(verifiedCustomer, null, AuthorizationExtensions.VerifiedPhoneCustomer)).Succeeded);
         Assert.True((await authorization.AuthorizeAsync(mover, null, AuthorizationExtensions.PremiumVerifiedMover)).Succeeded);
+        var unverifiedPhone = BuildPrincipal(UserRole.Mover, phoneVerified: false,
+            businessStatus: BusinessStatus.Verified, subscriptionStatus: SubscriptionStatus.Active);
+        Assert.False((await authorization.AuthorizeAsync(unverifiedPhone, null, AuthorizationExtensions.VerifiedMover)).Succeeded);
+        Assert.False((await authorization.AuthorizeAsync(unverifiedPhone, null, AuthorizationExtensions.PremiumVerifiedMover)).Succeeded);
     }
 
     private static ClaimsPrincipal BuildPrincipal(

@@ -3,10 +3,6 @@ import Link from "@/components/SafeLink";
 const navigation = [
   ["/mover", "לוח בקרה"],
   ["/mover/requests", "שוק הבקשות"],
-  ["/mover/leads", "לידים שנרכשו"],
-  ["/mover/offers", "הצעות"],
-  ["/mover/wallet", "ארנק"],
-  ["/mover/premium", "פרימיום"],
   ["/mover/profile", "פרופיל עסקי"],
 ];
 
@@ -32,17 +28,16 @@ export default function MoverShell({ children }: { children: React.ReactNode }) 
             <Link href="/" className="brand-mark">MOVELY</Link>
             <p className="text-[10px] font-bold uppercase tracking-widest text-sky-700">עסק מובילים</p>
           </div>
-          <p className="hidden text-sm text-slate-500 lg:block">תצוגה מקדימה של סביבת העבודה העסקית</p>
+          <p className="hidden text-sm text-slate-500 lg:block">סביבת העבודה העסקית</p>
           <Link href="/auth" className="button button-ghost">התחברות</Link>
         </header>
         <main id="main-content" className="px-4 py-8 pb-24 sm:px-6 lg:px-10 lg:pb-10">{children}</main>
       </div>
 
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-slate-200 bg-white px-2 pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="ניווט נייד למובילים">
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-3 border-t border-slate-200 bg-white px-2 pb-[env(safe-area-inset-bottom)] lg:hidden" aria-label="ניווט נייד למובילים">
         {[
           ["/mover", "בית"],
           ["/mover/requests", "בקשות"],
-          ["/mover/leads", "לידים"],
           ["/mover/profile", "פרופיל"],
         ].map(([href, label]) => <Link key={href} href={href} className="flex min-h-16 items-center justify-center text-xs font-bold text-slate-700">{label}</Link>)}
       </nav>

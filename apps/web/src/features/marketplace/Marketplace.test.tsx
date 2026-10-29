@@ -28,19 +28,29 @@ test("date-only values retain their day while publication timestamps use the Isr
 
 test.each([
   [null, "התחברו כדי לצפות בבקשות"],
-  [{ ...verifiedMover, role: "Customer" }, "הבקשות מיועדות למובילים עם עסק מאומת"],
+  [{ ...verifiedMover, role: "Customer", businessId: null }, "עדיין אין עסק משויך לחשבון"],
+  [{ ...verifiedMover, role: "Customer", businessStatus: "PendingVerification" }, "העסק עדיין ממתין לאימות"],
   [{ ...verifiedMover, role: "Admin" }, "הבקשות מיועדות למובילים עם עסק מאומת"],
   [{ ...verifiedMover, businessId: null }, "עדיין אין עסק משויך לחשבון"],
   [{ ...verifiedMover, businessStatus: "PendingVerification" }, "העסק עדיין ממתין לאימות"],
   [{ ...verifiedMover, businessStatus: "Suspended" }, "הגישה של העסק מוגבלת כרגע"],
   [{ ...verifiedMover, businessStatus: "Rejected" }, "העסק אינו מאושר לצפייה בבקשות"],
   [{ ...verifiedMover, hasCurrentPolicyAcceptance: false }, "נדרש אישור התנאים המעודכנים"],
+  [{ ...verifiedMover, phoneVerified: false }, "נדרש אימות טלפון"],
 ] as const)("ineligible session never loads marketplace data: %j", async (user, title) => {
   api.user.mockResolvedValue(user);
   render(<MarketplaceBrowser />);
   expect(await screen.findByRole("heading", { name: title })).toBeVisible();
   expect(api.list).not.toHaveBeenCalled(); expect(api.cities).not.toHaveBeenCalled();
   if (user?.role === "Customer") expect(screen.getByRole("link", { name: "הבקשות שלי" })).toHaveAttribute("href", "/account/requests");
+});
+
+test("a customer with a verified business can view the marketplace without changing primary role", async () => {
+  const customer = { ...verifiedMover, role: "Customer" as const };
+  api.user.mockResolvedValue(customer);
+  render(<MarketplaceBrowser />);
+  expect(await screen.findByRole("link", { name: "צפייה בבקשה" })).toBeVisible();
+  expect(customer.role).toBe("Customer");
 });
 
 test("no catalogue is fetched before session checking completes", async () => {

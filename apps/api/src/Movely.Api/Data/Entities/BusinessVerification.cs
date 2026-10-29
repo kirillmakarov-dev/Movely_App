@@ -10,6 +10,10 @@ public sealed class BusinessVerification
     public Guid? ReviewedByUserId { get; set; }
     public DateTimeOffset? ReviewedAt { get; set; }
     public string? Notes { get; set; }
+    public Guid? ReviewedProfileRevisionId { get; set; }
+    public string? OwnerMessage { get; set; }
+    public bool RegistryChecked { get; set; }
+    public bool RepresentativeChecked { get; set; }
     public DateTimeOffset CreatedAt { get; set; }
     public DateTimeOffset UpdatedAt { get; set; }
 

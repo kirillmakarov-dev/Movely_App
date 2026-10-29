@@ -67,20 +67,32 @@ Base convention:
 
 ### POST `/api/v1/businesses`
 
-- Role: Authenticated mover
-- Purpose: Create business profile
-- Validation: no conflicting ownership rules, required business fields present
+- Role: Authenticated active Customer or Mover; Admin cannot apply
+- Purpose: Submit one owned business for manual verification without changing the primary user role
+- Validation: current site policies, verified phone, legal gate, complete profile and explicit representative-authority confirmation; duplicate owner returns 409
+- Body: `name`, `registrationNumber` (nine ASCII digits; format only), `registeredAddress`, `representativeName`, `serviceAreaCodes` (1–20 unique official codes), `authorizedRepresentative`
+- Response: 201 with owner profile in PendingVerification
 
 ### GET `/api/v1/businesses/me`
 
-- Role: Authenticated mover
+- Role: Authenticated owner Customer or Mover
 - Purpose: Return business profile, verification state, subscription state
 
 ### PATCH `/api/v1/businesses/me`
 
-- Role: Authenticated mover
+- Role: Authenticated active owner Customer or Mover
 - Purpose: Update business profile
-- Validation: limited to profile fields allowed in current verification state
+- Validation: complete replacement of permitted profile fields, `expectedRevisionId` and fresh `authorizedRepresentative`; Verified additionally requires `acknowledgeReverification`. Pending/Rejected/Verified edits result in PendingVerification with a new revision. Suspended cannot be changed by its owner.
+
+Owner responses contain only owned profile fields, canonical service areas, status/revision/timestamps and the last owner-facing review message. They exclude internal review notes, actor IDs and the private profile snapshot. Missing own profile returns `BUSINESS_NOT_FOUND` (404). Owner/status/role/reviewer fields submitted by the browser never grant authority. Writes use CSRF and return a controlled 409 for competing changes.
+
+### Administrative business review
+
+- GET `/api/v1/admin/businesses`: Admin only; optional named `status`, positive `page` (default 1), `pageSize` (default 12, max 50); stable updated-time/ID ordering. Returns `{ items, page, pageSize, totalCount }`; the count is advisory under concurrent changes.
+- GET `/api/v1/admin/businesses/{businessId}`: Admin only; current private profile, owner name/phone/account state, latest 100 review records and `hasMoreReviews`. Internal profile snapshot remains storage-only in this stage.
+- POST `/api/v1/admin/businesses/{businessId}/reviews`: active Admin only, CSRF, no self-review. Body includes `expectedRevisionId`, explicit `decision` (`Verify`, `Reject`, `Suspend`, `Reopen`), `ownerMessage`, `internalNotes`, `registryChecked`, `representativeChecked`. Approval requires a complete Pending profile, an eligible owner, both external manual checks and an evidence note of at least 10 characters. Reject/Suspend/Reopen require an owner-facing reason. The server enforces the state transition and saves audit/current status atomically.
+
+Business reads allow 60/minute/account/instance; owner writes 10/5 minutes; admin decisions 30/minute. A timeout is an uncertain mutation outcome: re-read before another explicit attempt, never automatically repeat it. Provisioning, migration/rollback and private-data inventory are documented in `BUSINESS_ONBOARDING.md`.
 
 ## 4. Move requests
 

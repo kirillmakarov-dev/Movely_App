@@ -2,14 +2,16 @@ import { act, cleanup, fireEvent, render, screen, waitFor } from "@testing-libra
 import { afterEach, beforeEach, expect, test, vi } from "vitest";
 import AuthPage from "./page";
 import type { CurrentUser, VerifyPhoneCodeResponse } from "@/lib/movely-api";
+import { MovelyApiError } from "@/lib/movely-api";
 
 const mocks = vi.hoisted(() => ({
-  currentUser: vi.fn(), capabilities: vi.fn(), signIn: vi.fn(), sendCode: vi.fn(), verifyCode: vi.fn(), logout: vi.fn(), mount: vi.fn(),
+  currentUser: vi.fn(), capabilities: vi.fn(), signIn: vi.fn(), sendCode: vi.fn(), verifyCode: vi.fn(), logout: vi.fn(), mount: vi.fn(), accept: vi.fn(),
 }));
 vi.mock("@/lib/movely-api", async () => ({
   ...await vi.importActual("@/lib/movely-api"),
   getCurrentUser: mocks.currentUser, getAuthCapabilities: mocks.capabilities,
   signInWithGoogle: mocks.signIn, requestPhoneCode: mocks.sendCode, verifyPhoneCode: mocks.verifyCode, logout: mocks.logout,
+  acceptPolicies: mocks.accept,
 }));
 vi.mock("@/lib/google-identity", () => ({ mountGoogleButton: mocks.mount }));
 
@@ -34,9 +36,56 @@ beforeEach(() => {
   });
   mocks.verifyCode.mockResolvedValue({ phoneVerified: true, normalizedPhone: "+972501234567" });
   mocks.logout.mockResolvedValue(undefined);
+  mocks.accept.mockResolvedValue(undefined);
   mocks.mount.mockImplementation(async (_element, _clientId, callback) => { credentialCallback = callback; return vi.fn(); });
 });
 afterEach(() => { cleanup(); vi.useRealTimers(); });
+
+test("logged-in account accepts current policy without logout or Google and keeps its account links", async () => {
+  mocks.currentUser.mockResolvedValue({ ...customer, phoneVerified: true, hasCurrentPolicyAcceptance: false });
+  mocks.capabilities.mockResolvedValue({ ...enabled, googleSignInAvailable: false, googleClientId: null });
+  render(<AuthPage />);
+  for (const choice of await screen.findAllByRole("checkbox")) { expect(choice).not.toBeChecked(); fireEvent.click(choice); }
+  fireEvent.click(screen.getByRole("button", { name: "אישור והמשך" }));
+  expect(await screen.findByText("התנאים אושרו. אפשר להמשיך לפעילות בחשבון.")).toBeVisible();
+  expect(screen.queryByRole("form", { name: "אישור התנאים המעודכנים" })).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: "יציאה", exact: true })).toBeEnabled();
+  expect(screen.getByRole("link", { name: "מעבר לבקשות שלי" })).toHaveAttribute("href", "/account/requests");
+  expect(screen.getByRole("link", { name: "הפרופיל העסקי שלי" })).toHaveAttribute("href", "/mover/profile");
+  expect(mocks.mount).not.toHaveBeenCalled();
+  expect(mocks.logout).not.toHaveBeenCalled();
+});
+
+test("expired session during policy acceptance clears the logged-in account and offers sign-in", async () => {
+  mocks.currentUser.mockResolvedValue({ ...customer, phoneVerified: true, hasCurrentPolicyAcceptance: false });
+  mocks.accept.mockRejectedValue(new MovelyApiError("private", { status: 401, errorCode: "SESSION_INVALID" }));
+  render(<AuthPage />);
+  for (const choice of await screen.findAllByRole("checkbox")) fireEvent.click(choice);
+  fireEvent.click(screen.getByRole("button", { name: "אישור והמשך" }));
+  expect(await screen.findByRole("heading", { name: "כניסה או הרשמה" })).toBeVisible();
+  expect(screen.queryByRole("heading", { name: "ברוכים הבאים, נועה" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "הפרופיל העסקי שלי" })).not.toBeInTheDocument();
+  expect(await screen.findByRole("button", { name: "כבר יש לי חשבון" })).toBeEnabled();
+  expect(mocks.logout).not.toHaveBeenCalled();
+});
+
+test.each(["Mover", "Admin"] as const)("%s receives only applicable account links and phone actions", async (role) => {
+  mocks.currentUser.mockResolvedValue({ ...customer, role });
+  render(<AuthPage />);
+  await screen.findByRole("heading", { name: "ברוכים הבאים, נועה" });
+  expect(screen.queryByRole("link", { name: "מעבר לבקשות שלי" })).not.toBeInTheDocument();
+  if (role === "Mover") {
+    expect(await screen.findByLabelText("מספר טלפון")).toBeVisible();
+    expect(screen.getByRole("link", { name: "הפרופיל העסקי שלי" })).toHaveAttribute("href", "/mover/profile");
+    expect(screen.queryByRole("link", { name: "בדיקת עסקים" })).not.toBeInTheDocument();
+  } else {
+    expect(screen.queryByRole("region", { name: "אימות טלפון" })).not.toBeInTheDocument();
+    expect(screen.queryByLabelText("מספר טלפון")).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "הפרופיל העסקי שלי" })).not.toBeInTheDocument();
+    expect(screen.getByRole("link", { name: "בדיקת עסקים" })).toHaveAttribute("href", "/admin/businesses");
+    expect(mocks.capabilities).not.toHaveBeenCalled();
+  }
+});
 
 test("account page completes real component login and phone verification, releasing parent busy state", async () => {
   let finishSignIn!: (value: CurrentUser) => void;

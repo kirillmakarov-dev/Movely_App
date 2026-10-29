@@ -14,6 +14,7 @@ public sealed class MovelyDbContext : DbContext
     public DbSet<UserAuthIdentity> UserAuthIdentities => Set<UserAuthIdentity>();
     public DbSet<PhoneVerification> PhoneVerifications => Set<PhoneVerification>();
     public DbSet<Business> Businesses => Set<Business>();
+    public DbSet<BusinessReview> BusinessReviews => Set<BusinessReview>();
     public DbSet<BusinessVerification> BusinessVerifications => Set<BusinessVerification>();
     public DbSet<BusinessSubscription> BusinessSubscriptions => Set<BusinessSubscription>();
     public DbSet<UserSession> UserSessions => Set<UserSession>();
@@ -98,7 +99,15 @@ public sealed class MovelyDbContext : DbContext
             entity.ToTable("Businesses");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Name).HasMaxLength(200);
+            entity.Property(x => x.RegistrationNumber).HasMaxLength(9);
+            entity.Property(x => x.RegisteredAddress).HasMaxLength(300);
+            entity.Property(x => x.RepresentativeName).HasMaxLength(120);
+            entity.Property(x => x.ServiceAreaCodes).HasColumnType("text[]").IsRequired();
+            entity.Property(x => x.RevisionId).IsConcurrencyToken();
+            entity.Property(x => x.OwnerUserId).IsConcurrencyToken();
+            entity.Property(x => x.Status).IsConcurrencyToken();
             entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32);
+            entity.HasIndex(x => new { x.Status, x.UpdatedAt, x.Id }).IsDescending(false, true, false);
             entity.HasIndex(x => x.OwnerUserId).IsUnique();
             entity.HasOne(x => x.OwnerUser)
                 .WithMany(x => x.OwnedBusinesses)
@@ -112,11 +121,26 @@ public sealed class MovelyDbContext : DbContext
             entity.HasKey(x => x.Id);
             entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32);
             entity.Property(x => x.Notes).HasMaxLength(1000);
+            entity.Property(x => x.OwnerMessage).HasMaxLength(1000);
             entity.HasIndex(x => x.BusinessId).IsUnique();
             entity.HasOne(x => x.Business)
                 .WithOne(x => x.Verification)
                 .HasForeignKey<BusinessVerification>(x => x.BusinessId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<BusinessReview>(entity =>
+        {
+            entity.HasKey(x => x.Id);
+            entity.Property(x => x.PreviousStatus).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.OwnerMessage).HasMaxLength(1000);
+            entity.Property(x => x.InternalNotes).HasMaxLength(1000);
+            entity.Property(x => x.ProfileSnapshotJson).HasColumnType("jsonb").IsRequired();
+            entity.HasIndex(x => new { x.BusinessId, x.ProfileRevisionId }).IsUnique();
+            entity.HasIndex(x => new { x.BusinessId, x.ReviewedAt, x.Id }).IsDescending(false, true, true);
+            entity.HasOne(x => x.Business).WithMany(x => x.Reviews).HasForeignKey(x => x.BusinessId).OnDelete(DeleteBehavior.Restrict);
+            entity.HasOne<MovelyUser>().WithMany().HasForeignKey(x => x.ReviewedByUserId).OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<BusinessSubscription>(entity =>

@@ -63,7 +63,10 @@ public sealed class SessionAuthenticationHandler : AuthenticationHandler<Authent
     {
         var claims = new List<Claim>
         {
+            // Antiforgery must follow the account, not mutable phone/business claims.
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
             new("movely_user_id", user.Id.ToString()),
+            new("movely_primary_role", user.Role.ToString()),
             new("movely_session_id", sessionId.ToString()),
             new(ClaimTypes.GivenName, user.FirstName),
             new(ClaimTypes.Surname, user.LastName),
@@ -75,6 +78,10 @@ public sealed class SessionAuthenticationHandler : AuthenticationHandler<Authent
 
         if (business is not null)
         {
+            // Owning a business adds a capability without replacing customer ownership.
+            // The business status and verified phone are checked by stronger policies.
+            if (user.Role == UserRole.Customer)
+                claims.Add(new Claim(ClaimTypes.Role, UserRole.Mover.ToString()));
             claims.Add(new Claim("business_id", business.Id.ToString()));
             claims.Add(new Claim("business_status", business.Status.ToString()));
             if (business.Subscription is not null)

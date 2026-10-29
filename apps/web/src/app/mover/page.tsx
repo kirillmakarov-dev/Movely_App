@@ -1,2 +1,4 @@
-import MoverPlaceholder from "@/components/MoverPlaceholder";
-export default function MoverPage() { return <MoverPlaceholder title="לוח בקרה למובילים" description="אזור עסקי ייעודי לחברות הובלה, נפרד מחשבון הלקוח." action={{ href: "/mover/requests", label: "עיון בתצוגת הבקשות" }} />; }
+import type { Metadata } from "next";
+import BusinessHome from "@/features/businesses/BusinessHome";
+export const metadata: Metadata = { title: "האזור העסקי", robots: { index: false, follow: false } };
+export default function MoverPage() { return <div className="space-y-6" dir="rtl"><h1 className="text-3xl font-bold">האזור העסקי</h1><BusinessHome /></div>; }

@@ -25,7 +25,10 @@ public sealed class MarketplaceTests : IDisposable
     [Theory]
     [InlineData(null, null, 401)]
     [InlineData(UserRole.Customer, null, 403)]
+    [InlineData(UserRole.Customer, BusinessStatus.PendingVerification, 403)]
+    [InlineData(UserRole.Customer, BusinessStatus.Verified, 200)]
     [InlineData(UserRole.Admin, null, 403)]
+    [InlineData(UserRole.Admin, BusinessStatus.Verified, 403)]
     [InlineData(UserRole.Mover, BusinessStatus.PendingVerification, 403)]
     [InlineData(UserRole.Mover, BusinessStatus.Suspended, 403)]
     [InlineData(UserRole.Mover, BusinessStatus.Rejected, 403)]
@@ -34,7 +37,7 @@ public sealed class MarketplaceTests : IDisposable
     {
         using var client = role is null ? _factory.CreateClient() : await Viewer(role.Value, business);
         Assert.Equal(status, (int)(await client.GetAsync("/api/v1/marketplace/requests")).StatusCode);
-        Assert.Equal(role == UserRole.Mover && business == BusinessStatus.Verified ? 404 : status,
+        Assert.Equal(status == 200 ? 404 : status,
             (int)(await client.GetAsync($"/api/v1/marketplace/requests/{Guid.NewGuid()}")).StatusCode);
     }
 
@@ -251,7 +254,10 @@ public sealed class MarketplaceTests : IDisposable
         var user = (await login.Content.ReadFromJsonAsync<CurrentUserDto>(ApiJson.Options))!;
         using var scope = host.Services.CreateScope();
         var db = scope.ServiceProvider.GetRequiredService<MovelyDbContext>();
-        (await db.Users.FindAsync(user.Id))!.Role = role;
+        var viewer = (await db.Users.FindAsync(user.Id))!;
+        viewer.Role = role;
+        viewer.Phone = "+972501234567";
+        viewer.PhoneVerified = true;
         if (business is { } status) db.Businesses.Add(new Business { Id = Guid.NewGuid(), OwnerUserId = user.Id, Status = status, CreatedAt = DateTimeOffset.UtcNow, UpdatedAt = DateTimeOffset.UtcNow });
         await db.SaveChangesAsync();
         return client;

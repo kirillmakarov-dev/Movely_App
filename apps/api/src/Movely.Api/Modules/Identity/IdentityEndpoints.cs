@@ -110,7 +110,7 @@ public static class IdentityEndpoints
 
             return Results.Ok(response);
         })
-        .RequireAuthorization(AuthorizationExtensions.CustomerOnly);
+        .RequireAuthorization(AuthorizationExtensions.CustomerOrMover);
 
         group.MapPost("/phone/verify-code", async (
             PhoneVerifyCodeRequest request,
@@ -136,7 +136,7 @@ public static class IdentityEndpoints
 
             return Results.Ok(response);
         })
-        .RequireAuthorization(AuthorizationExtensions.CustomerOnly);
+        .RequireAuthorization(AuthorizationExtensions.CustomerOrMover);
 
         return app;
     }

@@ -117,7 +117,10 @@ The operation must be all-or-nothing.
 
 ## Mover verification
 
-- Limited marketplace preview for `BusinessStatus = PendingVerification` is deferred. The initial implemented catalog follows the API's stricter verified-mover access rule; pending businesses receive an explanation, not real request cards. Business profile setup remains a separate implementation task.
+- Limited marketplace preview for `BusinessStatus = PendingVerification` is deferred. The initial implemented catalog follows the API's stricter verified-mover access rule; pending businesses receive an explanation, not real request cards. Business profile setup and manual administrative review are implemented; production operator assignment and actual external checks remain operational work.
+- A Customer can own a business and retain all customer-request permissions. The secondary Mover capability is derived from ownership on the server. Primary Mover and Admin do not automatically gain customer permissions.
+- Owner edits of a Verified profile require explicit re-verification acknowledgement, move the business to PendingVerification and revoke catalog access immediately. Suspended profiles require administrative reopening.
+- Verification is a revision-bound human decision with immutable private evidence and an owner-facing result. It does not establish insurance, licensing or service-quality guarantees. See `BUSINESS_ONBOARDING.md`.
 - `PendingVerification` does not allow Buy Lead, Send Premium Offer, or access to protected customer data
 - Full business actions require `BusinessStatus = Verified`
 - `Suspended` and `Rejected` movers must not be allowed to purchase leads or contact customers

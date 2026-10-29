@@ -297,6 +297,10 @@ Audit logs should be append-only and redacted where appropriate.
 
 ## 19. Admin security
 
+Implemented business reviews use an Admin-only route prefix, current active-account checks, CSRF, no self-review, revision/owner/status concurrency checks and transactional append-only review records. The business ID and decision supplied by the client never bypass authorization. Private snapshots and internal notes are excluded from owner/marketplace contracts. Admin provisioning is an audited out-of-band operational step; there is no public role-promotion endpoint or default admin. See `BUSINESS_ONBOARDING.md`.
+
+The browser hides private business/review content while checking foreground session state. Same-account drafts may remain only in React memory; they must be cleared on account loss/change. Server authorization remains authoritative. An application-enforced stronger Admin session lifetime/MFA is not implemented by this stage.
+
 Admin routes need extra hardening:
 
 - separate admin route prefix

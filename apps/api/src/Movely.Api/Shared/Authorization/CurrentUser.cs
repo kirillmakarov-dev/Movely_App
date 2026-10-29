@@ -20,7 +20,7 @@ public sealed class CurrentUser : ICurrentUser
     public string? Email => ReadString(ClaimTypes.Email);
     public string? Phone => ReadString("phone_number");
     public bool PhoneVerified => ReadBool("phone_verified");
-    public UserRole? Role => Enum.TryParse<UserRole>(ReadString(ClaimTypes.Role), out var role) ? role : null;
+    public UserRole? Role => Enum.TryParse<UserRole>(ReadString("movely_primary_role") ?? ReadString(ClaimTypes.Role), out var role) ? role : null;
     public BusinessStatus? BusinessStatus => Enum.TryParse<BusinessStatus>(ReadString("business_status"), out var status) ? status : null;
     public SubscriptionStatus? SubscriptionStatus => Enum.TryParse<SubscriptionStatus>(ReadString("subscription_status"), out var status) ? status : null;
     public Guid? BusinessId => ReadGuid("business_id");

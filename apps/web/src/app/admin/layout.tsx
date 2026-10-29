@@ -1,0 +1,4 @@
+import type { Metadata } from "next";
+import Link from "@/components/SafeLink";
+export const metadata: Metadata = { robots: { index: false, follow: false } };
+export default function AdminLayout({ children }: { children: React.ReactNode }) { return <div className="min-h-dvh bg-slate-100" dir="rtl"><header className="border-b border-slate-200 bg-white"><nav className="site-container flex min-h-18 flex-wrap items-center gap-5" aria-label="ניווט ניהול"><Link href="/" className="brand-mark">MOVELY</Link><Link href="/admin/businesses" className="button button-ghost">בדיקת עסקים</Link><Link href="/auth" className="button button-ghost">החשבון שלי</Link></nav></header><main id="main-content" className="site-container min-w-0 py-8">{children}</main></div>; }

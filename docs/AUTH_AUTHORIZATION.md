@@ -15,6 +15,8 @@ A single user account may eventually hold multiple roles:
 
 Role assignment alone is not sufficient for access decisions.
 
+Implemented initial combination: a primary Customer who owns a Business receives an additional Mover capability in the session. `Users.Role` remains Customer, and `movely_primary_role` preserves its meaning for existing owner services. Primary Mover and Admin are not automatically given Customer permissions. Browser input cannot add these claims. `ClaimTypes.NameIdentifier` is the stable local user UUID for antiforgery; mutable business/phone claims do not redefine that identity.
+
 ## 2. Authentication approach
 
 Recommended browser authentication model:
@@ -60,6 +62,7 @@ Rules:
 
 - PendingVerification may allow limited preview only
 - Verified is required for buying leads and sending Premium offers
+- VerifiedMover/PremiumVerifiedMover also require the currently verified phone. Customer and Mover can use OTP; Admin cannot use that workflow.
 - Suspended and Rejected movers cannot purchase leads or contact customers
 
 ## 5. Admin authentication
@@ -85,7 +88,7 @@ Authorization must be checked on the backend for every sensitive action.
 
 ### Marketplace browsing
 
-- The implemented initial catalog requires `VerifiedMover` and the viewer's current site-policy acceptance. Anonymous visitors, customers, admins without the mover role, and PendingVerification/Suspended/Rejected businesses cannot browse it.
+- The implemented initial catalog requires `VerifiedMover` and the viewer's current site-policy acceptance. Anonymous visitors, customers without a verified owned business, admins, and PendingVerification/Suspended/Rejected businesses cannot browse it. A Customer with the server-derived Mover capability retains their own request access.
 - PendingVerification preview is a possible later product capability, not enabled by the current route. It requires a separately reviewed limited contract.
 - The legal release gate applies to both list and detail; draft documents do not unlock production request data.
 - mover may see only marketplace-safe request fields before purchase

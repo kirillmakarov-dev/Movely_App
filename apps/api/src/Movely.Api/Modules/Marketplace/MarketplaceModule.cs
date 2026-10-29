@@ -19,7 +19,7 @@ public static class MarketplaceModule
                 var seconds = context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var delay) ? Math.Max(1, (int)Math.Ceiling(delay.TotalSeconds)) : 60;
                 context.HttpContext.Response.StatusCode = StatusCodes.Status429TooManyRequests;
                 context.HttpContext.Response.Headers.RetryAfter = seconds.ToString(CultureInfo.InvariantCulture);
-                await context.HttpContext.Response.WriteAsJsonAsync(new { errorCode = "RATE_LIMITED", message = "Too many marketplace requests. Try again shortly." }, ct);
+                await context.HttpContext.Response.WriteAsJsonAsync(new { errorCode = "RATE_LIMITED", message = "Too many requests. Try again shortly." }, ct);
             };
         });
         return services;
