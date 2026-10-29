@@ -76,6 +76,7 @@ public sealed class PostgreSqlActiveRequestConsentTests(PostgreSqlIntegrationFix
     [InlineData("sales")]
     [InlineData("limit")]
     [InlineData("buyers")]
+    [InlineData("owner")]
     public async Task ConcurrentAggregateChangeRejectsStaleActiveUpdateWithoutPartialConsent(string change)
     {
         RequireDatabase();
@@ -95,6 +96,7 @@ public sealed class PostgreSqlActiveRequestConsentTests(PostgreSqlIntegrationFix
                 case "sales": request.LeadSalesStatus = LeadSalesStatus.SoldOut; break;
                 case "limit": request.MaxLeadBuyers++; break;
                 case "buyers": request.ActiveBuyerCount++; break;
+                case "owner": request.CustomerUserId = (await BusinessTestData.User(writer)).Id; break;
             }
             await writer.SaveChangesAsync();
         }

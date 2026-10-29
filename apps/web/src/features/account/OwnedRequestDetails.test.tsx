@@ -173,6 +173,9 @@ test.each([
   render(<OwnedRequestDetails requestId={request.id} />);
   await screen.findByText("רחוב הגפן 17");
   expect(!!screen.queryByRole("link", { name: "המשך עריכת הטיוטה" })).toBe(edit);
+  const publishedEdit = screen.queryByRole("link", { name: "עריכת פרטי הבקשה" });
+  expect(!!publishedEdit).toBe(status === "Active" || status === "Published");
+  if (publishedEdit) expect(publishedEdit).toHaveAttribute("href", `/request/edit/${request.id}`);
   expect(!!screen.queryByRole("button", { name: "סיום חיפוש מוביל" })).toBe(close);
   expect(!!screen.queryByRole("button", { name: "ביטול הבקשה" })).toBe(cancel);
 });

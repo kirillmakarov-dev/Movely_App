@@ -1,11 +1,12 @@
 import type { FormState } from "./request-flow-types";
+import { israelCalendarDate } from "@/lib/israel-calendar-date";
 
 export type RequestIssue = { field: string; step: string; message: string };
 const int32 = (value: number, min: number, max = 2_147_483_647) => Number.isInteger(value) && value >= min && value <= max;
 
 // Keep publication requirements aligned with MoveRequestService.ValidateVersionForPublish.
 // Incomplete drafts are allowed; malformed supplied values are not sent to the API.
-export function validateRequest(form: FormState, complete: boolean, today = new Date().toISOString().slice(0, 10)): RequestIssue[] {
+export function validateRequest(form: FormState, complete: boolean, today = israelCalendarDate()): RequestIssue[] {
   const issues: RequestIssue[] = [];
   const add = (field: string, step: string, message: string) => issues.push({ field, step, message });
   const contents = form.requestType === "SmallMove" ? "items" : "contents";

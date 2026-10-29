@@ -231,7 +231,10 @@ function OwnedRequestContent({ requestId }: { requestId: string }) {
       {request.status === "Draft" || canClose || canCancel ? <Panel title="ניהול הבקשה">
         <div hidden={!!actionState} className={actionState ? "hidden" : "flex flex-wrap gap-3"}>
           {request.status === "Draft" ? <Link href={`/request/new?requestId=${encodeURIComponent(request.id)}`} className="button button-primary">המשך עריכת הטיוטה</Link> : null}
-          {canClose ? <button type="button" className="button button-primary" disabled={mutationBusy || publicationBusy} onClick={(event) => { actionTrigger.current = event.currentTarget; setActionState({ kind: "confirm", action: "close" }); }}>סיום חיפוש מוביל</button> : null}
+          {request.status === "Active" || request.status === "Published" ? mutationBusy || publicationBusy
+            ? <button type="button" className="button button-primary" disabled>עריכת פרטי הבקשה</button>
+            : <Link href={`/request/edit/${encodeURIComponent(request.id)}`} className="button button-primary">עריכת פרטי הבקשה</Link> : null}
+          {canClose ? <button type="button" className="button button-secondary" disabled={mutationBusy || publicationBusy} onClick={(event) => { actionTrigger.current = event.currentTarget; setActionState({ kind: "confirm", action: "close" }); }}>סיום חיפוש מוביל</button> : null}
           {canCancel ? <button type="button" className="button button-secondary" disabled={mutationBusy || publicationBusy} onClick={(event) => { actionTrigger.current = event.currentTarget; setActionState({ kind: "confirm", action: "cancel" }); }}>ביטול הבקשה</button> : null}
         </div>
         {actionState?.kind === "confirm" || actionState?.kind === "busy" ? <div role="group" aria-labelledby="request-action-heading" aria-busy={actionState.kind === "busy"}>

@@ -1,5 +1,25 @@
 import { validateRequest } from "./request-validation";
 import type { FormState } from "./request-flow-types";
+import { israelCalendarDate } from "@/lib/israel-calendar-date";
+import { vi } from "vitest";
+
+test.each([
+  ["2026-10-29T21:59:59Z", "2026-10-29"],
+  ["2026-10-29T22:00:00Z", "2026-10-30"],
+  ["2026-07-01T21:00:00Z", "2026-07-02"],
+  ["2026-12-31T22:30:00Z", "2027-01-01"],
+])("the service calendar uses Israel's local day at %s", (instant, day) => {
+  expect(israelCalendarDate(new Date(instant))).toBe(day);
+});
+
+test("default validation rejects yesterday in Israel even when UTC still shows that date", () => {
+  vi.useFakeTimers();
+  try {
+    vi.setSystemTime(new Date("2026-10-29T22:30:00Z"));
+    expect(validateRequest({ ...complete, moveDate: "2026-10-29" }, true).map((issue) => issue.field)).toContain("moveDate");
+    expect(validateRequest({ ...complete, moveDate: "2026-10-30" }, true)).toEqual([]);
+  } finally { vi.useRealTimers(); }
+});
 
 const location = { city: "חיפה", exactAddress: "רחוב לדוגמה 1", floor: null, hasElevator: null, elevatorFurnitureSuitability: "Unknown" as const, stairsInfo: "", truckAccessInfo: "", parkingDistanceMeters: null };
 const complete: FormState = {

@@ -430,6 +430,10 @@ public sealed partial class MoveRequestService : IMoveRequestService
 
     private void ValidateSnapshot(UpdateMoveRequestRequest request, bool requirePublishCompleteness)
     {
+        if (!Enum.IsDefined(request.RequestType))
+            throw new ApiException("INVALID_REQUEST_TYPE", "Choose a supported request type.");
+        if (request.BudgetBand.HasValue && !Enum.IsDefined(request.BudgetBand.Value))
+            throw new ApiException("INVALID_BUDGET", "Choose a supported budget range.");
         ValidateLocation(request.Pickup, requirePublishCompleteness, "pickup");
         ValidateLocation(request.Destination, requirePublishCompleteness, "destination");
         ValidateSchedule(request.Schedule, requirePublishCompleteness);
@@ -488,6 +492,9 @@ public sealed partial class MoveRequestService : IMoveRequestService
             throw new ApiException("REQUEST_INCOMPLETE", $"{label} city and exact address are required.");
         }
 
+        if (!Enum.IsDefined(location.ElevatorFurnitureSuitability))
+            throw new ApiException("INVALID_LOCATION", "Choose a supported elevator suitability.");
+
         if (location.Floor is < -5 or > 200)
         {
             throw new ApiException("INVALID_LOCATION", "Floor is outside the supported range.");
@@ -511,6 +518,10 @@ public sealed partial class MoveRequestService : IMoveRequestService
             return;
         }
 
+        if ((schedule.PreferredTime.HasValue && !Enum.IsDefined(schedule.PreferredTime.Value)) ||
+            (schedule.DateFlexibility.HasValue && !Enum.IsDefined(schedule.DateFlexibility.Value)))
+            throw new ApiException("INVALID_SCHEDULE", "Choose supported time and date flexibility options.");
+
         if (required && schedule.MoveDate is null)
         {
             throw new ApiException("REQUEST_INCOMPLETE", "Move date is required.");
@@ -533,6 +544,8 @@ public sealed partial class MoveRequestService : IMoveRequestService
 
     private static void ValidateApartmentDetails(ApartmentMoveDetailsDto details, bool required)
     {
+        if (details.Boxes is null || details.AdditionalServices is null)
+            throw new ApiException("INVALID_APARTMENT_DETAILS", "Box counts and additional service choices are required.");
         if (required && details.NumberOfRooms is null)
         {
             throw new ApiException("REQUEST_INCOMPLETE", "Number of rooms is required for apartment moves.");
@@ -553,6 +566,11 @@ public sealed partial class MoveRequestService : IMoveRequestService
     {
         foreach (var item in items ?? [])
         {
+            if (item is null || !Enum.IsDefined(item.Kind) ||
+                (item.ApartmentInventoryType.HasValue && !Enum.IsDefined(item.ApartmentInventoryType.Value)) ||
+                (item.SpecialItemType.HasValue && !Enum.IsDefined(item.SpecialItemType.Value)) ||
+                (item.SmallMoveCategory.HasValue && !Enum.IsDefined(item.SmallMoveCategory.Value)))
+                throw new ApiException("INVALID_ITEM", "Each item must have supported kind and type values.");
             if (item.Quantity <= 0)
             {
                 throw new ApiException("INVALID_ITEM", "Item quantity must be positive.");
@@ -584,7 +602,8 @@ public sealed partial class MoveRequestService : IMoveRequestService
     {
         foreach (var photo in photos ?? [])
         {
-            if (string.IsNullOrWhiteSpace(photo.ObjectKey) || string.IsNullOrWhiteSpace(photo.ContentType))
+            if (photo is null || string.IsNullOrWhiteSpace(photo.ObjectKey) || string.IsNullOrWhiteSpace(photo.ContentType) ||
+                photo.ObjectKey.Any(char.IsControl) || photo.ContentType.Any(char.IsControl))
             {
                 throw new ApiException("INVALID_PHOTO_METADATA", "Photo object key and content type are required.");
             }
@@ -749,6 +768,9 @@ public sealed partial class MoveRequestService : IMoveRequestService
 
     private static string? NormalizeOptional(string? value, int maxLength)
     {
+        // Validate the original text before trimming so unsupported control characters are never silently discarded.
+        if (value?.Any(c => char.IsControl(c) && c is not ('\r' or '\n' or '\t')) == true)
+            throw new ApiException("INVALID_TEXT", "Text contains unsupported control characters.");
         if (string.IsNullOrWhiteSpace(value))
         {
             return null;

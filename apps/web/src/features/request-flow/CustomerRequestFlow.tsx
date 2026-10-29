@@ -5,7 +5,12 @@ import { UI_LOCALE as locale } from "@/lib/locale";
 import PolicyConsentFields, { emptyPolicyChoice, policyPayload } from "@/components/PolicyConsentFields";
 import { LEGAL_DRAFT_VERSION } from "@/lib/legal-content";
 import { acceptPolicies } from "@/lib/movely-api";
-import { useEffect, useId, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import { buildUpdatePayload, hydrateFromRequest, makeFormState } from "./request-form-model";
+import { usePublishedRequestEdit } from "./usePublishedRequestEdit";
+import PublishedEditReview, { PublishedEditStatus } from "./PublishedEditReview";
+import { isEditableStatus, type PublishedEditContext } from "@/lib/published-request-api";
+import { israelCalendarDate } from "@/lib/israel-calendar-date";
 import { flowStepsForType } from "./request-flow-steps";
 import { validateRequest, type RequestIssue } from "./request-validation";
 import type { FormState } from "./request-flow-types";
@@ -18,13 +23,10 @@ import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/pres
 import {
   type CurrentUser,
   type MoveDateFlexibility,
-  type MoveLocationDto,
   type MoveRequestResponse,
   type MoveRequestSummaryResponse,
   type MoveRequestType,
-  type MoveScheduleDto,
   type PreferredMoveTime,
-  type UpdateMoveRequestRequest,
   type SmallMoveItemCategory,
   MovelyApiError,
   createMoveRequest,
@@ -36,7 +38,6 @@ import {
   updateMoveRequest,
 } from "@/lib/movely-api";
 import {
-  APARTMENT_INVENTORY_KIND,
   APARTMENT_INVENTORY_OPTIONS,
   BUDGET_OPTIONS,
   BOX_TYPE_OPTIONS,
@@ -45,8 +46,6 @@ import {
   PREFERRED_TIME_OPTIONS,
   ROOM_OPTIONS,
   SMALL_MOVE_CATEGORIES,
-  SMALL_MOVE_ITEM_KIND,
-  SPECIAL_ITEM_KIND,
   SPECIAL_ITEM_OPTIONS,
 } from "./request-flow-data";
 
@@ -69,55 +68,8 @@ const dateFormatter = new Intl.DateTimeFormat("he-IL", {
   year: "numeric",
 });
 
-function makeLocation(): MoveLocationDto {
-  return {
-    city: "",
-    exactAddress: "",
-    floor: null,
-    hasElevator: null,
-    elevatorFurnitureSuitability: "Unknown",
-    stairsInfo: "",
-    truckAccessInfo: "",
-    parkingDistanceMeters: null,
-  };
-}
-
-function makeFormState(): FormState {
-  return {
-    requestType: null,
-    pickup: makeLocation(),
-    destination: makeLocation(),
-    apartmentRooms: null,
-    smallBoxes: 0,
-    mediumBoxes: 0,
-    largeBoxes: 0,
-    apartmentInventory: [],
-    specialItems: [],
-    smallMoveItems: [],
-    furnitureDisassembly: false,
-    furnitureAssembly: false,
-    packingAssistance: false,
-    packingMaterials: false,
-    moveDate: "",
-    preferredTime: null,
-    dateFlexibility: null,
-    budgetBand: null,
-    customerComment: "",
-    pendingPhotos: [],
-  };
-}
-
 function emptyString(value: string | null | undefined) {
   return value?.trim() ?? "";
-}
-
-function parseOptionalNumber(value: string) {
-  if (!value.trim()) {
-    return null;
-  }
-
-  const parsed = Number(value);
-  return Number.isFinite(parsed) ? parsed : null;
 }
 
 function preferredTimeLabel(value: PreferredMoveTime | null | undefined) {
@@ -128,162 +80,6 @@ function preferredTimeLabel(value: PreferredMoveTime | null | undefined) {
 function dateFlexibilityLabel(value: MoveDateFlexibility | null | undefined) {
   if (!value) return "";
   return DATE_FLEXIBILITY_OPTIONS.find((option) => option.value === value)?.label ?? value;
-}
-
-function hydrateFromRequest(request: MoveRequestResponse): FormState {
-  const version = request.currentVersion;
-  const form = makeFormState();
-  form.requestType = request.requestType;
-
-  if (!version) {
-    return form;
-  }
-
-  form.requestType = version.requestType;
-  form.pickup = version.pickup ?? makeLocation();
-  form.destination = version.destination ?? makeLocation();
-  form.apartmentRooms = version.apartmentMove?.numberOfRooms ?? null;
-  form.smallBoxes = version.apartmentMove?.boxes.small ?? 0;
-  form.mediumBoxes = version.apartmentMove?.boxes.medium ?? 0;
-  form.largeBoxes = version.apartmentMove?.boxes.large ?? 0;
-  form.furnitureDisassembly = version.apartmentMove?.additionalServices.furnitureDisassembly ?? false;
-  form.furnitureAssembly = version.apartmentMove?.additionalServices.furnitureAssembly ?? false;
-  form.packingAssistance = version.apartmentMove?.additionalServices.packingAssistance ?? false;
-  form.packingMaterials = version.apartmentMove?.additionalServices.packingMaterials ?? false;
-  form.moveDate = version.schedule.moveDate ?? "";
-  form.preferredTime = version.schedule.preferredTime;
-  form.dateFlexibility = version.schedule.dateFlexibility;
-  form.budgetBand = version.budgetBand;
-  form.customerComment = version.customerComment ?? "";
-
-  form.apartmentInventory = (version.apartmentMove?.inventoryItems ?? []).map((item, index) => ({
-    id: `${index}-${item.name ?? item.apartmentInventoryType ?? "inventory"}`,
-    apartmentInventoryType: item.apartmentInventoryType ?? "Custom",
-    name: item.name ?? "",
-    description: item.description ?? "",
-    quantity: item.quantity,
-    lengthCm: item.lengthCm?.toString() ?? "",
-    widthCm: item.widthCm?.toString() ?? "",
-    heightCm: item.heightCm?.toString() ?? "",
-    approximateWeightKg: item.approximateWeightKg?.toString() ?? "",
-  }));
-
-  form.smallMoveItems = version.smallMoveItems.map((item, index) => ({
-    id: `${index}-${item.name ?? item.smallMoveCategory ?? "small"}`,
-    smallMoveCategory: item.smallMoveCategory ?? "Other",
-    name: item.name ?? "",
-    description: item.description ?? "",
-    quantity: item.quantity,
-    lengthCm: item.lengthCm?.toString() ?? "",
-    widthCm: item.widthCm?.toString() ?? "",
-    heightCm: item.heightCm?.toString() ?? "",
-    approximateWeightKg: item.approximateWeightKg?.toString() ?? "",
-  }));
-
-  form.specialItems = version.specialItems.map((item, index) => ({
-    id: `${index}-${item.name ?? item.specialItemType ?? "special"}`,
-    specialItemType: item.specialItemType ?? "Other",
-    name: item.name ?? "",
-    description: item.description ?? "",
-    quantity: item.quantity,
-    savedMeasurements: {
-      lengthCm: item.lengthCm,
-      widthCm: item.widthCm,
-      heightCm: item.heightCm,
-      approximateWeightKg: item.approximateWeightKg,
-    },
-  }));
-
-  return form;
-}
-
-function buildUpdatePayload(form: FormState, existingVersion?: MoveRequestResponse["currentVersion"]): UpdateMoveRequestRequest {
-  const apartmentMove =
-    form.requestType === "ApartmentMove"
-      ? {
-          numberOfRooms: form.apartmentRooms,
-          boxes: {
-            small: form.smallBoxes,
-            medium: form.mediumBoxes,
-            large: form.largeBoxes,
-          },
-          inventoryItems: form.apartmentInventory.map((item) => ({
-            kind: APARTMENT_INVENTORY_KIND,
-            apartmentInventoryType: item.apartmentInventoryType,
-            specialItemType: null,
-            smallMoveCategory: null,
-            name: item.name || item.apartmentInventoryType,
-            description: item.description || null,
-            quantity: item.quantity,
-            lengthCm: parseOptionalNumber(item.lengthCm),
-            widthCm: parseOptionalNumber(item.widthCm),
-            heightCm: parseOptionalNumber(item.heightCm),
-            approximateWeightKg: parseOptionalNumber(item.approximateWeightKg),
-          })),
-          additionalServices: {
-            furnitureDisassembly: form.furnitureDisassembly,
-            furnitureAssembly: form.furnitureAssembly,
-            packingAssistance: form.packingAssistance,
-            packingMaterials: form.packingMaterials,
-          },
-        }
-      : null;
-
-  const smallMoveItems =
-    form.requestType === "SmallMove"
-      ? form.smallMoveItems.map((item) => ({
-          kind: SMALL_MOVE_ITEM_KIND,
-          apartmentInventoryType: null,
-          specialItemType: null,
-          smallMoveCategory: item.smallMoveCategory,
-          name: item.name,
-          description: item.description || null,
-          quantity: item.quantity,
-          lengthCm: parseOptionalNumber(item.lengthCm),
-          widthCm: parseOptionalNumber(item.widthCm),
-          heightCm: parseOptionalNumber(item.heightCm),
-          approximateWeightKg: parseOptionalNumber(item.approximateWeightKg),
-        }))
-      : null;
-
-  const specialItems = form.specialItems.map((item) => ({
-    kind: SPECIAL_ITEM_KIND,
-    apartmentInventoryType: null,
-    specialItemType: item.specialItemType,
-    smallMoveCategory: null,
-    name: item.name,
-    description: item.description || null,
-    quantity: item.quantity,
-    lengthCm: item.savedMeasurements?.lengthCm ?? null,
-    widthCm: item.savedMeasurements?.widthCm ?? null,
-    heightCm: item.savedMeasurements?.heightCm ?? null,
-    approximateWeightKg: item.savedMeasurements?.approximateWeightKg ?? null,
-  }));
-
-  const pickup = form.pickup.city || form.pickup.exactAddress ? form.pickup : null;
-  const destination = form.destination.city || form.destination.exactAddress ? form.destination : null;
-
-  const schedule: MoveScheduleDto | null =
-    form.moveDate || form.preferredTime || form.dateFlexibility
-      ? {
-          moveDate: form.moveDate || null,
-          preferredTime: form.preferredTime,
-          dateFlexibility: form.dateFlexibility,
-        }
-      : null;
-
-  return {
-    requestType: form.requestType ?? "ApartmentMove",
-    pickup,
-    destination,
-    apartmentMove,
-    smallMoveItems,
-    specialItems,
-    schedule,
-    budgetBand: form.budgetBand,
-    customerComment: form.customerComment.trim() || null,
-    photos: existingVersion?.photos ?? [],
-  };
 }
 
 function normalizeApiError(error: unknown) {
@@ -351,12 +147,15 @@ function withUiTimeout<T>(promise: Promise<T>, timeoutMs = 2500) {
 }
 
 export default function CustomerRequestFlow({
+  mode = "draft",
   initialRequestType = null,
   initialRequestId = null,
 }: {
+  mode?: "draft" | "published-edit";
   initialRequestType?: MoveRequestType | null;
   initialRequestId?: string | null;
 }) {
+  const publishedMode = mode === "published-edit";
   const localityListId = useId();
   const isResumeIdValid = initialRequestId === null || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(initialRequestId);
   const [resumeAttempt, setResumeAttempt] = useState(0);
@@ -388,10 +187,20 @@ export default function CustomerRequestFlow({
   const [publishState, setPublishState] = useState<PublishState>(null);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
 
-  const steps = useMemo(() => flowStepsForType(form.requestType), [form.requestType]);
+  const applyPublishedContext = useCallback((context: PublishedEditContext | null, replaceForm: boolean) => {
+    setUser(context?.user ?? null); setActiveRequest(context?.request ?? null); setIsBootstrapping(false);
+    if (replaceForm) { setForm(context ? hydrateFromRequest(context.request) : makeFormState()); setValidationMode(null); setFocusRequest(null); setStepIndex(0); }
+  }, []);
+  const publishedEdit = usePublishedRequestEdit(publishedMode, initialRequestId, form, applyPublishedContext);
+  const workflowBusy = busyAction !== null || isBootstrapping || (publishedMode && publishedEdit.busy);
+  const editLocked = publishedMode && Boolean((publishedEdit.pending ?? publishedEdit.context) && !isEditableStatus((publishedEdit.pending ?? publishedEdit.context)!.request.status));
+  const steps = useMemo(() => {
+    const all = flowStepsForType(form.requestType);
+    return publishedMode ? all.filter((step) => step.key !== "account" && step.key !== "publish").map((step) => step.key === "review" ? { ...step, title: "בדיקה ושמירת שינויים", description: "עברו על כל הפרטים וההבדלים לפני שמירת גרסה חדשה." } : step) : all;
+  }, [form.requestType, publishedMode]);
   const stepIndex = Math.min(requestedStepIndex, steps.length - 1);
-  const accountStepIndex = Math.max(0, steps.findIndex((step) => step.key === "account"));
-  const publishStepIndex = Math.max(0, steps.findIndex((step) => step.key === "publish"));
+  const accountStepIndex = publishedMode ? -1 : Math.max(0, steps.findIndex((step) => step.key === "account"));
+  const publishStepIndex = publishedMode ? -1 : Math.max(0, steps.findIndex((step) => step.key === "publish"));
   const currentStep = steps[stepIndex] ?? steps[0];
   const extraSelectionCount = [form.furnitureDisassembly, form.furnitureAssembly, form.packingAssistance, form.packingMaterials].filter(Boolean).length + form.specialItems.length;
 
@@ -448,14 +257,15 @@ export default function CustomerRequestFlow({
 
 
   useEffect(() => {
-    if (initialRequestId !== null || isBootstrapping || user || !rememberDraft || publishState) return;
+    if (publishedMode || initialRequestId !== null || isBootstrapping || user || !rememberDraft || publishState) return;
     void Promise.resolve(saveLocalDraft(form, stepIndex)).then((saved) => setDraftSaveFailed(!saved));
-  }, [form, stepIndex, rememberDraft, user, isBootstrapping, publishState, initialRequestId]);
+  }, [form, stepIndex, rememberDraft, user, isBootstrapping, publishState, initialRequestId, publishedMode]);
 
   useEffect(() => {
     const warnBeforeLeaving = (event: BeforeUnloadEvent) => {
+      if (publishedMode) { if (publishedEdit.dirty && !publishedEdit.saved) { event.preventDefault(); event.returnValue = ""; } return; }
       const unsavedServerChanges = user && (!activeRequest ||
-        JSON.stringify(buildUpdatePayload(form)) !== JSON.stringify(buildUpdatePayload(hydrateFromRequest(activeRequest))));
+        JSON.stringify(buildUpdatePayload(form, activeRequest.currentVersion)) !== JSON.stringify(buildUpdatePayload(hydrateFromRequest(activeRequest), activeRequest.currentVersion)));
       if (form.requestType && (unsavedServerChanges || (!user && (!rememberDraft || draftSaveFailed)))) {
         event.preventDefault();
         event.returnValue = "";
@@ -463,10 +273,10 @@ export default function CustomerRequestFlow({
     };
     window.addEventListener("beforeunload", warnBeforeLeaving);
     return () => window.removeEventListener("beforeunload", warnBeforeLeaving);
-  }, [user, form, activeRequest, rememberDraft, draftSaveFailed]);
+  }, [user, form, activeRequest, rememberDraft, draftSaveFailed, publishedMode, publishedEdit.dirty, publishedEdit.saved]);
 
   useEffect(() => {
-    if (initialRequestId !== null) return;
+    if (publishedMode || initialRequestId !== null) return;
     async function bootstrap() {
       let authenticated = false;
       try {
@@ -502,10 +312,10 @@ export default function CustomerRequestFlow({
       }
     }
     void bootstrap();
-  }, [initialRequestType, initialRequestId]);
+  }, [initialRequestType, initialRequestId, publishedMode]);
 
   useEffect(() => {
-    if (initialRequestId === null || !isResumeIdValid) return;
+    if (publishedMode || initialRequestId === null || !isResumeIdValid) return;
     const requestId = initialRequestId;
     const controller = new AbortController();
     let stale = false;
@@ -558,7 +368,7 @@ export default function CustomerRequestFlow({
       window.clearTimeout(timeout);
       controller.abort();
     };
-  }, [initialRequestId, isResumeIdValid, resumeAttempt]);
+  }, [initialRequestId, isResumeIdValid, resumeAttempt, publishedMode]);
 
   async function refreshDrafts() {
     if (initialRequestId !== null) return;
@@ -576,6 +386,7 @@ export default function CustomerRequestFlow({
 
   function selectRequestType(requestType: MoveRequestType) {
     updateForm({ requestType });
+    if (publishedMode) { setBanner({ tone: "info", title: "סוג ההובלה עודכן בטופס בלבד", message: "הפרטים של שני הסוגים נשארים בעמוד. רק בשמירה הסופית תוחלף תכולת הגרסה לפי הסוג שנבחר, לאחר אישור מפורש." }); return; }
     setBanner({
       tone: "info",
       title: requestType === "ApartmentMove" ? "נבחרה הובלת דירה" : "נבחרה הובלה קטנה",
@@ -587,6 +398,7 @@ export default function CustomerRequestFlow({
   }
 
   async function ensureSavedDraft() {
+    if (publishedMode) throw new Error("אין ליצור טיוטה מתוך עריכת בקשה שפורסמה.");
     if (!form.requestType) {
       throw new Error("בחרו קודם סוג הובלה.");
     }
@@ -609,6 +421,7 @@ export default function CustomerRequestFlow({
   }
 
   async function saveCurrentStep() {
+    if (publishedMode) return null;
     if (rejectInvalidFields(false)) throw new Error("תקנו את השדות המסומנים לפני השמירה.");
     if (!user) {
       setStatusText("המשיכו מקומית ואז התחברו כדי לשמור את הטיוטה.");
@@ -628,6 +441,11 @@ export default function CustomerRequestFlow({
   }
 
   async function handleContinue() {
+    if (publishedMode) {
+      if (currentStep?.key === "review") { if (!rejectInvalidFields(true)) await publishedEdit.submit(); }
+      else if (!rejectInvalidFields(false)) { setStepIndex((current) => Math.min(current + 1, steps.length - 1)); setBanner(null); }
+      return;
+    }
     if (stepIndex === publishStepIndex) {
       await handlePublish();
       return;
@@ -736,6 +554,7 @@ export default function CustomerRequestFlow({
   }
 
   async function handlePublish() {
+    if (publishedMode) return;
     if (rejectInvalidFields(true)) return;
     setBusyAction("מפרסמים");
     try {
@@ -1676,7 +1495,7 @@ export default function CustomerRequestFlow({
             <input {...fieldProps("moveDate", "תאריך הובלה (חובה לפרסום)")}
               type="date"
               aria-required="true"
-              min={new Date().toISOString().slice(0, 10)}
+              min={israelCalendarDate()}
               value={form.moveDate}
               onChange={(event) => updateForm({ moveDate: event.target.value })}
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
@@ -1772,7 +1591,7 @@ export default function CustomerRequestFlow({
   }
 
   function renderReviewStep() {
-    const source = activeRequest?.currentVersion;
+    const source = publishedMode ? undefined : activeRequest?.currentVersion;
     const isSaved = Boolean(source);
 
     const pickup = source?.pickup ?? form.pickup;
@@ -1785,8 +1604,8 @@ export default function CustomerRequestFlow({
 
     return (
       <div className="space-y-4">
-        {renderContactSharing()}
-        {!isSaved ? (
+        {publishedMode ? <PublishedEditReview editor={publishedEdit} /> : renderContactSharing()}
+        {!publishedMode && !isSaved ? (
           <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-950">
             התצוגה המקדימה עדיין מקומית. התחברו ושמרו כדי לבדוק את הבקשה שמגובה בשרת.
           </div>
@@ -1870,18 +1689,18 @@ export default function CustomerRequestFlow({
             .join(" · ")}
         />
 
-        <SummarySection
+        {!publishedMode && <SummarySection
           title="תמונות"
           value={form.pendingPhotos.length ? `${form.pendingPhotos.length} בחירות מקומיות` : "אין עדיין תמונות"}
           detail="גבול ההעלאה נשאר מקומי עד שיחובר אחסון האובייקטים."
-        />
+        />}
 
         <SummarySection
           title="הערות"
           value={form.customerComment.trim() || "אין עדיין הערות"}
         />
 
-        {publishState?.potentialDuplicateExists || activeRequest?.duplicateRisk ? (
+        {!publishedMode && (publishState?.potentialDuplicateExists || activeRequest?.duplicateRisk) ? (
           <div className="rounded-[24px] border border-amber-200 bg-amber-50 px-4 py-4 text-sm leading-6 text-amber-950">
             נראה שכבר יש לכם בקשה פעילה דומה.
             <div className="mt-3 flex flex-wrap gap-3">
@@ -2006,7 +1825,7 @@ export default function CustomerRequestFlow({
       case "items":
         return <div className="space-y-6">{renderSmallMoveItems()}
           {form.specialItems.length > 0 && <details className="rounded-2xl border border-slate-200 bg-white p-4">
-            <summary className="min-h-12 cursor-pointer font-semibold">פריטים מיוחדים שנשמרו בטיוטה</summary>
+            <summary className="min-h-12 cursor-pointer font-semibold">{publishedMode ? "פריטים מיוחדים מהגרסה הקודמת" : "פריטים מיוחדים שנשמרו בטיוטה"}</summary>
             <p className="mt-2 text-base leading-7">פריטים אלה נשמרו לפני שינוי סוג ההובלה. אפשר לערוך או להסיר אותם.</p>
             <div className="mt-4">{renderSpecialItems(false)}</div>
           </details>}
@@ -2024,12 +1843,48 @@ export default function CustomerRequestFlow({
     }
   }
 
-  const formStepCount = steps.length - 1;
+  const formStepCount = publishedMode ? steps.length : steps.length - 1;
   const progressStep = Math.min(stepIndex + 1, formStepCount);
   const progressPercent = (progressStep / formStepCount) * 100;
   const progressLabel = stepIndex === publishStepIndex ? "הבקשה פורסמה" : `שלב ${progressStep} מתוך ${formStepCount}`;
 
-  if (initialRequestId !== null && (resumeState?.requestId !== initialRequestId || resumeState.status !== "ready")) {
+  if (publishedMode && publishedEdit.phase !== "ready") {
+    const phase = publishedEdit.phase;
+    const copy = {
+      loading: "בודקים את החשבון ואת הגרסה העדכנית של הבקשה…",
+      login: "התחברו לחשבון שבו נוצרה הבקשה. לאחר ההתחברות חזרו לכאן ובדקו מחדש.",
+      unavailable: "הבקשה אינה זמינה לעריכה בחשבון הזה. בדקו שנכנסתם לחשבון הנכון. עריכות מהחשבון הקודם הוסרו מהעמוד.",
+      failed: publishedEdit.notice || "לא הצלחנו לבדוק את הבקשה. בדקו את החיבור ונסו שוב.",
+      invalid: "הקישור לבקשה אינו תקין. פתחו אותה מחדש מתוך החשבון שלכם.",
+    }[phase];
+    return <><SiteHeader /><main id="main-content" className="site-container py-10" tabIndex={-1}>
+      <section className="mx-auto max-w-2xl space-y-5 rounded-xl border border-slate-200 bg-white p-6">
+        <h1 className="text-3xl font-bold">עריכת בקשה שפורסמה</h1>
+        <p role={phase === "loading" ? "status" : "alert"} className="text-base leading-7">{copy}</p>
+        <div className="flex flex-wrap gap-3">
+          {(phase === "login" || phase === "unavailable") && <Link href="/auth" target="_blank" rel="noopener noreferrer" className="button button-primary">כניסה לחשבון (בכרטיסייה חדשה)</Link>}
+          {phase !== "loading" && phase !== "invalid" && <button type="button" onClick={publishedEdit.refresh} className="button button-secondary">בדיקה מחדש</button>}
+          <Link href="/account" className="button button-secondary">חזרה לחשבון</Link>
+        </div>
+      </section>
+    </main></>;
+  }
+
+  if (publishedMode && publishedEdit.saved && publishedEdit.context) {
+    return <><SiteHeader /><main id="main-content" className="site-container py-10" tabIndex={-1}>
+      <section className="mx-auto max-w-2xl space-y-5 rounded-xl border border-emerald-200 bg-white p-6">
+        <h1 className="text-3xl font-bold">השינויים נשמרו</h1>
+        <p role="status" className="text-base leading-7">גרסה {publishedEdit.context.request.currentVersion.versionNumber} נשמרה בשרת, יחד עם האישור להעברת פרטים עבור גרסה זו.</p>
+        <p className="text-base leading-7">מצב הפרסום תלוי בבדיקות העדכניות. השמירה אינה הזמנת הובלה ואינה מבטיחה פנייה ממוביל.</p>
+        <div className="flex flex-wrap gap-3">
+          <Link href={`/account/requests/${publishedEdit.context.request.id}`} className="button button-primary">צפייה בבקשה</Link>
+          <button type="button" className="button button-secondary" onClick={publishedEdit.refresh}>המשך עריכה לאחר בדיקה מחדש</button>
+        </div>
+      </section>
+    </main></>;
+  }
+
+  if (!publishedMode && initialRequestId !== null && (resumeState?.requestId !== initialRequestId || resumeState.status !== "ready")) {
     const state = !isResumeIdValid ? "invalid" : resumeState?.requestId === initialRequestId ? resumeState.status : "loading";
     const message = {
       loading: "טוענים את הטיוטה שנבחרה…",
@@ -2064,10 +1919,10 @@ export default function CustomerRequestFlow({
         <header className="request-flow-intro mb-6 max-w-3xl">
           <Link href="/" className="inline-link mt-0">&larr; חזרה לדף הבית</Link>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-5xl">
-            יוצרים בקשת הובלה תוך דקות.
+            {publishedMode ? "עריכת בקשה שפורסמה" : "יוצרים בקשת הובלה תוך דקות."}
           </h1>
           <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            ספרו למובילים מה צריך להעביר, לאן ומתי. לאחר ההתחברות הטיוטה נשמרת תוך כדי ההתקדמות.
+            {publishedMode ? "השינויים נשארים בעמוד בלבד. מעבר בין השלבים אינו שומר דבר; בסיום תבדקו את כל הפרטים ותאשרו שמירת גרסה חדשה." : "ספרו למובילים מה צריך להעביר, לאן ומתי. לאחר ההתחברות הטיוטה נשמרת תוך כדי ההתקדמות."}
           </p>
         </header>
 
@@ -2100,7 +1955,7 @@ export default function CustomerRequestFlow({
               <summary>מעבר לשלב אחר</summary>
               <nav aria-label="שלבי הבקשה" className="wizard-step-tabs grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {steps.filter((step) => step.key !== "publish").map((step, index) => (
-                  <button key={step.key} type="button" disabled={busyAction !== null || isBootstrapping}
+                  <button key={step.key} type="button" disabled={workflowBusy}
                     aria-current={index === stepIndex ? "step" : undefined}
                     onClick={() => {
                       setStepIndex(index);
@@ -2116,15 +1971,16 @@ export default function CustomerRequestFlow({
 
             <div className="mt-6 space-y-5">
               {isBootstrapping ? <LoadingState /> : renderBanner()}
+              {publishedMode && <PublishedEditStatus editor={publishedEdit} />}
               {fieldIssues.length > 0 && <section aria-labelledby="validation-heading" className="rounded-xl border border-red-200 bg-red-50 p-4">
                 <h3 id="validation-heading" className="text-lg font-bold text-red-950">יש פרטים שצריך לתקן או להשלים</h3>
-                <p className="mt-1 text-base leading-7 text-red-900">אפשר להמשיך לערוך את הטיוטה. לפני הפרסום צריך להשלים את הפרטים הבאים:</p>
+                <p className="mt-1 text-base leading-7 text-red-900">{publishedMode ? "לפני שמירת הגרסה החדשה צריך להשלים את הפרטים הבאים:" : "אפשר להמשיך לערוך את הטיוטה. לפני הפרסום צריך להשלים את הפרטים הבאים:"}</p>
                 <ul className="mt-2 space-y-1">{fieldIssues.map((issue) => <li key={issue.field}>
                   <button type="button" disabled={busyAction !== null} className="min-h-11 text-start text-base leading-7 text-red-900 underline underline-offset-4"
                     onClick={() => { if (!validationMode) setValidationMode("complete"); focusIssue(issue); }}>{issue.message}</button>
                 </li>)}</ul>
               </section>}
-              <fieldset disabled={busyAction !== null || isBootstrapping} className="min-w-0">{renderStepBody()}</fieldset>
+              <fieldset disabled={workflowBusy || editLocked} className="min-w-0">{renderStepBody()}</fieldset>
             </div>
 
             <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-sky-800">
@@ -2132,7 +1988,7 @@ export default function CustomerRequestFlow({
               <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline">איך נשמרים הפרטים? (לשונית חדשה)</Link>
             </div>
 
-            {!user && !isBootstrapping && !publishState && (
+            {!publishedMode && !user && !isBootstrapping && !publishState && (
               <div className="draft-preference mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <label className="flex min-h-12 cursor-pointer items-start gap-3">
                   <input type="checkbox" checked={rememberDraft} className="mt-1 h-5 w-5 shrink-0 accent-sky-800"
@@ -2154,7 +2010,7 @@ export default function CustomerRequestFlow({
               <button
                 type="button"
                 onClick={handleBack}
-                disabled={stepIndex === 0 || busyAction !== null || isBootstrapping}
+                disabled={stepIndex === 0 || workflowBusy}
                 className={`button ${
                   stepIndex === 0
                     ? "cursor-not-allowed bg-slate-200 text-slate-400"
@@ -2167,23 +2023,23 @@ export default function CustomerRequestFlow({
                 <button
                   type="button"
                   onClick={
-                    stepIndex === accountStepIndex
+                    publishedMode ? handleContinue : stepIndex === accountStepIndex
                       ? handlePublish
                       : stepIndex === publishStepIndex
                         ? handleStartNewRequest
                         : handleContinue
                   }
-                  disabled={busyAction !== null || isBootstrapping}
-                  className="button button-primary disabled:cursor-wait disabled:opacity-70"
+                  disabled={workflowBusy || (publishedMode && currentStep?.key === "review" && !publishedEdit.canSave)}
+                  className="button button-primary disabled:cursor-not-allowed disabled:opacity-70"
                 >
-                  {busyAction ??
-                    (stepIndex === accountStepIndex
+                  {(publishedMode && publishedEdit.busy ? "בודקים ושומרים…" : busyAction) ??
+                    (publishedMode && currentStep?.key === "review" ? "שמירת גרסה חדשה" : stepIndex === accountStepIndex
                       ? "פרסום הבקשה"
                       : stepIndex === publishStepIndex
                         ? "בקשה חדשה"
                         : "המשך")}
                 </button>
-                <span className="max-w-sm text-sm text-slate-500 sm:text-right" aria-live="polite">{statusText}</span>
+                <span className="max-w-sm text-sm text-slate-500 sm:text-right" aria-live="polite">{publishedMode ? publishedEdit.busy ? "אל תסגרו את העמוד עד לקבלת אישור." : "השינויים נשארים בעמוד עד לשמירה הסופית." : statusText}</span>
               </div>
             </div>
           </div>
@@ -2208,7 +2064,7 @@ export default function CustomerRequestFlow({
                   <button
                     key={draft.id}
                     type="button"
-                    disabled={busyAction !== null || isBootstrapping}
+                    disabled={workflowBusy}
                     onClick={() => handleResumeDraft(draft.id)}
                     className="min-h-32 rounded-lg border border-slate-200 bg-white p-4 text-left transition hover:border-slate-400 hover:bg-slate-50 cursor-pointer"
                   >
@@ -2263,7 +2119,7 @@ export default function CustomerRequestFlow({
                 />
                 <StatRow
                   label="מצב שמירה"
-                  value={activeRequest ? "טיוטה נשמרה" : user ? "מוכנים לשמירה" : "התחברו כדי לשמור"}
+                  value={publishedMode ? publishedEdit.dirty ? "שינויים בעמוד בלבד" : "ללא שינויים מקומיים" : activeRequest ? "טיוטה נשמרה" : user ? "מוכנים לשמירה" : "התחברו כדי לשמור"}
                 />
               </dl>
             </div>

@@ -10,6 +10,13 @@ vi.mock("@/lib/request-publication-api", async () => ({ ...await vi.importActual
 vi.mock("@/lib/movely-api", async () => ({ ...await vi.importActual("@/lib/movely-api"), getMoveRequest: api.owner, closeMoveRequest: api.close, cancelMoveRequest: api.cancel }));
 const refresh = vi.fn(), denied = vi.fn();
 function standalone() { return render(<PublicationStatus requestId={publication.requestId} reviewedVersionId={publication.currentVersionId} requestStatus="Active" onRefreshRequest={refresh} onAccessDenied={denied} />); }
+
+test("an active request with outdated or incomplete content links to editing instead of requesting useless consent", async () => {
+  api.status.mockResolvedValue({ ...publication, canRenewContactSharing: false, blockers: ["MOVE_DATE_INVALID", "REQUEST_INCOMPLETE", "CONTACT_SHARING_REQUIRED"] });
+  standalone();
+  expect(await screen.findByRole("link", { name: "תיקון פרטי הבקשה" })).toHaveAttribute("href", `/request/edit/${publication.requestId}`);
+  expect(screen.queryByRole("checkbox")).not.toBeInTheDocument();
+});
 function deferred<T>() { let resolve!: (v: T) => void; let reject!: (e: unknown) => void; const promise = new Promise<T>((yes, no) => { resolve = yes; reject = no; }); return { promise, resolve, reject }; }
 beforeEach(() => { vi.resetAllMocks(); api.status.mockResolvedValue(publication); api.renew.mockResolvedValue({ publicationStatus: acceptedPublication, alreadyAccepted: false }); api.owner.mockResolvedValue(publicationOwnerRequest); });
 afterEach(() => { cleanup(); vi.useRealTimers(); vi.restoreAllMocks(); });
