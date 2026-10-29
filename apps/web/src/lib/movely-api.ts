@@ -284,6 +284,11 @@ function toApiError(status: number, payload: unknown, fallbackMessage: string) {
     CONTACT_SHARING_REQUIRED: "נדרש אישור נפרד להעברת פרטי הקשר לפני הפרסום.",
     RECIPIENT_LIMIT_CHANGED: "מגבלת המובילים השתנתה. בדקו את המגבלה החדשה ואשרו שוב.",
     LEGAL_NOT_READY: "ההרשמה והפרסום לציבור עדיין אינם פתוחים. המסמכים נמצאים בהכנה.",
+    AUTH_NOT_CONFIGURED: "הכניסה לחשבון עדיין אינה זמינה. אפשר להמשיך לערוך את הטיוטה.",
+    AUTH_PROVIDER_UNAVAILABLE: "שירות הכניסה אינו זמין כרגע. נסו שוב בעוד כמה דקות.",
+    INVALID_AUTH_CREDENTIAL: "לא הצלחנו לאמת את הכניסה. נסו שוב דרך Google.",
+    ACCOUNT_UNAVAILABLE: "הכניסה לחשבון הזה אינה זמינה.",
+    SMS_NOT_CONFIGURED: "אימות טלפון עדיין אינו זמין. אפשר להמשיך לערוך את הטיוטה.",
   };
   return new MovelyApiError(consentMessages[shape.errorCode ?? ""] ?? shape.message ?? fallbackMessage, {
     errorCode: shape.errorCode ?? "HTTP_ERROR",
@@ -351,6 +356,7 @@ export async function getCurrentUser() {
     return await requestJson<CurrentUser>("/api/v1/auth/me", { method: "GET" });
   } catch (error) {
     if (error instanceof MovelyApiError && error.status === 401) {
+      csrfTokenCache = null;
       return null;
     }
 
@@ -364,10 +370,13 @@ export async function acceptPolicies(acceptance: PolicyAcceptance) {
 }
 
 export async function signInWithGoogle(credential: string, acceptance?: PolicyAcceptance) {
-  return await requestWithCsrf<CurrentUser>("/api/v1/auth/google/sign-in", {
-    credential,
-    acceptance,
-  });
+  try {
+    return await requestWithCsrf<CurrentUser>("/api/v1/auth/google/sign-in", { credential, acceptance });
+  } finally {
+    // Antiforgery tokens are bound to the authenticated identity. The session may
+    // also have changed if the response was lost after the server issued it.
+    csrfTokenCache = null;
+  }
 }
 
 export async function requestPhoneCode(phone: string) {
@@ -385,7 +394,11 @@ export async function verifyPhoneCode(phone: string, code: string) {
 
 export async function logout() {
   csrfTokenCache = null;
-  return await requestWithCsrf<void>("/api/v1/auth/logout", {}, "POST");
+  try {
+    return await requestWithCsrf<void>("/api/v1/auth/logout", {}, "POST");
+  } finally {
+    csrfTokenCache = null;
+  }
 }
 
 export async function getMyMoveRequests() {

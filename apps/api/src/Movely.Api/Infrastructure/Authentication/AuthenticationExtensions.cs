@@ -24,12 +24,15 @@ public static class AuthenticationExtensions
         {
             SecurityTokenHasher.Configure(sessionPepper, otpPepper);
         }
+        services.AddSingleton<IGoogleTokenValidator, GoogleTokenValidator>();
         services.AddScoped<IGoogleIdentityVerifier>(sp =>
         {
             var options = sp.GetRequiredService<IConfiguration>().GetSection("Auth:Google").Get<GoogleAuthOptions>() ?? new GoogleAuthOptions();
-            if (!environment.IsDevelopment() && !environment.IsEnvironment("Testing"))
+            if (options.IsGoogleConfigured)
+                return new GoogleTokenVerifier(options, sp.GetRequiredService<IGoogleTokenValidator>());
+            if ((!environment.IsDevelopment() && !environment.IsEnvironment("Testing")) || !string.Equals(options.Mode, "Development", StringComparison.OrdinalIgnoreCase))
             {
-                return new UnsupportedGoogleIdentityVerifier("Google auth production verifier is not configured yet.");
+                return new UnsupportedGoogleIdentityVerifier();
             }
 
             return new DevelopmentGoogleIdentityVerifier(options);
@@ -37,9 +40,9 @@ public static class AuthenticationExtensions
         services.AddScoped<ISmsSender>(sp =>
         {
             var options = sp.GetRequiredService<IConfiguration>().GetSection("Sms").Get<SmsOptions>() ?? new SmsOptions();
-            if (!environment.IsDevelopment() && !environment.IsEnvironment("Testing"))
+            if ((!environment.IsDevelopment() && !environment.IsEnvironment("Testing")) || !string.Equals(options.Mode, "Development", StringComparison.OrdinalIgnoreCase))
             {
-                return new UnsupportedSmsSender("SMS provider is not configured yet.");
+                return new UnsupportedSmsSender();
             }
 
             return new DevelopmentSmsSender(sp.GetRequiredService<ILogger<DevelopmentSmsSender>>());

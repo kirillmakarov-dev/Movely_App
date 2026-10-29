@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Antiforgery;
+using Movely.Api.Infrastructure.Authentication;
 using Movely.Api.Shared.Authorization;
 using Movely.Api.Shared.Errors;
 
@@ -9,6 +10,16 @@ public static class IdentityEndpoints
     public static IEndpointRouteBuilder MapIdentityEndpoints(this IEndpointRouteBuilder app)
     {
         var group = app.MapGroup("/api/v1/auth");
+
+        group.MapGet("/capabilities", (IConfiguration configuration, IHostEnvironment environment, HttpContext context) =>
+        {
+            var google = configuration.GetSection("Auth:Google").Get<GoogleAuthOptions>() ?? new();
+            var policyAvailable = !ConsentPolicy.IsDraft || environment.IsDevelopment() || environment.IsEnvironment("Testing");
+            var googleAvailable = policyAvailable && google.IsGoogleConfigured;
+            context.Response.Headers.CacheControl = "no-store";
+            // Development OTP logging does not constitute real SMS delivery.
+            return Results.Ok(new AuthCapabilities(policyAvailable, googleAvailable, googleAvailable ? google.ClientId : null, false));
+        }).AllowAnonymous();
 
         group.MapGet("/csrf", (HttpContext context, IAntiforgery antiforgery) =>
         {

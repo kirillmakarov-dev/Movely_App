@@ -42,15 +42,8 @@ public sealed class DevelopmentGoogleIdentityVerifier : IGoogleIdentityVerifier
 
 public sealed class UnsupportedGoogleIdentityVerifier : IGoogleIdentityVerifier
 {
-    private readonly string _message;
-
-    public UnsupportedGoogleIdentityVerifier(string message)
-    {
-        _message = message;
-    }
-
     public Task<GoogleIdentity> VerifyAsync(string credential, CancellationToken cancellationToken = default)
-        => throw new NotSupportedException(_message);
+        => throw new ApiException("AUTH_NOT_CONFIGURED", "Google sign-in is unavailable.", 503);
 }
 
 public interface ISmsSender
@@ -76,15 +69,8 @@ public sealed class DevelopmentSmsSender : ISmsSender
 
 public sealed class UnsupportedSmsSender : ISmsSender
 {
-    private readonly string _message;
-
-    public UnsupportedSmsSender(string message)
-    {
-        _message = message;
-    }
-
     public Task SendVerificationCodeAsync(string normalizedPhone, string code, CancellationToken cancellationToken = default)
-        => throw new NotSupportedException(_message);
+        => throw new ApiException("SMS_NOT_CONFIGURED", "Phone verification is unavailable.", 503);
 }
 
 public interface IPhoneNormalizer
@@ -235,10 +221,8 @@ public sealed class GoogleIdentityLinker : IGoogleIdentityLinker
             return existingIdentity.User;
         }
 
-        var existingUser = await _dbContext.Users
-            .SingleOrDefaultAsync(x => x.Email != null && x.Email == identity.Email, cancellationToken);
-
-        var user = existingUser ?? new MovelyUser
+        // Email can change or be reassigned. Only a verified provider subject links a login.
+        var user = new MovelyUser
         {
             Id = Guid.NewGuid(),
             FirstName = identity.FirstName,
@@ -246,18 +230,11 @@ public sealed class GoogleIdentityLinker : IGoogleIdentityLinker
             Email = identity.Email,
             Role = UserRole.Customer,
             Status = UserStatus.Active,
-            CreatedAt = _clock.UtcNow
+            CreatedAt = _clock.UtcNow,
+            UpdatedAt = _clock.UtcNow
         };
 
-        user.FirstName = identity.FirstName;
-        user.LastName = identity.LastName;
-        user.Email = identity.Email;
-        user.UpdatedAt = _clock.UtcNow;
-
-        if (existingUser is null)
-        {
-            _dbContext.Users.Add(user);
-        }
+        _dbContext.Users.Add(user);
 
         var authIdentity = new UserAuthIdentity
         {
@@ -334,6 +311,8 @@ public sealed class AuthService : IAuthService
         await using var transaction = _dbContext.Database.IsRelational()
             ? await _dbContext.Database.BeginTransactionAsync(cancellationToken) : null;
         var user = await _googleIdentityLinker.LinkOrCreateUserAsync(googleIdentity, cancellationToken);
+        if (user.Status != UserStatus.Active)
+            throw new ApiException("ACCOUNT_UNAVAILABLE", "This account is unavailable.", 403);
         if (!hasAcceptance)
         {
             ConsentPolicy.Add(_dbContext, user.Id, _clock.UtcNow);

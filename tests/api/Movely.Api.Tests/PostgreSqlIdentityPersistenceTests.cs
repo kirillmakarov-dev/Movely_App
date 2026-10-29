@@ -67,6 +67,35 @@ public sealed class PostgreSqlIdentityPersistenceTests : IClassFixture<PostgreSq
     }
 
     [SkippableFact]
+    public async Task GoogleSubjectOwnsAccountEvenWhenEmailMatchesAnotherUser()
+    {
+        Skip.IfNot(_fixture.IsConfigured, MissingPostgresReason);
+        await _fixture.ResetAsync();
+        var owner = CreateUser(role: UserRole.Admin);
+        Guid otherUserId;
+        await using (var db = _fixture.CreateDbContext())
+        {
+            db.Users.Add(owner);
+            db.UserAuthIdentities.Add(CreateGoogleIdentity(owner.Id, "original-subject"));
+            await db.SaveChangesAsync();
+            var linker = new GoogleIdentityLinker(db, new Movely.Api.Shared.Time.SystemClock());
+            var other = await linker.LinkOrCreateUserAsync(new GoogleIdentity("different-subject", owner.Email!, "New", "Customer"));
+            otherUserId = other.Id;
+            Assert.NotEqual(owner.Id, other.Id);
+            Assert.Equal(UserRole.Customer, other.Role);
+        }
+        await using (var db = _fixture.CreateDbContext())
+        {
+            var linker = new GoogleIdentityLinker(db, new Movely.Api.Shared.Time.SystemClock());
+            var returning = await linker.LinkOrCreateUserAsync(new GoogleIdentity("different-subject", "changed@example.com", "Same", "Customer"));
+            Assert.Equal(otherUserId, returning.Id);
+            Assert.Equal(2, await db.Users.CountAsync());
+            Assert.Equal(2, await db.UserAuthIdentities.CountAsync());
+            Assert.Equal(UserRole.Admin, (await db.Users.SingleAsync(x => x.Id == owner.Id)).Role);
+        }
+    }
+
+    [SkippableFact]
     public async Task BusinessStatus_PersistsAcrossDbContextInstances()
     {
         Skip.IfNot(_fixture.IsConfigured, MissingPostgresReason);

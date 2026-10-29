@@ -4,6 +4,8 @@ namespace Movely.Api.Modules.Identity;
 
 public sealed record GoogleIdentity(string ProviderSubject, string Email, string FirstName, string LastName);
 
+public sealed record AuthCapabilities(bool PolicyAcceptanceAvailable, bool GoogleSignInAvailable, string? GoogleClientId, bool PhoneVerificationAvailable);
+
 public sealed record CurrentUserDto(
     Guid Id,
     string FirstName,

@@ -131,8 +131,8 @@ public sealed class AuthSecurityVerificationTests : IClassFixture<ApiFactory>
             {
                 services.RemoveAll<IGoogleIdentityVerifier>();
                 services.RemoveAll<ISmsSender>();
-                services.AddScoped<IGoogleIdentityVerifier>(_ => new UnsupportedGoogleIdentityVerifier("production"));
-                services.AddScoped<ISmsSender>(_ => new UnsupportedSmsSender("production"));
+                services.AddScoped<IGoogleIdentityVerifier>(_ => new UnsupportedGoogleIdentityVerifier());
+                services.AddScoped<ISmsSender>(_ => new UnsupportedSmsSender());
             });
         });
 
