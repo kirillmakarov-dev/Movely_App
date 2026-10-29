@@ -2,7 +2,6 @@ import { Noto_Sans_Hebrew } from "next/font/google";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
-import { LocaleProvider } from "@/components/LocaleProvider";
 import "./globals.css";
 
 const hebrewFont = Noto_Sans_Hebrew({
@@ -53,7 +52,7 @@ export default function RootLayout({
   return (
     <html lang="he" dir="rtl" className={`h-full ${hebrewFont.variable}`}>
       <body className="min-h-full text-slate-950">
-        <LocaleProvider>{children}</LocaleProvider>
+        {children}
       </body>
     </html>
   );

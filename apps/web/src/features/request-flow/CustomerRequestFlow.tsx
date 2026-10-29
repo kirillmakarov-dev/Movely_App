@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "@/components/SafeLink";
-import { useLocale } from "@/components/LocaleProvider";
+import { UI_LOCALE as locale } from "@/lib/locale";
 import { useEffect, useMemo, useState } from "react";
 import SiteHeader from "@/components/SiteHeader";
 import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/presentation";
@@ -9,7 +9,6 @@ import {
   type CurrentUser,
   type MoveBudgetBand,
   type MoveDateFlexibility,
-  type MoveItemDto,
   type MoveLocationDto,
   type MoveRequestResponse,
   type MoveRequestSummaryResponse,
@@ -127,12 +126,6 @@ type FlowStep = {
   description: string;
 };
 
-const currencyFormatter = new Intl.NumberFormat("he-IL", {
-  style: "currency",
-  currency: "ILS",
-  maximumFractionDigits: 0,
-});
-
 const dateFormatter = new Intl.DateTimeFormat("he-IL", {
   month: "short",
   day: "numeric",
@@ -188,14 +181,6 @@ function parseOptionalNumber(value: string) {
 
   const parsed = Number(value);
   return Number.isFinite(parsed) ? parsed : null;
-}
-
-function moneyLabel(money: { currency: string; amountMinor: number }) {
-  if (money.currency === "ILS") {
-    return currencyFormatter.format(money.amountMinor / 100);
-  }
-
-  return `${money.currency} ${(money.amountMinor / 100).toFixed(0)}`;
 }
 
 function preferredTimeLabel(value: PreferredMoveTime | null | undefined) {
@@ -544,7 +529,6 @@ export default function CustomerRequestFlow({
 }: {
   initialRequestType?: MoveRequestType | null;
 }) {
-  const { locale } = useLocale();
   const [user, setUser] = useState<CurrentUser | null>(null);
   const [drafts, setDrafts] = useState<MoveRequestSummaryResponse[]>([]);
   const [activeRequest, setActiveRequest] = useState<MoveRequestResponse | null>(null);
@@ -552,7 +536,7 @@ export default function CustomerRequestFlow({
     ...makeFormState(),
     requestType: initialRequestType,
   }));
-  const [stepIndex, setStepIndex] = useState(0);
+  const [requestedStepIndex, setStepIndex] = useState(0);
   const [pendingGoogleCredential, setPendingGoogleCredential] = useState(
     "dev-google:demo-subject:customer@example.com:Alex:Customer",
   );
@@ -566,7 +550,7 @@ export default function CustomerRequestFlow({
   const [isBootstrapping, setIsBootstrapping] = useState(true);
 
   const steps = useMemo(() => flowStepsForType(form.requestType), [form.requestType]);
-  const reviewStepIndex = Math.max(0, steps.findIndex((step) => step.key === "review"));
+  const stepIndex = Math.min(requestedStepIndex, steps.length - 1);
   const accountStepIndex = Math.max(0, steps.findIndex((step) => step.key === "account"));
   const publishStepIndex = Math.max(0, steps.findIndex((step) => step.key === "publish"));
   const currentStep = steps[stepIndex] ?? steps[0];
@@ -574,12 +558,6 @@ export default function CustomerRequestFlow({
   useEffect(() => {
     void bootstrap();
   }, []);
-
-  useEffect(() => {
-    if (stepIndex >= steps.length) {
-      setStepIndex(steps.length - 1);
-    }
-  }, [steps.length, stepIndex]);
 
   async function bootstrap() {
     try {

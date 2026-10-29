@@ -2,7 +2,7 @@ import React from "react";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomerRequestFlow from "./CustomerRequestFlow";
-import { MovelyApiError } from "@/lib/movely-api";
+import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRequestType, type MoveRequestVersionResponse, type UpdateMoveRequestRequest } from "@/lib/movely-api";
 
 const apiMocks = vi.hoisted(() => ({
   getCurrentUser: vi.fn(),
@@ -27,14 +27,6 @@ vi.mock("@/lib/movely-api", async () => {
   };
 });
 
-vi.mock("next/link", () => ({
-  default: ({ href, children, ...props }: any) => (
-    <a href={typeof href === "string" ? href : String(href)} {...props}>
-      {children}
-    </a>
-  ),
-}));
-
 function makeUser(overrides: Partial<{
   phoneVerified: boolean;
   firstName: string;
@@ -54,7 +46,7 @@ function makeUser(overrides: Partial<{
   };
 }
 
-function makeApartmentVersion(overrides: Partial<Record<string, unknown>> = {}) {
+function makeApartmentVersion(overrides: Partial<MoveRequestVersionResponse> = {}): MoveRequestVersionResponse {
   return {
     id: "version-1",
     moveRequestId: "request-1",
@@ -121,7 +113,7 @@ function makeApartmentVersion(overrides: Partial<Record<string, unknown>> = {}) 
   };
 }
 
-function makeSmallVersion(overrides: Partial<Record<string, unknown>> = {}) {
+function makeSmallVersion(overrides: Partial<MoveRequestVersionResponse> = {}): MoveRequestVersionResponse {
   return {
     id: "version-1",
     moveRequestId: "request-1",
@@ -187,7 +179,7 @@ function makeRequestResponse({
   requestType?: "ApartmentMove" | "SmallMove";
   status?: "Draft" | "Published" | "Active" | "Closed" | "Cancelled" | "Expired";
   duplicateRisk?: boolean;
-  currentVersion?: any;
+  currentVersion?: MoveRequestVersionResponse;
 } = {}) {
   const version = currentVersion ?? (requestType === "SmallMove" ? makeSmallVersion() : makeApartmentVersion());
   return {
@@ -214,17 +206,16 @@ async function renderApp({
   user = null,
   drafts = [],
 }: {
-  user?: any;
-  drafts?: any[];
+  user?: CurrentUser | null;
+  drafts?: MoveRequestResponse[];
 } = {}) {
-  window.localStorage.setItem("movely-language", "en");
   apiMocks.getCurrentUser.mockResolvedValue(user);
   apiMocks.getMyMoveRequests.mockResolvedValue(drafts);
   apiMocks.getMoveRequest.mockResolvedValue(drafts[0] ?? makeRequestResponse());
-  apiMocks.createMoveRequest.mockImplementation(async (requestType: string) =>
-    makeRequestResponse({ requestType: requestType as any }),
+  apiMocks.createMoveRequest.mockImplementation(async (requestType: MoveRequestType) =>
+    makeRequestResponse({ requestType }),
   );
-  apiMocks.updateMoveRequest.mockImplementation(async (_id: string, payload: any) =>
+  apiMocks.updateMoveRequest.mockImplementation(async (_id: string, payload: UpdateMoveRequestRequest) =>
     makeRequestResponse({
       requestType: payload.requestType,
       currentVersion:
@@ -271,12 +262,6 @@ async function renderApp({
   await waitFor(() => expect(apiMocks.getCurrentUser).toHaveBeenCalled());
 }
 
-async function goToAccountStep(user = userEvent.setup()) {
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Account \/ phone verification/i }));
-}
-
 beforeEach(() => {
   vi.clearAllMocks();
 });
@@ -285,30 +270,30 @@ test("WIZARD-001 Customer can select Apartment Move.", async () => {
   const user = userEvent.setup();
   await renderApp();
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
 
-  expect(screen.getByText(/Apartment move selected/i)).toBeInTheDocument();
+  expect(screen.getByText(/נבחרה הובלת דירה/i)).toBeInTheDocument();
 });
 
 test("WIZARD-002 Customer can select Small Move.", async () => {
   const user = userEvent.setup();
   await renderApp();
 
-  await user.click(screen.getByRole("button", { name: /Small Move \/ Individual Items A sofa, appliance, boxes, electronics, equipment, or a few items together\./i }));
+  await user.click(screen.getByRole("button", { name: /הובלה קטנה \/ פריטים בודדים ספה/i }));
 
-  expect(screen.getByText(/Small move selected/i)).toBeInTheDocument();
+  expect(screen.getByText(/נבחרה הובלה קטנה/i)).toBeInTheDocument();
 });
 
 test("WIZARD-003 Continue saves current Draft step.", async () => {
   const user = userEvent.setup();
   await renderApp({ user: makeUser(), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
 
   await waitFor(() => expect(apiMocks.createMoveRequest).toHaveBeenCalled());
   expect(apiMocks.updateMoveRequest).toHaveBeenCalled();
-  expect(screen.getByRole("heading", { name: /Pickup and destination/i })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: /איסוף ויעד/i })).toBeInTheDocument();
 });
 
 test("WIZARD-004 Failed save keeps current form values.", async () => {
@@ -331,14 +316,14 @@ test("WIZARD-004 Failed save keeps current form values.", async () => {
   );
   await renderApp({ user: makeUser(), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await screen.findByRole("heading", { name: /Pickup and destination/i });
-  const pickupCity = screen.getByRole("textbox", { name: /^Pickup city/i });
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await screen.findByRole("heading", { name: /איסוף ויעד/i });
+  const pickupCity = screen.getByRole("textbox", { name: /^איסוף עיר/i });
   await user.clear(pickupCity);
   await user.type(pickupCity, "Tel Aviv");
   expect(pickupCity).toHaveValue("Tel Aviv");
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
 
   expect(screen.getByText(/SAVE_FAILED/i)).toBeInTheDocument();
 });
@@ -347,14 +332,14 @@ test("WIZARD-005 Back navigation retains saved values.", async () => {
   const user = userEvent.setup();
   await renderApp({ user: makeUser(), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledTimes(2));
-  const pickupCity = screen.getByRole("textbox", { name: /^Pickup city/i });
+  const pickupCity = screen.getByRole("textbox", { name: /^איסוף עיר/i });
   await user.clear(pickupCity);
   await user.type(pickupCity, "Tel Aviv");
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /^Back$/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /^חזרה$/i }));
   expect(screen.getByDisplayValue("Tel Aviv")).toBeInTheDocument();
 });
 
@@ -362,24 +347,24 @@ test("WIZARD-006 Apartment flow shows apartment-specific fields.", async () => {
   const user = userEvent.setup();
   await renderApp({ user: makeUser(), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledTimes(2));
-  await user.click(screen.getByRole("button", { name: /Apartment details/i }));
-  expect(screen.getByText(/Apartment size/i)).toBeInTheDocument();
-  expect(screen.getByText(/^Boxes$/i)).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /פרטי הדירה/i }));
+  expect(screen.getByText(/גודל הדירה/i)).toBeInTheDocument();
+  expect(screen.getByText(/^ארגזים$/i)).toBeInTheDocument();
 });
 
 test("WIZARD-007 Small Move flow shows item-specific fields.", async () => {
   const user = userEvent.setup();
   await renderApp({ user: makeUser(), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Small Move \/ Individual Items A sofa, appliance, boxes, electronics, equipment, or a few items together\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await screen.findByRole("heading", { name: /Items/i });
-  await user.click(screen.getByRole("button", { name: /Add another item/i }));
-  expect(screen.getByText(/Add another item/i)).toBeInTheDocument();
-  expect(screen.getByRole("combobox", { name: /Category/i })).toBeInTheDocument();
+  await user.click(screen.getByRole("button", { name: /הובלה קטנה \/ פריטים בודדים ספה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await screen.findByRole("heading", { name: /^פריטים$/i });
+  await user.click(screen.getByRole("button", { name: /הוסיפו פריט נוסף/i }));
+  expect(screen.getByText(/הוסיפו פריט נוסף/i)).toBeInTheDocument();
+  expect(screen.getByRole("combobox", { name: /קטגוריה/i })).toBeInTheDocument();
 });
 
 test("WIZARD-008 Review reflects server-saved current request.", async () => {
@@ -396,14 +381,14 @@ test("WIZARD-008 Review reflects server-saved current request.", async () => {
   );
   await renderApp({ user: makeUser(), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await screen.findByRole("heading", { name: /Pickup and destination/i });
-  const pickupCity = screen.getByRole("textbox", { name: /^Pickup city/i });
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await screen.findByRole("heading", { name: /איסוף ויעד/i });
+  const pickupCity = screen.getByRole("textbox", { name: /^איסוף עיר/i });
   await user.clear(pickupCity);
   await user.type(pickupCity, "Server City");
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Review/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /^בדיקה$/i }));
 
   expect(screen.getAllByText(/Server City/i).length).toBeGreaterThan(0);
 });
@@ -412,36 +397,37 @@ test("WIZARD-009 Anonymous user is sent through auth before publish.", async () 
   const user = userEvent.setup();
   await renderApp({ user: null, drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Account \/ phone verification/i }));
-  await user.click(screen.getByRole("button", { name: /Publish request/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
-  expect(screen.getByText(/Sign in required/i)).toBeInTheDocument();
+  expect(screen.getByText(/נדרשת התחברות/i)).toBeInTheDocument();
 });
 
 test("WIZARD-010 Unverified phone requires OTP before publish.", async () => {
   const user = userEvent.setup();
   await renderApp({ user: makeUser({ phoneVerified: false }), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Account \/ phone verification/i }));
-  await user.click(screen.getByRole("button", { name: /Publish request/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
-  expect(screen.getByText(/Phone verification required/i)).toBeInTheDocument();
+  expect(screen.getByText("נדרש אימות טלפון", { exact: true })).toBeInTheDocument();
+  expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
 });
 
 test("WIZARD-011 Verified customer can publish valid request.", async () => {
   const user = userEvent.setup();
   await renderApp({ user: makeUser({ phoneVerified: true }), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Account \/ phone verification/i }));
-  await user.click(screen.getByRole("button", { name: /Publish request/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
-  expect(screen.getByRole("heading", { name: /Request published/i })).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: /הבקשה פורסמה/i })).toBeInTheDocument();
 });
 
 test("WIZARD-012 Server validation error is rendered correctly.", async () => {
@@ -454,10 +440,10 @@ test("WIZARD-012 Server validation error is rendered correctly.", async () => {
   );
   await renderApp({ user: makeUser({ phoneVerified: true }), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Account \/ phone verification/i }));
-  await user.click(screen.getByRole("button", { name: /Publish request/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/INVALID_REQUEST_STATE/i)).toBeInTheDocument();
 });
@@ -473,13 +459,13 @@ test("WIZARD-013 Potential duplicate warning is handled.", async () => {
   });
   await renderApp({ user: makeUser({ phoneVerified: true }), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Account \/ phone verification/i }));
-  await user.click(screen.getByRole("button", { name: /Publish request/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
-  expect(screen.getByText(/Potential duplicate detected/i)).toBeInTheDocument();
-  expect(screen.getByText(/may already have a similar active request/i)).toBeInTheDocument();
+  expect(screen.getByText(/זוהתה כפילות אפשרית/i)).toBeInTheDocument();
+  expect(screen.getByText(/נראה שכבר יש לכם בקשה פעילה דומה/i)).toBeInTheDocument();
 });
 
 test("WIZARD-014 Active request limit error is handled.", async () => {
@@ -492,19 +478,19 @@ test("WIZARD-014 Active request limit error is handled.", async () => {
   );
   await renderApp({ user: makeUser({ phoneVerified: true }), drafts: [] });
 
-  await user.click(screen.getByRole("button", { name: /Apartment Move Full home or apartment relocation with route, access, inventory, and services\./i }));
-  await user.click(screen.getByRole("button", { name: /^Continue$/i }));
-  await user.click(screen.getByRole("button", { name: /Account \/ phone verification/i }));
-  await user.click(screen.getByRole("button", { name: /Publish request/i }));
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await user.click(screen.getByRole("button", { name: /חשבון \/ אימות טלפון/i }));
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
   expect(screen.getByText(/ACTIVE_REQUEST_LIMIT_REACHED/i)).toBeInTheDocument();
 });
 
-test("WIZARD-015 Wizard layout works at mobile viewport.", async () => {
+test("WIZARD-015 Entry and resume headings remain available after a viewport change.", async () => {
   window.innerWidth = 375;
   window.dispatchEvent(new Event("resize"));
   await renderApp();
 
-  expect(screen.getByText(/Request a move in minutes/i)).toBeInTheDocument();
-  expect(screen.getByRole("heading", { name: /Continue request/i })).toBeInTheDocument();
+  expect(screen.getByText(/יוצרים בקשת הובלה תוך דקות/i)).toBeInTheDocument();
+  expect(screen.getByRole("heading", { name: /המשך בקשה/i })).toBeInTheDocument();
 });

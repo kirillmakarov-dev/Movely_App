@@ -4,12 +4,11 @@ import { useDeferredValue, useState } from "react";
 import RequestCard from "./RequestCard";
 import { mockMarketplaceRequests } from "./mock-requests";
 import type { MoveRequestType } from "@/lib/movely-api";
-import { useLocale } from "@/components/LocaleProvider";
+import { UI_LOCALE as locale } from "@/lib/locale";
 
 type CategoryFilter = "All" | MoveRequestType;
 
 export default function MarketplaceBrowser() {
-  const { locale } = useLocale();
   const [category, setCategory] = useState<CategoryFilter>("All");
   const [pickupCity, setPickupCity] = useState("");
   const [destinationCity, setDestinationCity] = useState("");
