@@ -6,7 +6,7 @@ import Icon from "@/components/Icon";
 
 const navigation = [
   { href: "/#how-it-works", label: "איך זה עובד" },
-  { href: "/#questions", label: "שאלות ותשובות" },
+  { href: "/help", label: "עזרה" },
   { href: "/for-movers", label: "למובילים" },
 ];
 

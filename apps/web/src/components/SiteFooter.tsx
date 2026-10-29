@@ -1,12 +1,12 @@
 import Link from "@/components/SafeLink";
 
 const footerLinks = [
-  { href: "/", label: "אודות" },
   { href: "/#how-it-works", label: "איך זה עובד" },
   { href: "/for-movers", label: "למובילים" },
-  { href: "#", label: "תנאים" },
-  { href: "#", label: "פרטיות" },
-  { href: "#", label: "יצירת קשר" },
+  { href: "/terms", label: "תנאי שימוש" },
+  { href: "/privacy", label: "פרטיות" },
+  { href: "/help", label: "עזרה ויצירת קשר" },
+  { href: "/accessibility", label: "נגישות" },
 ];
 
 export default function SiteFooter() {
@@ -23,7 +23,7 @@ export default function SiteFooter() {
         </div>
         <nav className="flex max-w-xl flex-wrap gap-x-6 gap-y-3" aria-label="ניווט תחתון">
           {footerLinks.map((item) => (
-            <Link key={item.label} href={item.href} className="text-sm text-slate-300 transition hover:text-white">
+            <Link key={item.label} href={item.href} className="inline-flex min-h-11 items-center text-sm text-slate-300 transition hover:text-white">
               {item.label}
             </Link>
           ))}

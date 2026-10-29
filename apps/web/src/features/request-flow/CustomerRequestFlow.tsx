@@ -2165,6 +2165,11 @@ export default function CustomerRequestFlow({
               <fieldset disabled={busyAction !== null || isBootstrapping} className="min-w-0">{renderStepBody()}</fieldset>
             </div>
 
+            <div className="mt-5 flex flex-wrap gap-x-5 gap-y-2 text-sm text-sky-800">
+              <Link href="/help" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline">צריכים עזרה? (לשונית חדשה)</Link>
+              <Link href="/privacy" target="_blank" rel="noopener noreferrer" className="inline-flex min-h-11 items-center underline">איך נשמרים הפרטים? (לשונית חדשה)</Link>
+            </div>
+
             {!user && !isBootstrapping && !publishState && (
               <div className="draft-preference mt-4 rounded-xl border border-slate-200 bg-slate-50 p-4">
                 <label className="flex min-h-12 cursor-pointer items-start gap-3">
