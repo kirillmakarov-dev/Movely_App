@@ -44,3 +44,8 @@ This is a visual foundation, not accessibility certification. Form simplificatio
 ## Request flow refinement (2026-10-29)
 
 Six form stages with a separate publication result. Related access fields belong with each address; comments belong with date/budget. Additional services use a native optional disclosure with selected count. Mobile inventory uses two columns, room choices four compact columns. Keep one publication action in the footer. Label navigation by current stage rather than claiming percentage completion. Existing anonymous drafts migrate to the matching stage without losing content; new draft storage excludes publication confirmation.
+
+
+## Field validation (2026-10-29)
+
+Incomplete drafts remain editable. On review/publication, show a linked error summary and a plain-language message beside each invalid field. Use stable field IDs with aria-invalid/aria-describedby; give numerical rows names independent of CSS layout. Focus the first relevant field, open enclosing disclosures, and scroll instantly clear of the sticky header. Do not silently replace invalid numbers or require optional budget/access details. Values from another move type must remain accessible for correction when still included in the request.

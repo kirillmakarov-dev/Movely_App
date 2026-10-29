@@ -1,5 +1,5 @@
 import React from "react";
-import { cleanup, render, screen, waitFor, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, waitFor, within } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import CustomerRequestFlow from "./CustomerRequestFlow";
 import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRequestType, type MoveRequestVersionResponse, type UpdateMoveRequestRequest } from "@/lib/movely-api";
@@ -104,7 +104,7 @@ function makeApartmentVersion(overrides: Partial<MoveRequestVersionResponse> = {
     smallMoveItems: [],
     specialItems: [],
     schedule: {
-      moveDate: "2026-08-20",
+      moveDate: new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10),
       preferredTime: "Morning" as const,
       dateFlexibility: "Exact" as const,
     },
@@ -161,7 +161,7 @@ function makeSmallVersion(overrides: Partial<MoveRequestVersionResponse> = {}): 
     ],
     specialItems: [],
     schedule: {
-      moveDate: "2026-08-21",
+      moveDate: new Date(Date.now() + 31 * 86_400_000).toISOString().slice(0, 10),
       preferredTime: "Flexible" as const,
       dateFlexibility: "PlusMinusOneDay" as const,
     },
@@ -271,9 +271,24 @@ async function openStep(user: ReturnType<typeof userEvent.setup>, name: RegExp) 
   await user.click(screen.getByRole("button", { name }));
 }
 
+async function fillRequiredApartmentFields(user: ReturnType<typeof userEvent.setup>) {
+  await openStep(user, /^איסוף ויעד$/);
+  for (const [name, value] of [["איסוף עיר", "Haifa"], ["איסוף כתובת מדויקת", "Example 1"], ["יעד עיר", "Tel Aviv"], ["יעד כתובת מדויקת", "Example 2"]]) {
+    fireEvent.change(screen.getByRole("textbox", { name, exact: true }), { target: { value } });
+  }
+  await openStep(user, /^תכולת הדירה$/);
+  await user.click(screen.getByRole("button", { name: "3 חדרים" }));
+  await openStep(user, /^תאריך ותקציב$/);
+  const date = screen.getByLabelText(/תאריך הובלה/);
+  fireEvent.change(date, { target: { value: new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10) } });
+  await user.click(screen.getByRole("button", { name: "בוקר", exact: true }));
+  await user.click(screen.getByRole("button", { name: "תאריך מדויק", exact: true }));
+  await openStep(user, /^איסוף ויעד$/);
+}
+
 beforeEach(() => {
   window.sessionStorage.clear();
-  vi.clearAllMocks();
+  Object.values(apiMocks).forEach((mock) => mock.mockReset());
 });
 
 test("WIZARD-001 Customer can select Apartment Move.", async () => {
@@ -403,7 +418,7 @@ test("WIZARD-008 Review reflects server-saved current request.", async () => {
   expect(screen.getAllByText(/Server City/i).length).toBeGreaterThan(0);
 });
 
-test("WIZARD-009 Anonymous user is sent through auth before publish.", async () => {
+test("WIZARD-009 Incomplete anonymous request focuses the missing route before auth.", async () => {
   const user = userEvent.setup();
   await renderApp({ user: null, drafts: [] });
 
@@ -412,7 +427,9 @@ test("WIZARD-009 Anonymous user is sent through auth before publish.", async () 
   await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
-  expect(screen.getByText(/נדרשת התחברות/i)).toBeInTheDocument();
+  expect(screen.getByRole("textbox", { name: "איסוף עיר" })).toHaveFocus();
+  expect(screen.getByRole("textbox", { name: "איסוף עיר" })).toHaveAttribute("aria-invalid", "true");
+  expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
 });
 
 test("WIZARD-010 Unverified phone requires OTP before publish.", async () => {
@@ -421,6 +438,7 @@ test("WIZARD-010 Unverified phone requires OTP before publish.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await fillRequiredApartmentFields(user);
   await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
@@ -434,6 +452,7 @@ test("WIZARD-011 Verified customer can publish valid request.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await fillRequiredApartmentFields(user);
   await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
@@ -453,6 +472,7 @@ test("WIZARD-012 Server validation error is rendered correctly.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await fillRequiredApartmentFields(user);
   await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
@@ -473,6 +493,7 @@ test("WIZARD-013 Potential duplicate warning is handled.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await fillRequiredApartmentFields(user);
   await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
@@ -493,6 +514,7 @@ test("WIZARD-014 Active request limit error is handled.", async () => {
 
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
+  await fillRequiredApartmentFields(user);
   await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
@@ -540,6 +562,7 @@ test("Publish saves the latest edits even when the user jumps directly to the ac
   await renderApp({ user: makeUser() });
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
   await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await fillRequiredApartmentFields(user);
   const city = screen.getByRole("textbox", { name: /^איסוף עיר/ });
   await user.clear(city);
   await user.type(city, "Updated before publishing");
@@ -557,6 +580,7 @@ test("Verified phone and accepted terms do not imply contact-sharing consent", a
   await renderApp({ user: makeUser() });
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
   await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await fillRequiredApartmentFields(user);
   await openStep(user, /אימות ופרסום/);
   const sharing = screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ });
   expect(sharing).not.toBeChecked();
@@ -574,6 +598,7 @@ test("A changed recipient limit requires a fresh decision and does not publish",
   await renderApp({ user: makeUser() });
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
   await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await fillRequiredApartmentFields(user);
   await openStep(user, /אימות ופרסום/);
   await user.click(screen.getByRole("checkbox", { name: /אני מאשר \/ מאשרת העברת פרטי קשר/ }));
   apiMocks.updateMoveRequest.mockResolvedValueOnce(makeRequestResponse({ maxLeadBuyers: 5 }));
@@ -618,4 +643,92 @@ test("WIZARD-022 Grouped apartment fields and notes survive moving between stage
   expect(screen.getByRole("button", { name: "פירוק רהיטים" })).toHaveAttribute("aria-pressed", "true");
   await openStep(user, /תאריך ותקציב/);
   expect(screen.getByRole("textbox", { name: /הערות/ })).toHaveValue("יש כלב בבית");
+});
+
+
+test("Malformed optional access opens its disclosure and focuses the error without saving", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  const access = screen.getAllByText("קומה, מעלית וגישה לבניין")[0];
+  await user.click(access);
+  const floor = screen.getByRole("spinbutton", { name: "איסוף קומה" });
+  await user.type(floor, "2.5");
+  await user.click(access);
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  expect(floor).toHaveFocus();
+  expect(floor.closest("details")).toHaveAttribute("open");
+  expect(floor).toHaveAttribute("aria-invalid", "true");
+  expect(apiMocks.updateMoveRequest).not.toHaveBeenCalled();
+  await user.clear(floor);
+  await user.type(floor, "2");
+  expect(floor).not.toHaveAttribute("aria-invalid");
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  expect(screen.getByRole("heading", { name: "תכולת הדירה" })).toHaveFocus();
+});
+
+test("Review links navigate to the required field and errors disappear after correction", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await openStep(user, /^בדיקה$/);
+  await user.click(screen.getByRole("button", { name: "בחרו תאריך להובלה." }));
+  const date = screen.getByLabelText(/תאריך הובלה/);
+  expect(date).toHaveFocus();
+  expect(date).toHaveAttribute("aria-describedby", "move-error-moveDate");
+  await user.type(date, new Date(Date.now() + 30 * 86_400_000).toISOString().slice(0, 10));
+  expect(date).not.toHaveAttribute("aria-invalid");
+  expect(screen.queryByRole("button", { name: "בחרו תאריך להובלה." })).not.toBeInTheDocument();
+});
+
+test("A complete anonymous request still requires authentication", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await fillRequiredApartmentFields(user);
+  await openStep(user, /אימות ופרסום/);
+  await user.click(screen.getByRole("button", { name: /פרסום הבקשה/ }));
+  expect(screen.getByText("נדרשת התחברות", { exact: true })).toBeInTheDocument();
+  expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
+});
+
+test("Small item quantity errors retain input and stop draft progression until corrected", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /הובלה קטנה \/ פריטים בודדים ספה/ }));
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  await user.click(screen.getByRole("button", { name: /הוסיפו פריט נוסף/ }));
+  const quantity = screen.getByRole("spinbutton", { name: /^כמות/ });
+  await user.clear(quantity);
+  await user.type(quantity, "0");
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  expect(quantity).toHaveFocus();
+  expect(quantity).toHaveValue(0);
+  expect(quantity).toHaveAttribute("aria-invalid", "true");
+  await user.clear(quantity);
+  await user.type(quantity, "2");
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  expect(screen.getByRole("heading", { name: "איסוף ויעד" })).toHaveFocus();
+});
+
+
+test("Special item errors remain editable after changing from apartment to small move", async () => {
+  const user = userEvent.setup();
+  await renderApp();
+  await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
+  await openStep(user, /תכולת הדירה/);
+  await user.click(screen.getByText("שירותים נוספים ופריטים מיוחדים (רשות)"));
+  await user.click(screen.getByRole("button", { name: /^פסנתר/ }));
+  const quantity = screen.getByRole("spinbutton", { name: /^כמות פסנתר/ });
+  await user.clear(quantity);
+  await user.type(quantity, "0");
+  await openStep(user, /^סוג הובלה$/);
+  await user.click(screen.getByRole("button", { name: /הובלה קטנה \/ פריטים בודדים ספה/ }));
+  await openStep(user, /^פריטים$/);
+  await user.click(screen.getByRole("button", { name: /^המשך$/ }));
+  const retainedQuantity = screen.getByRole("spinbutton", { name: /^כמות פסנתר/ });
+  expect(retainedQuantity).toHaveFocus();
+  expect(retainedQuantity).toHaveValue(0);
+  expect(retainedQuantity.closest("details")).toHaveAttribute("open");
 });

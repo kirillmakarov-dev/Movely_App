@@ -7,6 +7,7 @@ import { LEGAL_DRAFT_VERSION } from "@/lib/legal-content";
 import { acceptPolicies } from "@/lib/movely-api";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { flowStepsForType } from "./request-flow-steps";
+import { validateRequest, type RequestIssue } from "./request-validation";
 import type { FormState } from "./request-flow-types";
 import { clearLocalDraft, readLocalDraft, saveLocalDraft } from "./local-draft";
 import SiteHeader from "@/components/SiteHeader";
@@ -372,6 +373,9 @@ export default function CustomerRequestFlow({
   const [banner, setBanner] = useState<Banner | null>(null);
   const [statusText, setStatusText] = useState("מוכנים להתחיל.");
   const [busyAction, setBusyAction] = useState<string | null>(null);
+  const [validationMode, setValidationMode] = useState<"draft" | "complete" | null>(null);
+  const handledFocusRequest = useRef<object | null>(null);
+  const [focusRequest, setFocusRequest] = useState<{ field: string } | null>(null);
   const [publishState, setPublishState] = useState<PublishState>(null);
   const [isBootstrapping, setIsBootstrapping] = useState(true);
 
@@ -382,12 +386,57 @@ export default function CustomerRequestFlow({
   const currentStep = steps[stepIndex] ?? steps[0];
   const extraSelectionCount = [form.furnitureDisassembly, form.furnitureAssembly, form.packingAssistance, form.packingMaterials].filter(Boolean).length + form.specialItems.length;
 
+  const fieldIssues = validationMode || currentStep.key === "review"
+    ? validateRequest(form, validationMode === "complete" || currentStep.key === "review") : [];
+
+
+  function focusIssue(issue: RequestIssue) {
+    setStepIndex(Math.max(0, steps.findIndex((step) => step.key === issue.step)));
+    setFocusRequest({ field: issue.field });
+  }
+
+  function rejectInvalidFields(complete: boolean) {
+    const issues = validateRequest(form, complete).sort((a, b) =>
+      steps.findIndex((step) => step.key === a.step) - steps.findIndex((step) => step.key === b.step));
+    setValidationMode((current) => complete || current === "complete" ? "complete" : "draft");
+    if (!issues.length) return false;
+    setBanner(null);
+    focusIssue(issues[0]);
+    return true;
+  }
+
+  function fieldProps(field: string, label?: string) {
+    const invalid = fieldIssues.some((issue) => issue.field === field);
+    return { id: `move-field-${field}`, "aria-label": label, "aria-invalid": invalid || undefined,
+      "aria-describedby": invalid ? `move-error-${field}` : undefined };
+  }
+
+  function renderFieldError(field: string) {
+    const issue = fieldIssues.find((issue) => issue.field === field);
+    return issue ? <p id={`move-error-${field}`} className="mt-2 text-base font-medium leading-7 text-red-800">{issue.message}</p> : null;
+  }
+
   useEffect(() => {
     if (previousStep.current !== stepIndex) {
       stepHeading.current?.focus();
       previousStep.current = stepIndex;
     }
   }, [stepIndex]);
+
+  useEffect(() => {
+    if (!focusRequest || busyAction || handledFocusRequest.current === focusRequest) return;
+    const target = document.getElementById(`move-field-${focusRequest.field}`);
+    if (!target) return;
+    let ancestor = target.parentElement;
+    while (ancestor) {
+      if (ancestor instanceof HTMLDetailsElement) ancestor.open = true;
+      ancestor = ancestor.parentElement;
+    }
+    handledFocusRequest.current = focusRequest;
+    target.focus({ preventScroll: true });
+    target.scrollIntoView?.({ block: "center", behavior: "instant" });
+  }, [focusRequest, stepIndex, busyAction]);
+
 
   useEffect(() => {
     if (isBootstrapping || user || !rememberDraft || publishState) return;
@@ -493,6 +542,7 @@ export default function CustomerRequestFlow({
   }
 
   async function saveCurrentStep() {
+    if (rejectInvalidFields(false)) throw new Error("תקנו את השדות המסומנים לפני השמירה.");
     if (!user) {
       setStatusText("המשיכו מקומית ואז התחברו כדי לשמור את הטיוטה.");
       return null;
@@ -525,6 +575,7 @@ export default function CustomerRequestFlow({
       setBanner({ tone: "error", title: "בחרו סוג הובלה", message: "בחרו הובלת דירה או הובלה קטנה כדי להמשיך." });
       return;
     }
+    if (rejectInvalidFields(false)) return;
     setBusyAction("שומרים את השלב");
     try {
       if (user && form.requestType) {
@@ -560,6 +611,8 @@ export default function CustomerRequestFlow({
       const request = await getMoveRequest(requestId);
       setActiveRequest(request);
       setForm(hydrateFromRequest(request));
+      setValidationMode(null);
+      setFocusRequest(null);
       setStepIndex(inferStepIndex(request));
       setStatusText(`טיוטה ${request.id.slice(0, 8)} נטענה.`);
       setBanner({
@@ -607,6 +660,8 @@ export default function CustomerRequestFlow({
       clearLocalDraft();
       setRememberDraft(false);
       setForm(makeFormState());
+      setValidationMode(null);
+      setFocusRequest(null);
       setStepIndex(0);
       setDrafts([]);
       setPhone("");
@@ -685,6 +740,7 @@ export default function CustomerRequestFlow({
   }
 
   async function handlePublish() {
+    if (rejectInvalidFields(true)) return;
     setBusyAction("מפרסמים");
     try {
       if (!user) {
@@ -730,6 +786,8 @@ export default function CustomerRequestFlow({
       });
       clearLocalDraft();
       setRememberDraft(false);
+      setValidationMode(null);
+      setFocusRequest(null);
       setPublishState(response);
       setActiveRequest(response.moveRequest);
       setForm(hydrateFromRequest(response.moveRequest));
@@ -759,6 +817,8 @@ export default function CustomerRequestFlow({
     setActiveRequest(null);
     setPublishState(null);
     setForm(makeFormState());
+      setValidationMode(null);
+      setFocusRequest(null);
     setStepIndex(0);
     setBanner({
       tone: "info",
@@ -800,7 +860,7 @@ export default function CustomerRequestFlow({
   function renderMoveTypeStep() {
     return (
       <div className="space-y-4">
-        <div className="grid gap-4 md:grid-cols-2">
+        <div {...fieldProps("requestType")} tabIndex={-1} role="group" aria-label="סוג הובלה" className="grid gap-4 md:grid-cols-2">
           {MOVE_TYPE_OPTIONS.map((option) => {
             const selected = form.requestType === option.value;
             return (
@@ -823,6 +883,7 @@ export default function CustomerRequestFlow({
             );
           })}
         </div>
+        {renderFieldError("requestType")}
         {!user ? (
           <div className="rounded-[24px] border border-slate-200 bg-slate-50 p-4 text-sm leading-6 text-slate-600">
             אפשר לבחור עכשיו סוג הובלה ולהמשיך לעצב את הבקשה מקומית. התחברו כשתהיו מוכנים לשמור
@@ -840,9 +901,10 @@ export default function CustomerRequestFlow({
         <legend className="px-2 text-sm font-semibold text-slate-900">{title}</legend>
         {mode !== "access" && <div className="mt-4 grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
-            {renderInputLabel("עיר", "השתמשו בשם העיר המדויק במסלול ההובלה.")}
-            <input
+            {renderInputLabel("עיר (חובה לפרסום)", "השתמשו בשם העיר המדויק במסלול ההובלה.")}
+            <input {...fieldProps(`${prefix}.city`)}
               aria-label={`${title} עיר`}
+              aria-required="true"
               autoComplete={`section-${prefix} address-level2`}
               value={data.city ?? ""}
               onChange={(event) =>
@@ -853,11 +915,13 @@ export default function CustomerRequestFlow({
               }
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
             />
+            {renderFieldError(`${prefix}.city`)}
           </label>
           <label className="space-y-2">
-            {renderInputLabel("כתובת מדויקת", "רחוב, מספר בית ודירה, אם יש.")}
-            <input
+            {renderInputLabel("כתובת מדויקת (חובה לפרסום)", "רחוב, מספר בית ודירה, אם יש.")}
+            <input {...fieldProps(`${prefix}.exactAddress`)}
               aria-label={`${title} כתובת מדויקת`}
+              aria-required="true"
               autoComplete={`section-${prefix} street-address`}
               value={data.exactAddress ?? ""}
               onChange={(event) =>
@@ -868,6 +932,7 @@ export default function CustomerRequestFlow({
               }
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
             />
+            {renderFieldError(`${prefix}.exactAddress`)}
           </label>
         </div>}
         {mode !== "route" && <details className="access-details mt-3" open={mode === "access" ? true : undefined}>
@@ -875,7 +940,7 @@ export default function CustomerRequestFlow({
           <div className="grid gap-4 pt-3 md:grid-cols-2">
           <label className="space-y-2">
             {renderInputLabel("קומה", "לא חובה, אבל מועיל לתכנון הגישה.")}
-            <input
+            <input {...fieldProps(`${prefix}.floor`)}
               type="number"
               aria-label={`${title} קומה`}
               value={data.floor ?? ""}
@@ -887,6 +952,7 @@ export default function CustomerRequestFlow({
               }
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
             />
+            {renderFieldError(`${prefix}.floor`)}
           </label>
           <div className="space-y-2">
             {renderInputLabel("מעלית", "כן או לא.")}
@@ -980,7 +1046,7 @@ export default function CustomerRequestFlow({
           </label>
           <label className="space-y-2">
             {renderInputLabel("מרחק חניה", "כמה רחוקה המשאית מהכניסה?")}
-            <input
+            <input {...fieldProps(`${prefix}.parkingDistanceMeters`)}
               type="number"
               aria-label={`${title} מרחק חניה`}
               value={data.parkingDistanceMeters ?? ""}
@@ -995,6 +1061,7 @@ export default function CustomerRequestFlow({
               }
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
             />
+            {renderFieldError(`${prefix}.parkingDistanceMeters`)}
           </label>
           </div>
         </details>}
@@ -1054,7 +1121,7 @@ export default function CustomerRequestFlow({
                 <div className="grid gap-2 md:grid-cols-4">
                   <label className="space-y-2">
                     {renderInputLabel("כמות", "השתמשו בכפתורי ההגדלה וההפחתה.")}
-                    <input
+                    <input {...fieldProps(`smallMoveItems.${item.id}.quantity`, `כמות בפריט ${index + 1}`)}
                       type="number"
                       min={1}
                       value={item.quantity}
@@ -1068,10 +1135,11 @@ export default function CustomerRequestFlow({
                       }
                       className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
                     />
+                    {renderFieldError(`smallMoveItems.${item.id}.quantity`)}
                   </label>
                   <label className="space-y-2">
                     {renderInputLabel("אורך ס\"מ", "מידות אופציונליות.")}
-                    <input
+                    <input {...fieldProps(`smallMoveItems.${item.id}.lengthCm`, `אורך ס"מ בפריט ${index + 1}`)}
                       type="number"
                       min={0}
                       value={item.lengthCm}
@@ -1085,10 +1153,11 @@ export default function CustomerRequestFlow({
                       }
                       className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
                     />
+                    {renderFieldError(`smallMoveItems.${item.id}.lengthCm`)}
                   </label>
                   <label className="space-y-2">
                     {renderInputLabel("רוחב ס\"מ", "מידות אופציונליות.")}
-                    <input
+                    <input {...fieldProps(`smallMoveItems.${item.id}.widthCm`, `רוחב ס"מ בפריט ${index + 1}`)}
                       type="number"
                       min={0}
                       value={item.widthCm}
@@ -1102,10 +1171,11 @@ export default function CustomerRequestFlow({
                       }
                       className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
                     />
+                    {renderFieldError(`smallMoveItems.${item.id}.widthCm`)}
                   </label>
                   <label className="space-y-2">
                     {renderInputLabel("גובה ס\"מ / ק\"ג", "מידות או משקל אופציונליים.")}
-                    <input
+                    <input {...fieldProps(`smallMoveItems.${item.id}.heightCm`, `גובה ס"מ בפריט ${index + 1}`)}
                       type="number"
                       min={0}
                       value={item.heightCm}
@@ -1119,11 +1189,12 @@ export default function CustomerRequestFlow({
                       }
                       className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
                     />
+                    {renderFieldError(`smallMoveItems.${item.id}.heightCm`)}
                   </label>
                 </div>
                 <label className="space-y-2">
                   {renderInputLabel("משקל משוער ק\"ג", "אופציונלי אם המוביל צריך עוד פרטי תכנון.")}
-                  <input
+                  <input {...fieldProps(`smallMoveItems.${item.id}.approximateWeightKg`, `משקל משוער ק"ג בפריט ${index + 1}`)}
                     type="number"
                     min={0}
                     value={item.approximateWeightKg}
@@ -1137,6 +1208,7 @@ export default function CustomerRequestFlow({
                     }
                     className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
                   />
+                  {renderFieldError(`smallMoveItems.${item.id}.approximateWeightKg`)}
                 </label>
               </div>
               <button
@@ -1155,7 +1227,8 @@ export default function CustomerRequestFlow({
           </div>
         ))}
 
-        <button
+        {renderFieldError("smallMoveItems")}
+        <button {...fieldProps("smallMoveItems")}
           type="button"
           onClick={() =>
             setForm((current) => ({
@@ -1182,6 +1255,30 @@ export default function CustomerRequestFlow({
         </button>
       </div>
     );
+  }
+
+  function renderInventoryNumbers(collection: "apartmentInventory" | "specialItems", item: FormState["apartmentInventory"][number] | FormState["specialItems"][number]) {
+    return <div className="mt-4 space-y-4">
+      <label className="block space-y-2">
+        {renderInputLabel("כמות", "מספר שלם, לפחות 1.")}
+        <input {...fieldProps(`${collection}.${item.id}.quantity`, `כמות ${item.name || "הפריט"}`)} type="number" min={1} step={1} value={item.quantity}
+          onChange={(event) => setForm((current) => ({ ...current, [collection]: current[collection].map((row) => row.id === item.id ? { ...row, quantity: Number(event.target.value) } : row) }))}
+          className="field-control" />
+        {renderFieldError(`${collection}.${item.id}.quantity`)}
+      </label>
+      {"lengthCm" in item && <details className="rounded-xl border border-slate-200 p-3">
+        <summary className="min-h-11 cursor-pointer font-semibold">מידות ומשקל (רשות)</summary>
+        <div className="mt-3 grid gap-3 sm:grid-cols-2">
+          {([["lengthCm", "אורך בסנטימטרים"], ["widthCm", "רוחב בסנטימטרים"], ["heightCm", "גובה בסנטימטרים"], ["approximateWeightKg", "משקל בקילוגרמים"]] as const).map(([key, label]) => <label key={key} className="space-y-2">
+            {renderInputLabel(label)}
+            <input {...fieldProps(`${collection}.${item.id}.${key}`, `${label} — ${item.name || "הפריט"}`)} type="number" min={0} step="any" value={item[key]}
+              onChange={(event) => setForm((current) => ({ ...current, apartmentInventory: current.apartmentInventory.map((row) => row.id === item.id ? { ...row, [key]: event.target.value } : row) }))}
+              className="field-control" />
+            {renderFieldError(`${collection}.${item.id}.${key}`)}
+          </label>)}
+        </div>
+      </details>}
+    </div>;
   }
 
   function renderApartmentInventory() {
@@ -1297,6 +1394,7 @@ export default function CustomerRequestFlow({
                   הסרה
                 </button>
               </div>
+              {renderInventoryNumbers("apartmentInventory", item)}
             </div>
           ))}
         </div>
@@ -1304,10 +1402,10 @@ export default function CustomerRequestFlow({
     );
   }
 
-  function renderSpecialItems() {
+  function renderSpecialItems(allowAdding = true) {
     return (
       <div className="space-y-4">
-        <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
+        {form.requestType === "ApartmentMove" && <div className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
           <p className="text-sm font-semibold text-slate-900">שירותים נוספים</p>
           <div className="mt-4 grid gap-3 md:grid-cols-2">
             {[
@@ -1352,15 +1450,16 @@ export default function CustomerRequestFlow({
               </button>
             ))}
           </div>
-        </div>
+        </div>}
 
-        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
+        {allowAdding && <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
           {SPECIAL_ITEM_OPTIONS.map((option) => {
             const selected = form.specialItems.some((item) => item.specialItemType === option.value);
             return (
               <button
                 type="button"
                 key={option.value}
+                aria-pressed={selected}
                 onClick={() =>
                   setForm((current) => {
                     const selectedAlready = current.specialItems.some(
@@ -1401,7 +1500,7 @@ export default function CustomerRequestFlow({
               </button>
             );
           })}
-        </div>
+        </div>}
 
         <div className="space-y-3">
           {form.specialItems.map((item) => (
@@ -1409,7 +1508,7 @@ export default function CustomerRequestFlow({
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div className="space-y-3">
                   <div>
-                    <p className="text-sm font-semibold text-slate-900">{item.specialItemType}</p>
+                    <p className="text-sm font-semibold text-slate-900">{SPECIAL_ITEM_OPTIONS.find((option) => option.value === item.specialItemType)?.label ?? item.name}</p>
                     <p className="text-sm leading-6 text-slate-500">נבחר כפריט הדורש טיפול מיוחד.</p>
                   </div>
                   <div className="grid gap-3 md:grid-cols-2">
@@ -1458,6 +1557,7 @@ export default function CustomerRequestFlow({
                   הסרה
                 </button>
               </div>
+              {renderInventoryNumbers("specialItems", item)}
             </div>
           ))}
         </div>
@@ -1474,8 +1574,8 @@ export default function CustomerRequestFlow({
 
     return (
       <div className="space-y-4">
-        <fieldset className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
-          <legend className="px-2 text-sm font-semibold text-slate-900">גודל הדירה</legend>
+        <fieldset {...fieldProps("apartmentRooms")} tabIndex={-1} className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
+          <legend className="px-2 text-sm font-semibold text-slate-900">גודל הדירה (חובה לפרסום)</legend>
           <div className="mt-4 grid grid-cols-4 gap-2">
             {ROOM_OPTIONS.map((rooms) => (
               <button
@@ -1494,6 +1594,7 @@ export default function CustomerRequestFlow({
               </button>
             ))}
           </div>
+          {renderFieldError("apartmentRooms")}
         </fieldset>
 
         <fieldset className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
@@ -1520,7 +1621,7 @@ export default function CustomerRequestFlow({
                   >
                     -
                   </button>
-                  <input
+                  <input {...fieldProps(boxKeys[option.key])}
                     type="number"
                     aria-label={`כמות ${option.label}`}
                     step={1}
@@ -1529,11 +1630,12 @@ export default function CustomerRequestFlow({
                     onChange={(event) =>
                       setForm((current) => ({
                         ...current,
-                        [boxKeys[option.key]]: Math.max(0, Math.trunc(Number(event.target.value) || 0)),
+                        [boxKeys[option.key]]: Number(event.target.value),
                       }))
                     }
                     className="w-20 rounded-2xl border border-slate-300 px-3 py-2 text-center text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
                   />
+                  {renderFieldError(boxKeys[option.key])}
                   <button
                     type="button"
                     aria-label={`הוספת ${option.label}`}
@@ -1571,16 +1673,19 @@ export default function CustomerRequestFlow({
       <div className="space-y-4">
         <div className="grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
-            {renderInputLabel("תאריך הובלה", "בחרו את התאריך המועדף.")}
-            <input
+            {renderInputLabel("תאריך הובלה (חובה לפרסום)", "בחרו את התאריך המועדף.")}
+            <input {...fieldProps("moveDate", "תאריך הובלה (חובה לפרסום)")}
               type="date"
+              aria-required="true"
+              min={new Date().toISOString().slice(0, 10)}
               value={form.moveDate}
               onChange={(event) => updateForm({ moveDate: event.target.value })}
               className="w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
             />
+            {renderFieldError("moveDate")}
           </label>
-          <div className="space-y-2">
-            {renderInputLabel("שעה מועדפת", "בחרו את חלון ההגעה.")}
+          <div {...fieldProps("preferredTime")} tabIndex={-1} role="group" aria-label="שעה מועדפת" className="space-y-2">
+            {renderInputLabel("שעה מועדפת (חובה לפרסום)", "בחרו את חלון ההגעה.")}
             <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
               {PREFERRED_TIME_OPTIONS.map((option) => (
                 <button
@@ -1598,9 +1703,10 @@ export default function CustomerRequestFlow({
                 </button>
               ))}
             </div>
+            {renderFieldError("preferredTime")}
           </div>
-          <div className="space-y-2 md:col-span-2">
-            {renderInputLabel("גמישות בתאריך", "ציינו עד כמה התאריך קשיח.")}
+          <div {...fieldProps("dateFlexibility")} tabIndex={-1} role="group" aria-label="גמישות בתאריך" className="space-y-2 md:col-span-2">
+            {renderInputLabel("גמישות בתאריך (חובה לפרסום)", "ציינו עד כמה התאריך קשיח.")}
             <div className="grid gap-2 md:grid-cols-4">
               {DATE_FLEXIBILITY_OPTIONS.map((option) => (
                 <button
@@ -1618,9 +1724,10 @@ export default function CustomerRequestFlow({
                 </button>
               ))}
             </div>
+            {renderFieldError("dateFlexibility")}
           </div>
           <div className="space-y-2 md:col-span-2">
-            {renderInputLabel("טווח תקציב", "בחרו את הטווח הקרוב ביותר לתקציב הלקוח.")}
+            {renderInputLabel("טווח תקציב (רשות)", "בחרו את הטווח הקרוב ביותר לתקציב שלכם.")}
             <div className="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
               {BUDGET_OPTIONS.map((option) => (
                 <button
@@ -1653,12 +1760,13 @@ export default function CustomerRequestFlow({
 
         <label className="space-y-2 block">
           {renderInputLabel("הערות (רשות)", "ספרו למובילים על כל דבר שלא נכנס לטופס.")}
-          <textarea
+          <textarea {...fieldProps("customerComment", "הערות (רשות)")}
             value={form.customerComment}
             onChange={(event) => updateForm({ customerComment: event.target.value })}
             rows={5}
             className="w-full rounded-[24px] border border-slate-300 bg-white px-4 py-3 text-base outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-950/10"
           />
+          {renderFieldError("customerComment")}
         </label>
       </div>
     );
@@ -1969,7 +2077,13 @@ export default function CustomerRequestFlow({
           </details>
         </div>;
       case "items":
-        return renderSmallMoveItems();
+        return <div className="space-y-6">{renderSmallMoveItems()}
+          {form.specialItems.length > 0 && <details className="rounded-2xl border border-slate-200 bg-white p-4">
+            <summary className="min-h-12 cursor-pointer font-semibold">פריטים מיוחדים שנשמרו בטיוטה</summary>
+            <p className="mt-2 text-base leading-7">פריטים אלה נשמרו לפני שינוי סוג ההובלה. אפשר לערוך או להסיר אותם.</p>
+            <div className="mt-4">{renderSpecialItems(false)}</div>
+          </details>}
+        </div>;
       case "schedule":
         return <div className="space-y-6">{renderScheduleStep()}{renderNotesSection()}</div>;
       case "review":
@@ -2047,6 +2161,14 @@ export default function CustomerRequestFlow({
 
             <div className="mt-6 space-y-5">
               {isBootstrapping ? <LoadingState /> : renderBanner()}
+              {fieldIssues.length > 0 && <section aria-labelledby="validation-heading" className="rounded-xl border border-red-200 bg-red-50 p-4">
+                <h3 id="validation-heading" className="text-lg font-bold text-red-950">יש פרטים שצריך לתקן או להשלים</h3>
+                <p className="mt-1 text-base leading-7 text-red-900">אפשר להמשיך לערוך את הטיוטה. לפני הפרסום צריך להשלים את הפרטים הבאים:</p>
+                <ul className="mt-2 space-y-1">{fieldIssues.map((issue) => <li key={issue.field}>
+                  <button type="button" disabled={busyAction !== null} className="min-h-11 text-start text-base leading-7 text-red-900 underline underline-offset-4"
+                    onClick={() => { if (!validationMode) setValidationMode("complete"); focusIssue(issue); }}>{issue.message}</button>
+                </li>)}</ul>
+              </section>}
               <fieldset disabled={busyAction !== null || isBootstrapping} className="min-w-0">{renderStepBody()}</fieldset>
             </div>
 

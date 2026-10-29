@@ -324,3 +324,8 @@ button:disabled { cursor: not-allowed; }
   .information-content { max-width: none; }
   .information-content h2 { break-after: avoid; }
 }
+
+/* Keep errors identifiable without relying on colour, and clear of the sticky header. */
+.request-flow-page [id^="move-field-"] { scroll-margin-top: 110px; }
+.request-flow-page [aria-invalid="true"] { border-color: #b91c1c; }
+.request-flow-page [tabindex="-1"]:focus-visible { outline: 3px solid #075985; outline-offset: 4px; }
