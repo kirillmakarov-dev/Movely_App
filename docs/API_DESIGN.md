@@ -93,17 +93,27 @@ Base convention:
 
 ### GET `/api/v1/move-requests/{requestId}`
 
-- Role: Authenticated owner customer or admin
+- Role: Authenticated owner customer
 - Purpose: Return full editable request aggregate, including draft/version state
-- Validation: ownership or admin access
-- Response: full request DTO for owner/admin
+- Validation: ownership; the owner endpoint does not grant an admin bypass
+- Response: full request DTO for the owner
 
-### PATCH `/api/v1/move-requests/{requestId}`
+### PUT `/api/v1/move-requests/{requestId}`
 
 - Role: Authenticated owner customer
 - Purpose: Update request content
 - Validation: ownership, state eligibility, versioning rules, rate limits
 - Response: updated draft or new version summary
+
+Implemented update contract: draft saves remain compatible; `expectedCurrentVersionId` is optional for drafts and, when supplied, must match. Updates to Active/Published require that ID plus a fresh explicit `contactSharing` object (`shareContacts`, `disclosureVersion`, `maxRecipients`). The server verifies current policies, phone, release gate and complete content, then atomically stores a new immutable version, a new consent record and the current-version pointer. Old consent records remain unchanged. Published date, buyer count, limits and SoldOut state are not reset. Stale versions or conflicting updates return `REQUEST_VERSION_CONFLICT` (409); clients must refresh and review before resubmitting. The current customer web editor continues to edit drafts only; it does not automatically approve changes to active requests.
+
+### GET `/api/v1/localities`
+
+- Role: Anonymous or authenticated
+- Response: public canonical `{ code, name }` rows from the packaged official PIBA snapshot; no customer-provided location text
+- Purpose: reusable city/settlement suggestions and canonical matching before marketplace projection
+- Unknown or ambiguous free-text names must not become marketplace output; the server catalog resolves exact official names/aliases or returns null
+- Snapshot source, attribution and refresh procedure: `docs/LOCALITY_DATA.md`
 
 ### POST `/api/v1/move-requests/{requestId}/publish`
 

@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "snapshotVersion": "2026-10-25",
+  "publisher": "Population and Immigration Authority, State of Israel",
+  "datasetUrl": "https://data.gov.il/he/datasets/population_authority/citiesandsettelments",
+  "metadataUrl": "https://data.gov.il/api/3/action/package_show?id=citiesandsettelments",
+  "resourceId": "8f714b6f-c35c-4b40-a0e7-547b675eee0e",
+  "sourceUrl": "https://data.gov.il/api/3/action/datastore_search?resource_id=8f714b6f-c35c-4b40-a0e7-547b675eee0e&limit=10000",
+  "resourceDownloadUrl": "https://e.data.gov.il/dataset/3fc54b81-25b3-4ac7-87db-248c3e1602de/resource/8f714b6f-c35c-4b40-a0e7-547b675eee0e/download/8f714b6f-c35c-4b40-a0e7-547b675eee0e__2026_10_25_03_30_3_632.csv",
+  "sourceLastModified": "2026-10-25T01:30:28.575193",
+  "datasetLastModified": "2026-10-25T01:30:42.790180",
+  "retrievedAtUtc": "2026-10-29T16:30:56.509183+00:00",
+  "licenseId": "other-open",
+  "licenseUrl": "https://data.gov.il/he/terms-of-use",
+  "licensePageUpdated": "2025-08-30",
+  "sourceFile": "localities.piba.2026-10-25.source.json",
+  "catalogFile": "localities.piba.2026-10-25.json",
+  "sourceSha256": "ea4b59ed442e95de70e1e1bed42a14434395fa7b905c8bac0901491cf7934a96",
+  "catalogSha256": "5eeaa35474b6327de57bad5ff367a2c3b9739d4e1d8d65d18c97ea28fc6fc9a0",
+  "sourceRowCount": 1316,
+  "localityCount": 1316,
+  "excludedRecords": []
+}

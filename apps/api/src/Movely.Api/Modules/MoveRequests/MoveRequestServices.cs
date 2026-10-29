@@ -7,6 +7,7 @@ using Movely.Api.Data.Entities;
 using Movely.Api.Shared.Errors;
 using Movely.Api.Modules.Identity;
 using Movely.Api.Shared.Time;
+using Npgsql;
 
 public interface IMoveRequestService
 {
@@ -105,21 +106,33 @@ public sealed class MoveRequestService : IMoveRequestService
 
     public async Task<MoveRequestResponse> UpdateOwnedAsync(Guid customerUserId, Guid requestId, UpdateMoveRequestRequest request, CancellationToken cancellationToken = default)
     {
+        await using var transaction = _dbContext.Database.IsRelational()
+            ? await _dbContext.Database.BeginTransactionAsync(cancellationToken) : null;
         var moveRequest = await LoadOwnedRequestAsync(customerUserId, requestId, cancellationToken);
         EnsureEditable(moveRequest);
-        ValidateSnapshot(request, requirePublishCompleteness: false);
+        var isPublished = moveRequest.Status is MoveRequestStatus.Active or MoveRequestStatus.Published;
+        if ((isPublished && request.ExpectedCurrentVersionId is null) ||
+            (request.ExpectedCurrentVersionId.HasValue && request.ExpectedCurrentVersionId != moveRequest.CurrentVersionId))
+            throw VersionConflict();
+        if (isPublished)
+            await ValidatePublicationConsentAsync(customerUserId, moveRequest, request.ContactSharing, cancellationToken);
+        ValidateSnapshot(request, requirePublishCompleteness: isPublished);
 
         var latestVersion = await _dbContext.MoveRequestVersions
             .Where(x => x.MoveRequestId == moveRequest.Id)
             .MaxAsync(x => x.VersionNumber, cancellationToken);
 
         var version = BuildVersion(moveRequest.Id, latestVersion + 1, customerUserId, request);
+        if (isPublished) ValidateVersionForPublish(version);
         moveRequest.RequestType = request.RequestType;
         moveRequest.CurrentVersionId = version.Id;
         moveRequest.UpdatedAt = _clock.UtcNow;
 
         _dbContext.MoveRequestVersions.Add(version);
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        if (isPublished)
+            AddContactSharingAcceptance(customerUserId, moveRequest, version.Id, _clock.UtcNow);
+        await SaveChangesAsync(cancellationToken);
+        if (transaction is not null) await transaction.CommitAsync(cancellationToken);
 
         return Map(moveRequest, version);
     }
@@ -132,37 +145,19 @@ public sealed class MoveRequestService : IMoveRequestService
             throw new ApiException("INVALID_REQUEST_STATE", "Only draft requests may be published.");
         }
 
-        var user = await _dbContext.Users.SingleAsync(x => x.Id == customerUserId, cancellationToken);
-        if (!user.PhoneVerified)
-        {
-            throw new ApiException(ApiErrorCodes.PhoneNotVerified, "Customer phone must be verified before publishing.");
-        }
-
         if (moveRequest.CurrentVersion is null)
         {
             throw new ApiException("REQUEST_INCOMPLETE", "Request has no content version.");
         }
 
-        _consentReleaseGate.EnsureAvailable();
-        if (!await ConsentPolicy.HasCurrentAsync(_dbContext, customerUserId, cancellationToken))
-            throw new ApiException("POLICY_ACCEPTANCE_REQUIRED", "Accept the current policies before publishing.");
-        if (acceptance is null || !acceptance.ShareContacts)
-            throw new ApiException("CONTACT_SHARING_REQUIRED", "Confirm contact sharing before publishing.");
-        if (acceptance.DisclosureVersion != ConsentPolicy.Version)
-            throw new ApiException("POLICY_VERSION_CHANGED", "Read the current contact-sharing notice and confirm again.", 409);
-        if (acceptance.MaxRecipients != moveRequest.MaxLeadBuyers || acceptance.MaxRecipients < 1)
-            throw new ApiException("RECIPIENT_LIMIT_CHANGED", "The recipient limit changed. Review it and confirm again.", 409);
+        await ValidatePublicationConsentAsync(customerUserId, moveRequest, acceptance, cancellationToken);
 
         ValidateVersionForPublish(moveRequest.CurrentVersion);
         await EnforceActiveRequestLimitAsync(customerUserId, moveRequest.Id, cancellationToken);
         var duplicateRisk = await DetectDuplicateRiskAsync(customerUserId, moveRequest, moveRequest.CurrentVersion, cancellationToken);
 
         var now = _clock.UtcNow;
-        _dbContext.ContactSharingAcceptances.Add(new ContactSharingAcceptance {
-            Id = Guid.NewGuid(), UserId = customerUserId, MoveRequestId = moveRequest.Id,
-            RequestVersionId = moveRequest.CurrentVersion.Id, DisclosureVersion = ConsentPolicy.Version,
-            MaxRecipients = moveRequest.MaxLeadBuyers, AcceptedAt = now, IsTestOnly = ConsentPolicy.IsDraft,
-        });
+        AddContactSharingAcceptance(customerUserId, moveRequest, moveRequest.CurrentVersion.Id, now);
         moveRequest.DuplicateRisk = duplicateRisk;
         moveRequest.Status = MoveRequestStatus.Published;
         moveRequest.PublishedAt = now;
@@ -170,7 +165,7 @@ public sealed class MoveRequestService : IMoveRequestService
         moveRequest.LeadSalesStatus = LeadSalesStatus.Available;
         moveRequest.UpdatedAt = now;
 
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await SaveChangesAsync(cancellationToken);
         return new PublishMoveRequestResponse(Map(moveRequest, moveRequest.CurrentVersion), duplicateRisk);
     }
 
@@ -187,7 +182,7 @@ public sealed class MoveRequestService : IMoveRequestService
         moveRequest.LeadSalesStatus = LeadSalesStatus.Closed;
         moveRequest.CancelledAt = now;
         moveRequest.UpdatedAt = now;
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await SaveChangesAsync(cancellationToken);
         return Map(moveRequest, moveRequest.CurrentVersion);
     }
 
@@ -204,7 +199,7 @@ public sealed class MoveRequestService : IMoveRequestService
         moveRequest.LeadSalesStatus = LeadSalesStatus.Closed;
         moveRequest.ClosedAt = now;
         moveRequest.UpdatedAt = now;
-        await _dbContext.SaveChangesAsync(cancellationToken);
+        await SaveChangesAsync(cancellationToken);
         return Map(moveRequest, moveRequest.CurrentVersion);
     }
 
@@ -271,6 +266,52 @@ public sealed class MoveRequestService : IMoveRequestService
 
     private static ApiException NotFound()
         => new("MOVE_REQUEST_NOT_FOUND", "Move request was not found.", StatusCodes.Status404NotFound);
+
+    private static ApiException VersionConflict()
+        => new("REQUEST_VERSION_CONFLICT", "The request changed. Reload it and review the current details before trying again.", StatusCodes.Status409Conflict);
+
+    private async Task SaveChangesAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await _dbContext.SaveChangesAsync(cancellationToken);
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+            throw VersionConflict();
+        }
+        catch (DbUpdateException error) when (error.InnerException is PostgresException
+            { SqlState: PostgresErrorCodes.UniqueViolation, ConstraintName:
+                "IX_MoveRequestVersions_MoveRequestId_VersionNumber" or "IX_ContactSharingAcceptances_VersionDisclosure" })
+        {
+            throw VersionConflict();
+        }
+    }
+
+    private async Task ValidatePublicationConsentAsync(Guid userId, MoveRequest moveRequest, ContactSharingRequest? acceptance, CancellationToken cancellationToken)
+    {
+        var user = await _dbContext.Users.AsNoTracking().SingleAsync(x => x.Id == userId, cancellationToken);
+        if (user.Status != UserStatus.Active || user.Role != UserRole.Customer)
+            throw new ApiException("CUSTOMER_NOT_ELIGIBLE", "An active customer account is required to publish or update a published request.", StatusCodes.Status403Forbidden);
+        if (!user.PhoneVerified)
+            throw new ApiException(ApiErrorCodes.PhoneNotVerified, "Customer phone must be verified before publishing.");
+        _consentReleaseGate.EnsureAvailable();
+        if (!await ConsentPolicy.HasCurrentAsync(_dbContext, userId, cancellationToken))
+            throw new ApiException("POLICY_ACCEPTANCE_REQUIRED", "Accept the current policies before publishing.");
+        if (acceptance is null || !acceptance.ShareContacts)
+            throw new ApiException("CONTACT_SHARING_REQUIRED", "Confirm contact sharing before publishing.");
+        if (acceptance.DisclosureVersion != ConsentPolicy.Version)
+            throw new ApiException("POLICY_VERSION_CHANGED", "Read the current contact-sharing notice and confirm again.", 409);
+        if (acceptance.MaxRecipients != moveRequest.MaxLeadBuyers || acceptance.MaxRecipients < 1)
+            throw new ApiException("RECIPIENT_LIMIT_CHANGED", "The recipient limit changed. Review it and confirm again.", 409);
+    }
+
+    private void AddContactSharingAcceptance(Guid userId, MoveRequest moveRequest, Guid versionId, DateTimeOffset acceptedAt)
+        => _dbContext.ContactSharingAcceptances.Add(new ContactSharingAcceptance {
+            Id = Guid.NewGuid(), UserId = userId, MoveRequestId = moveRequest.Id,
+            RequestVersionId = versionId, DisclosureVersion = ConsentPolicy.Version,
+            MaxRecipients = moveRequest.MaxLeadBuyers, AcceptedAt = acceptedAt, IsTestOnly = ConsentPolicy.IsDraft,
+        });
 
     private static void EnsureEditable(MoveRequest moveRequest)
     {

@@ -1,0 +1,2 @@
+# Preserve the exact reviewed bytes used by locality SHA-256 verification.
+/apps/api/src/Movely.Api/Modules/Localities/Data/*.json -text

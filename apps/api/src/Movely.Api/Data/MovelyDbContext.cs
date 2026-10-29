@@ -41,7 +41,8 @@ public sealed class MovelyDbContext : DbContext
         {
             entity.HasKey(x => x.Id);
             entity.Property(x => x.DisclosureVersion).HasMaxLength(64).IsRequired();
-            entity.HasIndex(x => x.MoveRequestId).IsUnique();
+            entity.HasIndex(x => new { x.MoveRequestId, x.RequestVersionId, x.DisclosureVersion, x.MaxRecipients, x.IsTestOnly })
+                .HasDatabaseName("IX_ContactSharingAcceptances_VersionDisclosure").IsUnique();
             entity.HasOne<MoveRequest>().WithMany().HasForeignKey(x => x.MoveRequestId).OnDelete(DeleteBehavior.Cascade);
             entity.HasOne<MovelyUser>().WithMany().HasForeignKey(x => x.UserId).OnDelete(DeleteBehavior.Restrict);
             entity.HasOne<MoveRequestVersion>().WithMany().HasForeignKey(x => x.RequestVersionId).OnDelete(DeleteBehavior.Restrict);
@@ -147,11 +148,12 @@ public sealed class MovelyDbContext : DbContext
             entity.ToTable("MoveRequests");
             entity.HasKey(x => x.Id);
             entity.Property(x => x.RequestType).HasConversion<string>().HasMaxLength(32);
-            entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32);
-            entity.Property(x => x.LeadSalesStatus).HasConversion<string>().HasMaxLength(32);
+            entity.Property(x => x.Status).HasConversion<string>().HasMaxLength(32).IsConcurrencyToken();
+            entity.Property(x => x.LeadSalesStatus).HasConversion<string>().HasMaxLength(32).IsConcurrencyToken();
+            entity.Property(x => x.CurrentVersionId).IsConcurrencyToken();
             entity.Property(x => x.LeadPriceAgorot);
-            entity.Property(x => x.MaxLeadBuyers);
-            entity.Property(x => x.ActiveBuyerCount);
+            entity.Property(x => x.MaxLeadBuyers).IsConcurrencyToken();
+            entity.Property(x => x.ActiveBuyerCount).IsConcurrencyToken();
             entity.Property(x => x.DuplicateRisk);
             entity.HasIndex(x => new { x.CustomerUserId, x.Status });
             entity.HasIndex(x => new { x.RequestType, x.Status, x.LeadSalesStatus });

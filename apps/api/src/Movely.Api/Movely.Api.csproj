@@ -19,4 +19,8 @@
     <PackageReference Include="System.Security.Cryptography.Pkcs" Version="9.0.21" PrivateAssets="all" />
   </ItemGroup>
 
+  <ItemGroup>
+    <EmbeddedResource Include="Modules/Localities/Data/*.json" Exclude="Modules/Localities/Data/*.source.json" LogicalName="Movely.Localities.%(Filename)%(Extension)" />
+  </ItemGroup>
+
 </Project>

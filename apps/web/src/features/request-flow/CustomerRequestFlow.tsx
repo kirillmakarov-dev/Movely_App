@@ -5,7 +5,7 @@ import { UI_LOCALE as locale } from "@/lib/locale";
 import PolicyConsentFields, { emptyPolicyChoice, policyPayload } from "@/components/PolicyConsentFields";
 import { LEGAL_DRAFT_VERSION } from "@/lib/legal-content";
 import { acceptPolicies } from "@/lib/movely-api";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useId, useMemo, useRef, useState } from "react";
 import { flowStepsForType } from "./request-flow-steps";
 import { validateRequest, type RequestIssue } from "./request-validation";
 import type { FormState } from "./request-flow-types";
@@ -13,6 +13,7 @@ import { clearLocalDraft, readLocalDraft, saveLocalDraft } from "./local-draft";
 import SiteHeader from "@/components/SiteHeader";
 import AccountSignIn from "@/components/AccountSignIn";
 import PhoneVerification from "@/components/PhoneVerification";
+import LocalitySuggestions from "@/components/LocalitySuggestions";
 import { budgetLabels, formatRequestStatus, formatRequestType } from "@/lib/presentation";
 import {
   type CurrentUser,
@@ -356,6 +357,7 @@ export default function CustomerRequestFlow({
   initialRequestType?: MoveRequestType | null;
   initialRequestId?: string | null;
 }) {
+  const localityListId = useId();
   const isResumeIdValid = initialRequestId === null || /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(initialRequestId);
   const [resumeAttempt, setResumeAttempt] = useState(0);
   const [resumeState, setResumeState] = useState<{
@@ -890,15 +892,18 @@ export default function CustomerRequestFlow({
 
   function renderRouteFields(prefix: "pickup" | "destination", title: string, mode: "route" | "access" | "combined" = "combined") {
     const data = form[prefix];
+    const cityProps = fieldProps(`${prefix}.city`);
     return (
       <fieldset className="rounded-[24px] border border-slate-200 bg-white p-4 shadow-sm">
         <legend className="px-2 text-sm font-semibold text-slate-900">{title}</legend>
         {mode !== "access" && <div className="mt-4 grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
             {renderInputLabel("עיר (חובה לפרסום)", "השתמשו בשם העיר המדויק במסלול ההובלה.")}
-            <input {...fieldProps(`${prefix}.city`)}
+            <input {...cityProps}
               aria-label={`${title} עיר`}
               aria-required="true"
+              aria-describedby={[cityProps["aria-describedby"], `${localityListId}-hint`].filter(Boolean).join(" ")}
+              list={localityListId}
               autoComplete={`section-${prefix} address-level2`}
               value={data.city ?? ""}
               onChange={(event) =>
@@ -1985,6 +1990,7 @@ export default function CustomerRequestFlow({
       case "route":
         return (
           <div className="space-y-4">
+            <LocalitySuggestions id={localityListId} />
             {renderRouteFields("pickup", "איסוף", "combined")}
             {renderRouteFields("destination", "יעד", "combined")}
           </div>

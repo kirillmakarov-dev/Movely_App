@@ -6,6 +6,7 @@ import NewRequestPage from "@/app/request/new/page";
 import { MovelyApiError, type CurrentUser, type MoveRequestResponse, type MoveRequestType, type MoveRequestVersionResponse, type UpdateMoveRequestRequest } from "@/lib/movely-api";
 
 const apiMocks = vi.hoisted(() => ({
+  getLocalities: vi.fn(),
   getCurrentUser: vi.fn(),
   getAuthCapabilities: vi.fn(),
   acceptPolicies: vi.fn(),
@@ -280,7 +281,7 @@ async function openStep(user: ReturnType<typeof userEvent.setup>, name: RegExp) 
 async function fillRequiredApartmentFields(user: ReturnType<typeof userEvent.setup>) {
   await openStep(user, /^איסוף ויעד$/);
   for (const [name, value] of [["איסוף עיר", "Haifa"], ["איסוף כתובת מדויקת", "Example 1"], ["יעד עיר", "Tel Aviv"], ["יעד כתובת מדויקת", "Example 2"]]) {
-    fireEvent.change(screen.getByRole("textbox", { name, exact: true }), { target: { value } });
+    fireEvent.change(screen.getByRole(name.endsWith("עיר") ? "combobox" : "textbox", { name, exact: true }), { target: { value } });
   }
   await openStep(user, /^תכולת הדירה$/);
   await user.click(screen.getByRole("button", { name: "3 חדרים" }));
@@ -295,6 +296,7 @@ async function fillRequiredApartmentFields(user: ReturnType<typeof userEvent.set
 beforeEach(() => {
   window.sessionStorage.clear();
   Object.values(apiMocks).forEach((mock) => mock.mockReset());
+  apiMocks.getLocalities.mockResolvedValue([{ code: "4000", name: "חיפה" }, { code: "5000", name: "תל אביב - יפו" }]);
   googleMocks.mount.mockReset();
 });
 
@@ -373,7 +375,7 @@ test("WIZARD-004 Failed save keeps current form values.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await screen.findByRole("heading", { name: /איסוף ויעד/i });
-  const pickupCity = screen.getByRole("textbox", { name: /^איסוף עיר/i });
+  const pickupCity = screen.getByRole("combobox", { name: /^איסוף עיר/i });
   await user.clear(pickupCity);
   await user.type(pickupCity, "Tel Aviv");
   expect(pickupCity).toHaveValue("Tel Aviv");
@@ -389,7 +391,7 @@ test("WIZARD-005 Back navigation retains saved values.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await waitFor(() => expect(apiMocks.updateMoveRequest).toHaveBeenCalledTimes(2));
-  const pickupCity = screen.getByRole("textbox", { name: /^איסוף עיר/i });
+  const pickupCity = screen.getByRole("combobox", { name: /^איסוף עיר/i });
   await user.clear(pickupCity);
   await user.type(pickupCity, "Tel Aviv");
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
@@ -438,7 +440,7 @@ test("WIZARD-008 Review reflects server-saved current request.", async () => {
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה של בית או דירה/i }));
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
   await screen.findByRole("heading", { name: /איסוף ויעד/i });
-  const pickupCity = screen.getByRole("textbox", { name: /^איסוף עיר/i });
+  const pickupCity = screen.getByRole("combobox", { name: /^איסוף עיר/i });
   await user.clear(pickupCity);
   await user.type(pickupCity, "Server City");
   await user.click(screen.getByRole("button", { name: /^המשך$/i }));
@@ -456,8 +458,8 @@ test("WIZARD-009 Incomplete anonymous request focuses the missing route before a
   await openStep(user, /אימות ופרסום/i);
   await user.click(screen.getByRole("button", { name: /פרסום הבקשה/i }));
 
-  expect(screen.getByRole("textbox", { name: "איסוף עיר" })).toHaveFocus();
-  expect(screen.getByRole("textbox", { name: "איסוף עיר" })).toHaveAttribute("aria-invalid", "true");
+  expect(screen.getByRole("combobox", { name: "איסוף עיר" })).toHaveFocus();
+  expect(screen.getByRole("combobox", { name: "איסוף עיר" })).toHaveAttribute("aria-invalid", "true");
   expect(apiMocks.publishMoveRequest).not.toHaveBeenCalled();
 });
 
@@ -567,11 +569,11 @@ test("Anonymous draft restores only after the user enables browser saving", asyn
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
   await user.click(screen.getByRole("checkbox", { name: /לשמור טיוטה בכרטיסייה הזאת/ }));
   await user.click(screen.getByRole("button", { name: /^המשך$/ }));
-  await user.type(screen.getByRole("textbox", { name: /^איסוף עיר/ }), "Haifa");
+  await user.type(screen.getByRole("combobox", { name: /^איסוף עיר/ }), "Haifa");
   await waitFor(() => expect(window.sessionStorage.getItem("movely.anonymous-draft.v1")).toContain("Haifa"));
   cleanup();
   render(<CustomerRequestFlow />);
-  await waitFor(() => expect(screen.getByRole("textbox", { name: /^איסוף עיר/ })).toHaveValue("Haifa"));
+  await waitFor(() => expect(screen.getByRole("combobox", { name: /^איסוף עיר/ })).toHaveValue("Haifa"));
   expect(screen.getByRole("checkbox", { name: /לשמור טיוטה בכרטיסייה הזאת/ })).toBeChecked();
   await user.click(screen.getByRole("checkbox", { name: /לשמור טיוטה בכרטיסייה הזאת/ }));
   expect(window.sessionStorage.getItem("movely.anonymous-draft.v1")).toBeNull();
@@ -592,7 +594,7 @@ test("Publish saves the latest edits even when the user jumps directly to the ac
   await user.click(screen.getByRole("button", { name: /הובלת דירה הובלה מלאה/ }));
   await user.click(screen.getByRole("button", { name: /^המשך$/ }));
   await fillRequiredApartmentFields(user);
-  const city = screen.getByRole("textbox", { name: /^איסוף עיר/ });
+  const city = screen.getByRole("combobox", { name: /^איסוף עיר/ });
   await user.clear(city);
   await user.type(city, "Updated before publishing");
   await openStep(user, /אימות ופרסום/);

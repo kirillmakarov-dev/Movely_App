@@ -4,6 +4,44 @@ beforeEach(() => vi.resetModules());
 afterEach(() => { vi.unstubAllGlobals(); vi.unstubAllEnvs(); vi.useRealTimers(); });
 const json = (value: unknown, status = 200) => new Response(JSON.stringify(value), { status, headers: { "Content-Type": "application/json" } });
 
+test("locality suggestions use the fixed endpoint, preserve the caller's signal, and expose only public fields", async () => {
+  vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "https://api.example.com");
+  const fetchMock = vi.fn().mockResolvedValue(json([{ code: "7", name: "שחר", url: "https://unexpected.example/data" }, { code: "3000", name: "ירושלים" }, { code: "5000", name: 'תל אביב - יפו' }]));
+  vi.stubGlobal("fetch", fetchMock);
+  const api = await import("./movely-api");
+  const controller = new AbortController();
+  await expect(api.getLocalities(controller.signal)).resolves.toEqual([
+    { code: "7", name: "שחר" }, { code: "3000", name: "ירושלים" }, { code: "5000", name: "תל אביב - יפו" },
+  ]);
+  expect(fetchMock).toHaveBeenCalledExactlyOnceWith("https://api.example.com/api/v1/localities", expect.objectContaining({ method: "GET", signal: controller.signal, cache: "no-store" }));
+});
+
+test.each([
+  null, {}, [], [null], [{ code: 3000, name: "ירושלים" }], [{ code: "0", name: "ירושלים" }],
+  [{ code: "03000", name: "ירושלים" }], [{ code: "3000/path", name: "ירושלים" }],
+  [{ code: "3000", name: "" }], [{ code: "3000", name: " עיר " }], [{ code: "3000", name: "א".repeat(121) }],
+  [{ code: "3000", name: "עיר\nאחרת" }], [{ code: "3000", name: "עיר\u202e" }],
+  [{ code: "3000", name: "ירושלים" }, { code: "3000", name: "שם אחר" }],
+])("rejects malformed locality data without a partial fallback: %j", async (payload) => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(json(payload)));
+  const api = await import("./movely-api");
+  await expect(api.getLocalities()).rejects.toMatchObject({ errorCode: "LOCALITIES_INVALID_RESPONSE" });
+});
+
+test("an HTML deployment fallback is not a list of localities", async () => {
+  vi.stubGlobal("fetch", vi.fn().mockResolvedValue(new Response("<html>app</html>", { headers: { "Content-Type": "text/html" } })));
+  const api = await import("./movely-api");
+  await expect(api.getLocalities()).rejects.toMatchObject({ errorCode: "LOCALITIES_INVALID_RESPONSE" });
+});
+
+test("request version conflicts explain how to retain unsaved edits without exposing server details", async () => {
+  vi.stubGlobal("fetch", vi.fn(async (url: string) => url.endsWith("/csrf") ? json({ requestToken: "token" }) : json({ errorCode: "REQUEST_VERSION_CONFLICT", message: "private database details" }, 409)));
+  const api = await import("./movely-api");
+  await expect(api.publishMoveRequest("request", { shareContacts: true, disclosureVersion: "v1", maxRecipients: 3 })).rejects.toMatchObject({
+    status: 409, errorCode: "REQUEST_VERSION_CONFLICT", message: "הבקשה השתנתה מאז שנפתחה. שמרו עותק של השינויים שלא נשמרו ורעננו את הבקשה לפני ניסיון נוסף.",
+  });
+});
+
 test("production uses same-origin API by default, never the visitor's localhost", async () => {
   vi.stubEnv("NODE_ENV", "production"); vi.stubEnv("NEXT_PUBLIC_API_BASE_URL", "");
   const fetchMock = vi.fn().mockResolvedValue(json({ policyAcceptanceAvailable: false, googleSignInAvailable: false, googleClientId: null, phoneVerificationAvailable: false }));

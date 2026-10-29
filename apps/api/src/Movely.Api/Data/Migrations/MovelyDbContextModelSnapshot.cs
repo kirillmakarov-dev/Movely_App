@@ -157,12 +157,13 @@ namespace Movely.Api.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("MoveRequestId")
-                        .IsUnique();
-
                     b.HasIndex("RequestVersionId");
 
                     b.HasIndex("UserId");
+
+                    b.HasIndex("MoveRequestId", "RequestVersionId", "DisclosureVersion", "MaxRecipients", "IsTestOnly")
+                        .IsUnique()
+                        .HasDatabaseName("IX_ContactSharingAcceptances_VersionDisclosure");
 
                     b.ToTable("ContactSharingAcceptances");
                 });
@@ -325,6 +326,7 @@ namespace Movely.Api.Data.Migrations
                         .HasColumnType("uuid");
 
                     b.Property<int>("ActiveBuyerCount")
+                        .IsConcurrencyToken()
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("CancelledAt")
@@ -337,6 +339,7 @@ namespace Movely.Api.Data.Migrations
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<Guid?>("CurrentVersionId")
+                        .IsConcurrencyToken()
                         .HasColumnType("uuid");
 
                     b.Property<Guid>("CustomerUserId")
@@ -352,11 +355,13 @@ namespace Movely.Api.Data.Migrations
                         .HasColumnType("integer");
 
                     b.Property<string>("LeadSalesStatus")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");
 
                     b.Property<int>("MaxLeadBuyers")
+                        .IsConcurrencyToken()
                         .HasColumnType("integer");
 
                     b.Property<DateTimeOffset?>("PublishedAt")
@@ -368,6 +373,7 @@ namespace Movely.Api.Data.Migrations
                         .HasColumnType("character varying(32)");
 
                     b.Property<string>("Status")
+                        .IsConcurrencyToken()
                         .IsRequired()
                         .HasMaxLength(32)
                         .HasColumnType("character varying(32)");

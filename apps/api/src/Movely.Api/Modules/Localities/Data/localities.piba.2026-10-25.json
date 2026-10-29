@@ -1,0 +1,9206 @@
+[
+  {
+    "code": "7",
+    "name": "שחר",
+    "aliases": [
+      "SHAHAR"
+    ]
+  },
+  {
+    "code": "10",
+    "name": "תירוש",
+    "aliases": [
+      "TIROSH"
+    ]
+  },
+  {
+    "code": "11",
+    "name": "ניר ח\"ן",
+    "aliases": [
+      "NIR HEN"
+    ]
+  },
+  {
+    "code": "13",
+    "name": "חצבה",
+    "aliases": [
+      "HAZEVA"
+    ]
+  },
+  {
+    "code": "15",
+    "name": "נועם",
+    "aliases": [
+      "NO'AM"
+    ]
+  },
+  {
+    "code": "16",
+    "name": "בית ניר",
+    "aliases": [
+      "BET NIR"
+    ]
+  },
+  {
+    "code": "18",
+    "name": "שדה משה",
+    "aliases": [
+      "SEDE MOSHE"
+    ]
+  },
+  {
+    "code": "21",
+    "name": "באר אורה",
+    "aliases": [
+      "BE'ER ORA"
+    ]
+  },
+  {
+    "code": "22",
+    "name": "מקווה ישראל",
+    "aliases": [
+      "MIQWE YISRA'EL"
+    ]
+  },
+  {
+    "code": "23",
+    "name": "אמציה",
+    "aliases": [
+      "AMAZYA"
+    ]
+  },
+  {
+    "code": "24",
+    "name": "לכיש",
+    "aliases": [
+      "LAKHISH"
+    ]
+  },
+  {
+    "code": "26",
+    "name": "ראש פינה",
+    "aliases": [
+      "ROSH PINNA"
+    ]
+  },
+  {
+    "code": "27",
+    "name": "שדות מיכה",
+    "aliases": [
+      "SEDOT MIKHA"
+    ]
+  },
+  {
+    "code": "28",
+    "name": "מזכרת בתיה",
+    "aliases": [
+      "MAZKERET BATYA"
+    ]
+  },
+  {
+    "code": "29",
+    "name": "יסוד המעלה",
+    "aliases": [
+      "YESUD HAMA'ALA"
+    ]
+  },
+  {
+    "code": "31",
+    "name": "אופקים",
+    "aliases": [
+      "OFAQIM"
+    ]
+  },
+  {
+    "code": "32",
+    "name": "עוצם",
+    "aliases": [
+      "OZEM"
+    ]
+  },
+  {
+    "code": "33",
+    "name": "בת שלמה",
+    "aliases": [
+      "BAT SHELOMO"
+    ]
+  },
+  {
+    "code": "35",
+    "name": "גדות",
+    "aliases": [
+      "GADOT"
+    ]
+  },
+  {
+    "code": "36",
+    "name": "שדה דוד",
+    "aliases": [
+      "SEDE DAWID"
+    ]
+  },
+  {
+    "code": "37",
+    "name": "איתן",
+    "aliases": [
+      "ETAN"
+    ]
+  },
+  {
+    "code": "39",
+    "name": "גפן",
+    "aliases": [
+      "GEFEN"
+    ]
+  },
+  {
+    "code": "41",
+    "name": "אליכין",
+    "aliases": [
+      "ELYAKHIN"
+    ]
+  },
+  {
+    "code": "43",
+    "name": "מטולה",
+    "aliases": [
+      "METULA"
+    ]
+  },
+  {
+    "code": "44",
+    "name": "זוהר",
+    "aliases": [
+      "ZOHAR"
+    ]
+  },
+  {
+    "code": "46",
+    "name": "יבנאל",
+    "aliases": [
+      "YAVNE'EL"
+    ]
+  },
+  {
+    "code": "47",
+    "name": "כפר תבור",
+    "aliases": [
+      "KEFAR TAVOR"
+    ]
+  },
+  {
+    "code": "48",
+    "name": "מנחמיה",
+    "aliases": [
+      "MENAHEMYA"
+    ]
+  },
+  {
+    "code": "49",
+    "name": "אילניה",
+    "aliases": [
+      "ILANIYYA"
+    ]
+  },
+  {
+    "code": "52",
+    "name": "לוזית",
+    "aliases": [
+      "LUZIT"
+    ]
+  },
+  {
+    "code": "53",
+    "name": "עתלית",
+    "aliases": [
+      "ATLIT"
+    ]
+  },
+  {
+    "code": "55",
+    "name": "נוגה",
+    "aliases": [
+      "NOGAH"
+    ]
+  },
+  {
+    "code": "57",
+    "name": "כנרת (קבוצה)",
+    "aliases": [
+      "KINNERET(QEVUZA)"
+    ]
+  },
+  {
+    "code": "58",
+    "name": "מצפה",
+    "aliases": [
+      "MIZPA"
+    ]
+  },
+  {
+    "code": "59",
+    "name": "נחושה",
+    "aliases": [
+      "NEHUSHA"
+    ]
+  },
+  {
+    "code": "62",
+    "name": "דגניה א'",
+    "aliases": [
+      "DEGANYA ALEF"
+    ]
+  },
+  {
+    "code": "63",
+    "name": "כנרת (מושבה)",
+    "aliases": [
+      "KINNERET(MOSHAVA)"
+    ]
+  },
+  {
+    "code": "64",
+    "name": "יד רמב\"ם",
+    "aliases": [
+      "YAD RAMBAM"
+    ]
+  },
+  {
+    "code": "65",
+    "name": "מגדל",
+    "aliases": [
+      "MIGDAL"
+    ]
+  },
+  {
+    "code": "66",
+    "name": "מרחביה (קיבוץ)",
+    "aliases": [
+      "MERHAVYA(QIBBUZ)"
+    ]
+  },
+  {
+    "code": "67",
+    "name": "אור הנר",
+    "aliases": [
+      "OR HANER"
+    ]
+  },
+  {
+    "code": "69",
+    "name": "ניר עוז",
+    "aliases": [
+      "NIR OZ"
+    ]
+  },
+  {
+    "code": "70",
+    "name": "אשדוד",
+    "aliases": [
+      "ASHDOD"
+    ]
+  },
+  {
+    "code": "71",
+    "name": "אשבול",
+    "aliases": [
+      "ESHBOL"
+    ]
+  },
+  {
+    "code": "72",
+    "name": "גן שמואל",
+    "aliases": [
+      "GAN SHEMU'EL"
+    ]
+  },
+  {
+    "code": "74",
+    "name": "עין הוד",
+    "aliases": [
+      "EN HOD"
+    ]
+  },
+  {
+    "code": "76",
+    "name": "כפר גלעדי",
+    "aliases": [
+      "KEFAR GIL'ADI"
+    ]
+  },
+  {
+    "code": "77",
+    "name": "איילת השחר",
+    "aliases": [
+      "AYYELET HASHAHAR"
+    ]
+  },
+  {
+    "code": "78",
+    "name": "קרית ענבים",
+    "aliases": [
+      "QIRYAT ANAVIM"
+    ]
+  },
+  {
+    "code": "79",
+    "name": "דגניה ב'",
+    "aliases": [
+      "DEGANYA BET"
+    ]
+  },
+  {
+    "code": "80",
+    "name": "נהלל",
+    "aliases": [
+      "NAHALAL"
+    ]
+  },
+  {
+    "code": "82",
+    "name": "עין חרוד (מאוחד)",
+    "aliases": [
+      "EN HAROD(ME'UHAD)"
+    ]
+  },
+  {
+    "code": "84",
+    "name": "תל יוסף",
+    "aliases": [
+      "TEL YOSEF"
+    ]
+  },
+  {
+    "code": "85",
+    "name": "כפר יחזקאל",
+    "aliases": [
+      "KEFAR YEHEZQEL"
+    ]
+  },
+  {
+    "code": "86",
+    "name": "גבע",
+    "aliases": [
+      "GEVA"
+    ]
+  },
+  {
+    "code": "88",
+    "name": "כרם בן שמן",
+    "aliases": [
+      "KEREM BEN SHEMEN"
+    ]
+  },
+  {
+    "code": "89",
+    "name": "עין חרוד (איחוד)",
+    "aliases": [
+      "EN HAROD (IHUD)"
+    ]
+  },
+  {
+    "code": "90",
+    "name": "חפצי-בה",
+    "aliases": [
+      "HEFZI-BAH"
+    ]
+  },
+  {
+    "code": "92",
+    "name": "גיניגר",
+    "aliases": [
+      "GINNEGAR"
+    ]
+  },
+  {
+    "code": "94",
+    "name": "בלפוריה",
+    "aliases": [
+      "BALFURIYYA"
+    ]
+  },
+  {
+    "code": "95",
+    "name": "בית אלפא",
+    "aliases": [
+      "BET ALFA"
+    ]
+  },
+  {
+    "code": "96",
+    "name": "יגור",
+    "aliases": [
+      "YAGUR"
+    ]
+  },
+  {
+    "code": "97",
+    "name": "מרחביה (מושב)",
+    "aliases": [
+      "MERHAVYA(MOSHAV)"
+    ]
+  },
+  {
+    "code": "98",
+    "name": "כפר מל\"ל",
+    "aliases": [
+      "KEFAR MALAL"
+    ]
+  },
+  {
+    "code": "99",
+    "name": "מצפה רמון",
+    "aliases": [
+      "MIZPE RAMON"
+    ]
+  },
+  {
+    "code": "102",
+    "name": "מאיר שפיה",
+    "aliases": [
+      "ME'IR SHEFEYA"
+    ]
+  },
+  {
+    "code": "103",
+    "name": "תל עדשים",
+    "aliases": [
+      "TEL ADASHIM"
+    ]
+  },
+  {
+    "code": "104",
+    "name": "מזרע",
+    "aliases": [
+      "MIZRA"
+    ]
+  },
+  {
+    "code": "106",
+    "name": "כפר גדעון",
+    "aliases": [
+      "KEFAR GID'ON"
+    ]
+  },
+  {
+    "code": "107",
+    "name": "כפר סילבר",
+    "aliases": [
+      "KEFAR SILVER"
+    ]
+  },
+  {
+    "code": "112",
+    "name": "כפר חסידים א'",
+    "aliases": [
+      "KEFAR HASIDIM ALEF"
+    ]
+  },
+  {
+    "code": "113",
+    "name": "אדירים",
+    "aliases": [
+      "ADDIRIM"
+    ]
+  },
+  {
+    "code": "115",
+    "name": "חופית",
+    "aliases": [
+      "HOFIT"
+    ]
+  },
+  {
+    "code": "122",
+    "name": "רמת ישי",
+    "aliases": [
+      "RAMAT YISHAY"
+    ]
+  },
+  {
+    "code": "126",
+    "name": "שריד",
+    "aliases": [
+      "SARID"
+    ]
+  },
+  {
+    "code": "127",
+    "name": "רמת רחל",
+    "aliases": [
+      "RAMAT RAHEL"
+    ]
+  },
+  {
+    "code": "128",
+    "name": "גת רימון",
+    "aliases": [
+      "GAT RIMMON"
+    ]
+  },
+  {
+    "code": "130",
+    "name": "משמר העמק",
+    "aliases": [
+      "MISHMAR HAEMEQ"
+    ]
+  },
+  {
+    "code": "132",
+    "name": "כפר ברוך",
+    "aliases": [
+      "KEFAR BARUKH"
+    ]
+  },
+  {
+    "code": "133",
+    "name": "גבת",
+    "aliases": [
+      "GEVAT"
+    ]
+  },
+  {
+    "code": "134",
+    "name": "יפעת",
+    "aliases": [
+      "YIF'AT"
+    ]
+  },
+  {
+    "code": "135",
+    "name": "רמת דוד",
+    "aliases": [
+      "RAMAT DAWID"
+    ]
+  },
+  {
+    "code": "139",
+    "name": "עין שמר",
+    "aliases": [
+      "EN SHEMER"
+    ]
+  },
+  {
+    "code": "140",
+    "name": "כפר יהושע",
+    "aliases": [
+      "KEFAR YEHOSHUA"
+    ]
+  },
+  {
+    "code": "141",
+    "name": "ברק",
+    "aliases": [
+      "BARAQ"
+    ]
+  },
+  {
+    "code": "142",
+    "name": "שדה יעקב",
+    "aliases": [
+      "SEDE YA'AQOV"
+    ]
+  },
+  {
+    "code": "143",
+    "name": "בית זרע",
+    "aliases": [
+      "BET ZERA"
+    ]
+  },
+  {
+    "code": "144",
+    "name": "גן שלמה",
+    "aliases": [
+      "GAN SHELOMO"
+    ]
+  },
+  {
+    "code": "145",
+    "name": "גדיש",
+    "aliases": [
+      "GADISH"
+    ]
+  },
+  {
+    "code": "146",
+    "name": "דבורה",
+    "aliases": [
+      "DEVORA"
+    ]
+  },
+  {
+    "code": "147",
+    "name": "גבעת ברנר",
+    "aliases": [
+      "GIV'AT BRENNER"
+    ]
+  },
+  {
+    "code": "154",
+    "name": "תל מונד",
+    "aliases": [
+      "TEL MOND"
+    ]
+  },
+  {
+    "code": "155",
+    "name": "באר טוביה",
+    "aliases": [
+      "BE'ER TUVEYA"
+    ]
+  },
+  {
+    "code": "156",
+    "name": "עיינות",
+    "aliases": [
+      "AYANOT"
+    ]
+  },
+  {
+    "code": "157",
+    "name": "עין ורד",
+    "aliases": [
+      "EN WERED"
+    ]
+  },
+  {
+    "code": "158",
+    "name": "נען",
+    "aliases": [
+      "NA'AN"
+    ]
+  },
+  {
+    "code": "159",
+    "name": "בית חנן",
+    "aliases": [
+      "BET HANAN"
+    ]
+  },
+  {
+    "code": "160",
+    "name": "חולדה",
+    "aliases": [
+      "HULDA"
+    ]
+  },
+  {
+    "code": "162",
+    "name": "חירות",
+    "aliases": [
+      "HERUT"
+    ]
+  },
+  {
+    "code": "163",
+    "name": "תימורים",
+    "aliases": [
+      "TIMMORIM"
+    ]
+  },
+  {
+    "code": "164",
+    "name": "מלאה",
+    "aliases": [
+      "MELE'A"
+    ]
+  },
+  {
+    "code": "165",
+    "name": "ניר יפה",
+    "aliases": [
+      "NIR YAFE"
+    ]
+  },
+  {
+    "code": "166",
+    "name": "גן יבנה",
+    "aliases": [
+      "GAN YAVNE"
+    ]
+  },
+  {
+    "code": "167",
+    "name": "עין החורש",
+    "aliases": [
+      "EN HAHORESH"
+    ]
+  },
+  {
+    "code": "168",
+    "name": "כפר יונה",
+    "aliases": [
+      "KEFAR YONA"
+    ]
+  },
+  {
+    "code": "170",
+    "name": "כפר יעבץ",
+    "aliases": [
+      "KEFAR YA'BEZ"
+    ]
+  },
+  {
+    "code": "171",
+    "name": "פרדסיה",
+    "aliases": [
+      "PARDESIYYA"
+    ]
+  },
+  {
+    "code": "173",
+    "name": "גבעת חיים (מאוחד)",
+    "aliases": [
+      "GIV'AT HAYYIM(ME'UHA"
+    ]
+  },
+  {
+    "code": "174",
+    "name": "נטעים",
+    "aliases": [
+      "NETA'IM"
+    ]
+  },
+  {
+    "code": "175",
+    "name": "אביחיל",
+    "aliases": [
+      "AVIHAYIL"
+    ]
+  },
+  {
+    "code": "176",
+    "name": "אפיקים",
+    "aliases": [
+      "AFIQIM"
+    ]
+  },
+  {
+    "code": "177",
+    "name": "כפר ביל\"ו",
+    "aliases": [
+      "KEFAR BILU"
+    ]
+  },
+  {
+    "code": "178",
+    "name": "רמת יוחנן",
+    "aliases": [
+      "RAMAT YOHANAN"
+    ]
+  },
+  {
+    "code": "182",
+    "name": "אבן יהודה",
+    "aliases": [
+      "EVEN YEHUDA"
+    ]
+  },
+  {
+    "code": "183",
+    "name": "ירקונה",
+    "aliases": [
+      "YARQONA"
+    ]
+  },
+  {
+    "code": "184",
+    "name": "רמת הכובש",
+    "aliases": [
+      "RAMAT HAKOVESH"
+    ]
+  },
+  {
+    "code": "186",
+    "name": "נעורים",
+    "aliases": [
+      "NE'URIM"
+    ]
+  },
+  {
+    "code": "187",
+    "name": "כפר הס",
+    "aliases": [
+      "KEFAR HESS"
+    ]
+  },
+  {
+    "code": "188",
+    "name": "אשדות יעקב (מאוחד)",
+    "aliases": [
+      "ASHDOT YA'AQOV(ME'UH"
+    ]
+  },
+  {
+    "code": "189",
+    "name": "כפר פינס",
+    "aliases": [
+      "KEFAR PINES"
+    ]
+  },
+  {
+    "code": "190",
+    "name": "כפר ויתקין",
+    "aliases": [
+      "KEFAR VITKIN"
+    ]
+  },
+  {
+    "code": "191",
+    "name": "הדר עם",
+    "aliases": [
+      "HADAR AM"
+    ]
+  },
+  {
+    "code": "192",
+    "name": "כפר החורש",
+    "aliases": [
+      "KEFAR HAHORESH"
+    ]
+  },
+  {
+    "code": "193",
+    "name": "כפר חיים",
+    "aliases": [
+      "KEFAR HAYYIM"
+    ]
+  },
+  {
+    "code": "194",
+    "name": "משמר השרון",
+    "aliases": [
+      "MISHMAR HASHARON"
+    ]
+  },
+  {
+    "code": "195",
+    "name": "קדימה-צורן",
+    "aliases": [
+      "QADIMA-ZORAN"
+    ]
+  },
+  {
+    "code": "196",
+    "name": "גיבתון",
+    "aliases": [
+      "GIBBETON"
+    ]
+  },
+  {
+    "code": "197",
+    "name": "מעברות",
+    "aliases": [
+      "MA'BAROT"
+    ]
+  },
+  {
+    "code": "198",
+    "name": "צופית",
+    "aliases": [
+      "ZOFIT"
+    ]
+  },
+  {
+    "code": "199",
+    "name": "אשדות יעקב (איחוד)",
+    "aliases": [
+      "ASHDOT YA'AQOV(IHUD)"
+    ]
+  },
+  {
+    "code": "200",
+    "name": "בית ינאי",
+    "aliases": [
+      "BET YANNAY"
+    ]
+  },
+  {
+    "code": "202",
+    "name": "בית עובד",
+    "aliases": [
+      "BET OVED"
+    ]
+  },
+  {
+    "code": "204",
+    "name": "אלישיב",
+    "aliases": [
+      "ELYASHIV"
+    ]
+  },
+  {
+    "code": "205",
+    "name": "חגלה",
+    "aliases": [
+      "HOGLA"
+    ]
+  },
+  {
+    "code": "206",
+    "name": "רמות השבים",
+    "aliases": [
+      "RAMOT HASHAVIM"
+    ]
+  },
+  {
+    "code": "207",
+    "name": "גבעת ח\"ן",
+    "aliases": [
+      "GIV'AT HEN"
+    ]
+  },
+  {
+    "code": "208",
+    "name": "מוצא עילית",
+    "aliases": [
+      "MOZA ILLIT"
+    ]
+  },
+  {
+    "code": "212",
+    "name": "בית צבי",
+    "aliases": [
+      "BET ZEVI"
+    ]
+  },
+  {
+    "code": "213",
+    "name": "משמרות",
+    "aliases": [
+      "MISHMAROT"
+    ]
+  },
+  {
+    "code": "217",
+    "name": "כפר הרא\"ה",
+    "aliases": [
+      "KEFAR HARO'E"
+    ]
+  },
+  {
+    "code": "218",
+    "name": "גני עם",
+    "aliases": [
+      "GANNE AM"
+    ]
+  },
+  {
+    "code": "219",
+    "name": "חיבת ציון",
+    "aliases": [
+      "HIBBAT ZIYYON"
+    ]
+  },
+  {
+    "code": "220",
+    "name": "כפר ביאליק",
+    "aliases": [
+      "KEFAR BIALIK"
+    ]
+  },
+  {
+    "code": "223",
+    "name": "עין עירון",
+    "aliases": [
+      "EN IRON"
+    ]
+  },
+  {
+    "code": "224",
+    "name": "שושנת העמקים",
+    "aliases": [
+      "SHOSHANNAT HAAMAQIM"
+    ]
+  },
+  {
+    "code": "225",
+    "name": "גן השומרון",
+    "aliases": [
+      "GAN HASHOMERON"
+    ]
+  },
+  {
+    "code": "229",
+    "name": "גני תקווה",
+    "aliases": [
+      "GANNE TIQWA"
+    ]
+  },
+  {
+    "code": "230",
+    "name": "מעש",
+    "aliases": [
+      "MA'AS"
+    ]
+  },
+  {
+    "code": "232",
+    "name": "שפיים",
+    "aliases": [
+      "SHEFAYIM"
+    ]
+  },
+  {
+    "code": "233",
+    "name": "כפר ידידיה",
+    "aliases": [
+      "YEDIDYA"
+    ]
+  },
+  {
+    "code": "234",
+    "name": "ביצרון",
+    "aliases": [
+      "BIZZARON"
+    ]
+  },
+  {
+    "code": "235",
+    "name": "חבצלת השרון",
+    "aliases": [
+      "HAVAZZELET HASHARON"
+    ]
+  },
+  {
+    "code": "237",
+    "name": "שער העמקים",
+    "aliases": [
+      "SHA'AR HAAMAQIM"
+    ]
+  },
+  {
+    "code": "239",
+    "name": "גן חיים",
+    "aliases": [
+      "GAN HAYYIM"
+    ]
+  },
+  {
+    "code": "240",
+    "name": "יקנעם עילית",
+    "aliases": [
+      "YOQNE'AM ILLIT"
+    ]
+  },
+  {
+    "code": "241",
+    "name": "יקנעם (מושבה)",
+    "aliases": [
+      "YOQNE'AM(MOSHAVA)"
+    ]
+  },
+  {
+    "code": "242",
+    "name": "בית השיטה",
+    "aliases": [
+      "BET HASHITTA"
+    ]
+  },
+  {
+    "code": "246",
+    "name": "נתיבות",
+    "aliases": [
+      "NETIVOT"
+    ]
+  },
+  {
+    "code": "247",
+    "name": "רשפון",
+    "aliases": [
+      "RISHPON"
+    ]
+  },
+  {
+    "code": "248",
+    "name": "בית שערים",
+    "aliases": [
+      "BET SHE'ARIM"
+    ]
+  },
+  {
+    "code": "249",
+    "name": "כפר סירקין",
+    "aliases": [
+      "KEFAR SIRKIN"
+    ]
+  },
+  {
+    "code": "250",
+    "name": "הזורע",
+    "aliases": [
+      "HAZOREA"
+    ]
+  },
+  {
+    "code": "252",
+    "name": "ביתן אהרן",
+    "aliases": [
+      "BITAN AHARON"
+    ]
+  },
+  {
+    "code": "253",
+    "name": "חולתה",
+    "aliases": [
+      "HULATA"
+    ]
+  },
+  {
+    "code": "254",
+    "name": "כפר המכבי",
+    "aliases": [
+      "KEFAR HAMAKKABI"
+    ]
+  },
+  {
+    "code": "255",
+    "name": "כפר חיטים",
+    "aliases": [
+      "KEFAR HITTIM"
+    ]
+  },
+  {
+    "code": "256",
+    "name": "ניר דוד (תל עמל)",
+    "aliases": [
+      "NIR DAWID (TEL AMAL)"
+    ]
+  },
+  {
+    "code": "257",
+    "name": "נופך",
+    "aliases": [
+      "NOFEKH"
+    ]
+  },
+  {
+    "code": "259",
+    "name": "שדה נחום",
+    "aliases": [
+      "SEDE NAHUM"
+    ]
+  },
+  {
+    "code": "262",
+    "name": "גינוסר",
+    "aliases": [
+      "GINNOSAR"
+    ]
+  },
+  {
+    "code": "263",
+    "name": "מסדה",
+    "aliases": [
+      "MASSADA"
+    ]
+  },
+  {
+    "code": "264",
+    "name": "שער הגולן",
+    "aliases": [
+      "SHA'AR HAGOLAN"
+    ]
+  },
+  {
+    "code": "265",
+    "name": "בית יוסף",
+    "aliases": [
+      "BET YOSEF"
+    ]
+  },
+  {
+    "code": "267",
+    "name": "כפר שמריהו",
+    "aliases": [
+      "KEFAR SHEMARYAHU"
+    ]
+  },
+  {
+    "code": "268",
+    "name": "טירת צבי",
+    "aliases": [
+      "TIRAT ZEVI"
+    ]
+  },
+  {
+    "code": "269",
+    "name": "מולדת",
+    "aliases": [
+      "MOLEDET"
+    ]
+  },
+  {
+    "code": "270",
+    "name": "עין השופט",
+    "aliases": [
+      "EN HASHOFET"
+    ]
+  },
+  {
+    "code": "272",
+    "name": "מעוז חיים",
+    "aliases": [
+      "MA'OZ HAYYIM"
+    ]
+  },
+  {
+    "code": "273",
+    "name": "עין גב",
+    "aliases": [
+      "EN GEV"
+    ]
+  },
+  {
+    "code": "274",
+    "name": "כפר מנחם",
+    "aliases": [
+      "KEFAR MENAHEM"
+    ]
+  },
+  {
+    "code": "276",
+    "name": "צור משה",
+    "aliases": [
+      "ZUR MOSHE"
+    ]
+  },
+  {
+    "code": "278",
+    "name": "אושה",
+    "aliases": [
+      "USHA"
+    ]
+  },
+  {
+    "code": "280",
+    "name": "חניתה",
+    "aliases": [
+      "HANITA"
+    ]
+  },
+  {
+    "code": "281",
+    "name": "פקיעין חדשה",
+    "aliases": [
+      "PEQI'IN HADASHA"
+    ]
+  },
+  {
+    "code": "282",
+    "name": "שבי ציון",
+    "aliases": [
+      "SHAVE ZIYYON"
+    ]
+  },
+  {
+    "code": "284",
+    "name": "שדה ורבורג",
+    "aliases": [
+      "SEDE WARBURG"
+    ]
+  },
+  {
+    "code": "285",
+    "name": "אלונים",
+    "aliases": [
+      "ALLONIM"
+    ]
+  },
+  {
+    "code": "286",
+    "name": "מעלה החמישה",
+    "aliases": [
+      "MA'ALE HAHAMISHA"
+    ]
+  },
+  {
+    "code": "287",
+    "name": "תל יצחק",
+    "aliases": [
+      "TEL YIZHAQ"
+    ]
+  },
+  {
+    "code": "288",
+    "name": "בית יהושע",
+    "aliases": [
+      "BET YEHOSHUA"
+    ]
+  },
+  {
+    "code": "289",
+    "name": "עין המפרץ",
+    "aliases": [
+      "EN HAMIFRAZ"
+    ]
+  },
+  {
+    "code": "290",
+    "name": "מעין צבי",
+    "aliases": [
+      "MA'YAN ZEVI"
+    ]
+  },
+  {
+    "code": "292",
+    "name": "שרונה",
+    "aliases": [
+      "SHARONA"
+    ]
+  },
+  {
+    "code": "293",
+    "name": "שדה יואב",
+    "aliases": [
+      "SEDE YO'AV"
+    ]
+  },
+  {
+    "code": "294",
+    "name": "אילון",
+    "aliases": [
+      "ELON"
+    ]
+  },
+  {
+    "code": "295",
+    "name": "כפר רופין",
+    "aliases": [
+      "KEFAR RUPPIN"
+    ]
+  },
+  {
+    "code": "296",
+    "name": "נווה איתן",
+    "aliases": [
+      "NEWE ETAN"
+    ]
+  },
+  {
+    "code": "297",
+    "name": "כפר מסריק",
+    "aliases": [
+      "KEFAR MASARYK"
+    ]
+  },
+  {
+    "code": "298",
+    "name": "מסילות",
+    "aliases": [
+      "MESILLOT"
+    ]
+  },
+  {
+    "code": "300",
+    "name": "דליה",
+    "aliases": [
+      "DALIYYA"
+    ]
+  },
+  {
+    "code": "301",
+    "name": "בית עוזיאל",
+    "aliases": [
+      "BET UZZI'EL"
+    ]
+  },
+  {
+    "code": "302",
+    "name": "דפנה",
+    "aliases": [
+      "DAFNA"
+    ]
+  },
+  {
+    "code": "303",
+    "name": "דן",
+    "aliases": [
+      "DAN"
+    ]
+  },
+  {
+    "code": "304",
+    "name": "שדה אליהו",
+    "aliases": [
+      "SEDE ELIYYAHU"
+    ]
+  },
+  {
+    "code": "305",
+    "name": "גשר",
+    "aliases": [
+      "GESHER"
+    ]
+  },
+  {
+    "code": "306",
+    "name": "שדמות דבורה",
+    "aliases": [
+      "SHADMOT DEVORA"
+    ]
+  },
+  {
+    "code": "307",
+    "name": "הזורעים",
+    "aliases": [
+      "HAZORE'IM"
+    ]
+  },
+  {
+    "code": "308",
+    "name": "מחניים",
+    "aliases": [
+      "MAHANAYIM"
+    ]
+  },
+  {
+    "code": "309",
+    "name": "נהורה",
+    "aliases": [
+      "NEHORA"
+    ]
+  },
+  {
+    "code": "310",
+    "name": "כפר גליקסון",
+    "aliases": [
+      "KEFAR GLIKSON"
+    ]
+  },
+  {
+    "code": "311",
+    "name": "גן שורק",
+    "aliases": [
+      "GAN SOREQ"
+    ]
+  },
+  {
+    "code": "312",
+    "name": "נווה ים",
+    "aliases": [
+      "NEWE YAM"
+    ]
+  },
+  {
+    "code": "313",
+    "name": "אפק",
+    "aliases": [
+      "AFEQ"
+    ]
+  },
+  {
+    "code": "315",
+    "name": "נגבה",
+    "aliases": [
+      "NEGBA"
+    ]
+  },
+  {
+    "code": "316",
+    "name": "כפר נטר",
+    "aliases": [
+      "KEFAR NETTER"
+    ]
+  },
+  {
+    "code": "317",
+    "name": "בית אורן",
+    "aliases": [
+      "BET OREN"
+    ]
+  },
+  {
+    "code": "318",
+    "name": "עמיעוז",
+    "aliases": [
+      "AMMI'OZ"
+    ]
+  },
+  {
+    "code": "319",
+    "name": "עמיר",
+    "aliases": [
+      "AMIR"
+    ]
+  },
+  {
+    "code": "320",
+    "name": "כפר ורבורג",
+    "aliases": [
+      "KEFAR WARBURG"
+    ]
+  },
+  {
+    "code": "322",
+    "name": "בית הלל",
+    "aliases": [
+      "BET HILLEL"
+    ]
+  },
+  {
+    "code": "324",
+    "name": "שאר ישוב",
+    "aliases": [
+      "SHE'AR YASHUV"
+    ]
+  },
+  {
+    "code": "325",
+    "name": "מצובה",
+    "aliases": [
+      "MAZZUVA"
+    ]
+  },
+  {
+    "code": "326",
+    "name": "בית יצחק-שער חפר",
+    "aliases": [
+      "BET YIZHAQ-SH. HEFER"
+    ]
+  },
+  {
+    "code": "327",
+    "name": "שדות ים",
+    "aliases": [
+      "SEDOT YAM"
+    ]
+  },
+  {
+    "code": "328",
+    "name": "עזוז",
+    "aliases": [
+      "EZUZ"
+    ]
+  },
+  {
+    "code": "329",
+    "name": "שדה נחמיה",
+    "aliases": [
+      "SEDE NEHEMYA"
+    ]
+  },
+  {
+    "code": "330",
+    "name": "אלומות",
+    "aliases": [
+      "ALUMMOT"
+    ]
+  },
+  {
+    "code": "331",
+    "name": "ניר צבי",
+    "aliases": [
+      "NIR ZEVI"
+    ]
+  },
+  {
+    "code": "334",
+    "name": "קבוצת יבנה",
+    "aliases": [
+      "QEVUZAT YAVNE"
+    ]
+  },
+  {
+    "code": "335",
+    "name": "רמת השופט",
+    "aliases": [
+      "RAMAT HASHOFET"
+    ]
+  },
+  {
+    "code": "336",
+    "name": "דורות",
+    "aliases": [
+      "DOROT"
+    ]
+  },
+  {
+    "code": "338",
+    "name": "איבים",
+    "aliases": [
+      "IBBIM"
+    ]
+  },
+  {
+    "code": "339",
+    "name": "רמת צבי",
+    "aliases": [
+      "RAMAT ZEVI"
+    ]
+  },
+  {
+    "code": "340",
+    "name": "גת (קיבוץ)",
+    "aliases": [
+      "GAT(QIBBUZ)"
+    ]
+  },
+  {
+    "code": "342",
+    "name": "גברעם",
+    "aliases": [
+      "GEVAR'AM"
+    ]
+  },
+  {
+    "code": "343",
+    "name": "חמדיה",
+    "aliases": [
+      "HAMADYA"
+    ]
+  },
+  {
+    "code": "344",
+    "name": "מענית",
+    "aliases": [
+      "MA'ANIT"
+    ]
+  },
+  {
+    "code": "345",
+    "name": "כפר סאלד",
+    "aliases": [
+      "KEFAR SZOLD"
+    ]
+  },
+  {
+    "code": "346",
+    "name": "גליל ים",
+    "aliases": [
+      "GELIL YAM"
+    ]
+  },
+  {
+    "code": "347",
+    "name": "מנרה",
+    "aliases": [
+      "MENNARA"
+    ]
+  },
+  {
+    "code": "348",
+    "name": "ניר עם",
+    "aliases": [
+      "NIR AM"
+    ]
+  },
+  {
+    "code": "351",
+    "name": "ניצן",
+    "aliases": [
+      "NIZZAN"
+    ]
+  },
+  {
+    "code": "352",
+    "name": "גבולות",
+    "aliases": [
+      "GEVULOT"
+    ]
+  },
+  {
+    "code": "353",
+    "name": "בית זיד",
+    "aliases": [
+      "BET ZEID"
+    ]
+  },
+  {
+    "code": "354",
+    "name": "רביבים",
+    "aliases": [
+      "REVIVIM"
+    ]
+  },
+  {
+    "code": "355",
+    "name": "חורשים",
+    "aliases": [
+      "HORESHIM"
+    ]
+  },
+  {
+    "code": "356",
+    "name": "הגושרים",
+    "aliases": [
+      "HAGOSHERIM"
+    ]
+  },
+  {
+    "code": "357",
+    "name": "כפר בלום",
+    "aliases": [
+      "KEFAR BLUM"
+    ]
+  },
+  {
+    "code": "358",
+    "name": "יד מרדכי",
+    "aliases": [
+      "YAD MORDEKHAY"
+    ]
+  },
+  {
+    "code": "359",
+    "name": "ניצנים",
+    "aliases": [
+      "NIZZANIM"
+    ]
+  },
+  {
+    "code": "360",
+    "name": "גבעת ניל\"י",
+    "aliases": [
+      "GIV'AT NILI"
+    ]
+  },
+  {
+    "code": "362",
+    "name": "רוחמה",
+    "aliases": [
+      "RUHAMA"
+    ]
+  },
+  {
+    "code": "363",
+    "name": "חפץ חיים",
+    "aliases": [
+      "HAFEZ HAYYIM"
+    ]
+  },
+  {
+    "code": "364",
+    "name": "כפר אוריה",
+    "aliases": [
+      "KEFAR URIYYA"
+    ]
+  },
+  {
+    "code": "365",
+    "name": "בית קשת",
+    "aliases": [
+      "BET QESHET"
+    ]
+  },
+  {
+    "code": "366",
+    "name": "שמיר",
+    "aliases": [
+      "SHAMIR"
+    ]
+  },
+  {
+    "code": "367",
+    "name": "עין העמק",
+    "aliases": [
+      "EN HAEMEQ"
+    ]
+  },
+  {
+    "code": "368",
+    "name": "ביריה",
+    "aliases": [
+      "BIRIYYA"
+    ]
+  },
+  {
+    "code": "369",
+    "name": "גלעד (אבן יצחק)",
+    "aliases": [
+      "EVEN YIZHAQ(GAL'ED)"
+    ]
+  },
+  {
+    "code": "370",
+    "name": "גזר",
+    "aliases": [
+      "GEZER"
+    ]
+  },
+  {
+    "code": "371",
+    "name": "כדורי",
+    "aliases": [
+      "KADOORIE"
+    ]
+  },
+  {
+    "code": "372",
+    "name": "רמות נפתלי",
+    "aliases": [
+      "RAMOT NAFTALI"
+    ]
+  },
+  {
+    "code": "373",
+    "name": "בית הלוי",
+    "aliases": [
+      "BET HALEVI"
+    ]
+  },
+  {
+    "code": "374",
+    "name": "חוקוק",
+    "aliases": [
+      "HUQOQ"
+    ]
+  },
+  {
+    "code": "375",
+    "name": "מגל",
+    "aliases": [
+      "MAGGAL"
+    ]
+  },
+  {
+    "code": "376",
+    "name": "עברון",
+    "aliases": [
+      "EVRON"
+    ]
+  },
+  {
+    "code": "377",
+    "name": "המעפיל",
+    "aliases": [
+      "HAMA'PIL"
+    ]
+  },
+  {
+    "code": "378",
+    "name": "משגב עם",
+    "aliases": [
+      "MISGAV AM"
+    ]
+  },
+  {
+    "code": "379",
+    "name": "גאולים",
+    "aliases": [
+      "GE'ULIM"
+    ]
+  },
+  {
+    "code": "380",
+    "name": "להבות הבשן",
+    "aliases": [
+      "LAHAVOT HABASHAN"
+    ]
+  },
+  {
+    "code": "382",
+    "name": "מכמורת",
+    "aliases": [
+      "MIKHMORET"
+    ]
+  },
+  {
+    "code": "383",
+    "name": "עין הנצי\"ב",
+    "aliases": [
+      "EN HANAZIV"
+    ]
+  },
+  {
+    "code": "385",
+    "name": "עמיעד",
+    "aliases": [
+      "AMMI'AD"
+    ]
+  },
+  {
+    "code": "386",
+    "name": "בני דרור",
+    "aliases": [
+      "BENE DEROR"
+    ]
+  },
+  {
+    "code": "387",
+    "name": "כפר מונש",
+    "aliases": [
+      "KEFAR MONASH"
+    ]
+  },
+  {
+    "code": "388",
+    "name": "כפר קיש",
+    "aliases": [
+      "KEFAR KISH"
+    ]
+  },
+  {
+    "code": "389",
+    "name": "בצרה",
+    "aliases": [
+      "BAZRA"
+    ]
+  },
+  {
+    "code": "390",
+    "name": "רגבה",
+    "aliases": [
+      "REGBA"
+    ]
+  },
+  {
+    "code": "392",
+    "name": "קדמה",
+    "aliases": [
+      "QEDMA"
+    ]
+  },
+  {
+    "code": "393",
+    "name": "גלאון",
+    "aliases": [
+      "GAL'ON"
+    ]
+  },
+  {
+    "code": "394",
+    "name": "שובל",
+    "aliases": [
+      "SHOVAL"
+    ]
+  },
+  {
+    "code": "395",
+    "name": "משמר הנגב",
+    "aliases": [
+      "MISHMAR HANEGEV"
+    ]
+  },
+  {
+    "code": "396",
+    "name": "נבטים",
+    "aliases": [
+      "NEVATIM"
+    ]
+  },
+  {
+    "code": "397",
+    "name": "חצרים",
+    "aliases": [
+      "HAZERIM"
+    ]
+  },
+  {
+    "code": "398",
+    "name": "שרשרת",
+    "aliases": [
+      "SHARSHERET"
+    ]
+  },
+  {
+    "code": "399",
+    "name": "בארי",
+    "aliases": [
+      "BE'ERI"
+    ]
+  },
+  {
+    "code": "400",
+    "name": "אבן שמואל",
+    "aliases": [
+      "EVEN SHEMU'EL"
+    ]
+  },
+  {
+    "code": "402",
+    "name": "ניר יצחק",
+    "aliases": [
+      "NIR YIZHAQ"
+    ]
+  },
+  {
+    "code": "403",
+    "name": "אורים",
+    "aliases": [
+      "URIM"
+    ]
+  },
+  {
+    "code": "405",
+    "name": "נווה אילן",
+    "aliases": [
+      "NEWE ILAN"
+    ]
+  },
+  {
+    "code": "406",
+    "name": "חצור-אשדוד",
+    "aliases": [
+      "HAZOR-ASHDOD"
+    ]
+  },
+  {
+    "code": "407",
+    "name": "דברת",
+    "aliases": [
+      "DAVERAT"
+    ]
+  },
+  {
+    "code": "408",
+    "name": "נאות מרדכי",
+    "aliases": [
+      "NE'OT MORDEKHAY"
+    ]
+  },
+  {
+    "code": "409",
+    "name": "יחיעם",
+    "aliases": [
+      "YEHI'AM"
+    ]
+  },
+  {
+    "code": "412",
+    "name": "קרית שלמה",
+    "aliases": [
+      "QIRYAT SHELOMO"
+    ]
+  },
+  {
+    "code": "413",
+    "name": "צאלים",
+    "aliases": [
+      "ZE'ELIM"
+    ]
+  },
+  {
+    "code": "414",
+    "name": "קלחים",
+    "aliases": [
+      "QELAHIM"
+    ]
+  },
+  {
+    "code": "415",
+    "name": "שוקדה",
+    "aliases": [
+      "SHOQEDA"
+    ]
+  },
+  {
+    "code": "416",
+    "name": "מעין ברוך",
+    "aliases": [
+      "MA'YAN BARUKH"
+    ]
+  },
+  {
+    "code": "417",
+    "name": "יקום",
+    "aliases": [
+      "YAQUM"
+    ]
+  },
+  {
+    "code": "418",
+    "name": "בני ציון",
+    "aliases": [
+      "BENE ZIYYON"
+    ]
+  },
+  {
+    "code": "419",
+    "name": "סעד",
+    "aliases": [
+      "SA'AD"
+    ]
+  },
+  {
+    "code": "421",
+    "name": "משאבי שדה",
+    "aliases": [
+      "MASH'ABBE SADE"
+    ]
+  },
+  {
+    "code": "422",
+    "name": "חרב לאת",
+    "aliases": [
+      "HEREV LE'ET"
+    ]
+  },
+  {
+    "code": "423",
+    "name": "העוגן",
+    "aliases": [
+      "HAOGEN"
+    ]
+  },
+  {
+    "code": "424",
+    "name": "גבים",
+    "aliases": [
+      "GEVIM"
+    ]
+  },
+  {
+    "code": "425",
+    "name": "משמרת",
+    "aliases": [
+      "MISHMERET"
+    ]
+  },
+  {
+    "code": "426",
+    "name": "עין כרמל",
+    "aliases": [
+      "EN KARMEL"
+    ]
+  },
+  {
+    "code": "427",
+    "name": "כפר גלים",
+    "aliases": [
+      "KEFAR GALLIM"
+    ]
+  },
+  {
+    "code": "428",
+    "name": "ברור חיל",
+    "aliases": [
+      "BEROR HAYIL"
+    ]
+  },
+  {
+    "code": "429",
+    "name": "אלוני אבא",
+    "aliases": [
+      "ALLONE ABBA"
+    ]
+  },
+  {
+    "code": "430",
+    "name": "בית לחם הגלילית",
+    "aliases": [
+      "BET LEHEM HAGELILIT"
+    ]
+  },
+  {
+    "code": "431",
+    "name": "דלתון",
+    "aliases": [
+      "DALTON"
+    ]
+  },
+  {
+    "code": "432",
+    "name": "שמרת",
+    "aliases": [
+      "SHAMERAT"
+    ]
+  },
+  {
+    "code": "433",
+    "name": "נחשולים",
+    "aliases": [
+      "NAHSHOLIM"
+    ]
+  },
+  {
+    "code": "434",
+    "name": "החותרים",
+    "aliases": [
+      "HAHOTERIM"
+    ]
+  },
+  {
+    "code": "435",
+    "name": "נצר סרני",
+    "aliases": [
+      "NEZER SERENI"
+    ]
+  },
+  {
+    "code": "436",
+    "name": "עין דור",
+    "aliases": [
+      "EN DOR"
+    ]
+  },
+  {
+    "code": "437",
+    "name": "רשפים",
+    "aliases": [
+      "RESHAFIM"
+    ]
+  },
+  {
+    "code": "439",
+    "name": "שלוחות",
+    "aliases": [
+      "SHELUHOT"
+    ]
+  },
+  {
+    "code": "440",
+    "name": "יסודות",
+    "aliases": [
+      "YESODOT"
+    ]
+  },
+  {
+    "code": "442",
+    "name": "גדעונה",
+    "aliases": [
+      "GID'ONA"
+    ]
+  },
+  {
+    "code": "443",
+    "name": "כפר הנשיא",
+    "aliases": [
+      "KEFAR HANASI"
+    ]
+  },
+  {
+    "code": "444",
+    "name": "רגבים",
+    "aliases": [
+      "REGAVIM"
+    ]
+  },
+  {
+    "code": "445",
+    "name": "רמות מנשה",
+    "aliases": [
+      "RAMOT MENASHE"
+    ]
+  },
+  {
+    "code": "446",
+    "name": "אודים",
+    "aliases": [
+      "UDIM"
+    ]
+  },
+  {
+    "code": "447",
+    "name": "נורדיה",
+    "aliases": [
+      "NORDIYYA"
+    ]
+  },
+  {
+    "code": "448",
+    "name": "בני עטרות",
+    "aliases": [
+      "BENE ATAROT"
+    ]
+  },
+  {
+    "code": "449",
+    "name": "נחלים",
+    "aliases": [
+      "NEHALIM"
+    ]
+  },
+  {
+    "code": "450",
+    "name": "בארות יצחק",
+    "aliases": [
+      "BE'EROT YIZHAQ"
+    ]
+  },
+  {
+    "code": "452",
+    "name": "יזרעאל",
+    "aliases": [
+      "YIZRE'EL"
+    ]
+  },
+  {
+    "code": "453",
+    "name": "יפתח",
+    "aliases": [
+      "YIFTAH"
+    ]
+  },
+  {
+    "code": "454",
+    "name": "סער",
+    "aliases": [
+      "SA'AR"
+    ]
+  },
+  {
+    "code": "456",
+    "name": "שורש",
+    "aliases": [
+      "SHORESH"
+    ]
+  },
+  {
+    "code": "457",
+    "name": "גזית",
+    "aliases": [
+      "GAZIT"
+    ]
+  },
+  {
+    "code": "460",
+    "name": "רמת רזיאל",
+    "aliases": [
+      "RAMAT RAZI'EL"
+    ]
+  },
+  {
+    "code": "462",
+    "name": "טל שחר",
+    "aliases": [
+      "TAL SHAHAR"
+    ]
+  },
+  {
+    "code": "463",
+    "name": "געתון",
+    "aliases": [
+      "GA'TON"
+    ]
+  },
+  {
+    "code": "464",
+    "name": "הראל",
+    "aliases": [
+      "HAR'EL"
+    ]
+  },
+  {
+    "code": "465",
+    "name": "צובה",
+    "aliases": [
+      "ZOVA"
+    ]
+  },
+  {
+    "code": "466",
+    "name": "בית דגן",
+    "aliases": [
+      "BET DAGAN"
+    ]
+  },
+  {
+    "code": "469",
+    "name": "קרית עקרון",
+    "aliases": [
+      "QIRYAT EQRON"
+    ]
+  },
+  {
+    "code": "472",
+    "name": "אבו גוש",
+    "aliases": [
+      "ABU GHOSH"
+    ]
+  },
+  {
+    "code": "473",
+    "name": "אבו סנאן",
+    "aliases": [
+      "ABU SINAN"
+    ]
+  },
+  {
+    "code": "475",
+    "name": "דחי",
+    "aliases": [
+      "DAHI"
+    ]
+  },
+  {
+    "code": "478",
+    "name": "אכסאל",
+    "aliases": [
+      "IKSAL"
+    ]
+  },
+  {
+    "code": "480",
+    "name": "בית ג'ן",
+    "aliases": [
+      "BEIT JANN"
+    ]
+  },
+  {
+    "code": "481",
+    "name": "מגאר",
+    "aliases": [
+      "MUGHAR"
+    ]
+  },
+  {
+    "code": "482",
+    "name": "בועיינה-נוג'ידאת",
+    "aliases": [
+      "BU'EINE-NUJEIDAT"
+    ]
+  },
+  {
+    "code": "483",
+    "name": "בענה",
+    "aliases": [
+      "BI NE"
+    ]
+  },
+  {
+    "code": "485",
+    "name": "ג'ולס",
+    "aliases": [
+      "JULIS"
+    ]
+  },
+  {
+    "code": "487",
+    "name": "ג'ש (גוש חלב)",
+    "aliases": [
+      "JISH(GUSH HALAV)"
+    ]
+  },
+  {
+    "code": "489",
+    "name": "דבוריה",
+    "aliases": [
+      "DABBURYE"
+    ]
+  },
+  {
+    "code": "490",
+    "name": "דייר אל-אסד",
+    "aliases": [
+      "DEIR AL-ASAD"
+    ]
+  },
+  {
+    "code": "492",
+    "name": "דייר חנא",
+    "aliases": [
+      "DEIR HANNA"
+    ]
+  },
+  {
+    "code": "493",
+    "name": "דייר ראפאת",
+    "aliases": [
+      "DEIR RAFAT"
+    ]
+  },
+  {
+    "code": "494",
+    "name": "דאלית אל-כרמל",
+    "aliases": [
+      "DALIYAT AL-KARMEL"
+    ]
+  },
+  {
+    "code": "496",
+    "name": "חורפיש",
+    "aliases": [
+      "HURFEISH"
+    ]
+  },
+  {
+    "code": "497",
+    "name": "טייבה (בעמק)",
+    "aliases": [
+      "TAYIBE(BAEMEQ)"
+    ]
+  },
+  {
+    "code": "498",
+    "name": "טורעאן",
+    "aliases": [
+      "TUR'AN"
+    ]
+  },
+  {
+    "code": "499",
+    "name": "יפיע",
+    "aliases": [
+      "YAFI"
+    ]
+  },
+  {
+    "code": "502",
+    "name": "ירכא",
+    "aliases": [
+      "YIRKA"
+    ]
+  },
+  {
+    "code": "504",
+    "name": "כאבול",
+    "aliases": [
+      "KABUL"
+    ]
+  },
+  {
+    "code": "505",
+    "name": "כאוכב אבו אל-היג'א",
+    "aliases": [
+      "KAOKAB ABU AL-HIJA"
+    ]
+  },
+  {
+    "code": "507",
+    "name": "כפר יאסיף",
+    "aliases": [
+      "KAFAR YASIF"
+    ]
+  },
+  {
+    "code": "508",
+    "name": "כפר כמא",
+    "aliases": [
+      "KAFAR KAMA"
+    ]
+  },
+  {
+    "code": "509",
+    "name": "כפר כנא",
+    "aliases": [
+      "KAFAR KANNA"
+    ]
+  },
+  {
+    "code": "510",
+    "name": "כפר מנדא",
+    "aliases": [
+      "KAFAR MANDA"
+    ]
+  },
+  {
+    "code": "511",
+    "name": "עילוט",
+    "aliases": [
+      "ILUT"
+    ]
+  },
+  {
+    "code": "512",
+    "name": "כפר מצר",
+    "aliases": [
+      "KAFAR MISR"
+    ]
+  },
+  {
+    "code": "514",
+    "name": "עין ראפה",
+    "aliases": [
+      "EIN RAFA"
+    ]
+  },
+  {
+    "code": "516",
+    "name": "מג'ד אל-כרום",
+    "aliases": [
+      "MAJD AL-KURUM"
+    ]
+  },
+  {
+    "code": "517",
+    "name": "מזרעה",
+    "aliases": [
+      "MAZRA'A"
+    ]
+  },
+  {
+    "code": "518",
+    "name": "מעיליא",
+    "aliases": [
+      "MI'ELYA"
+    ]
+  },
+  {
+    "code": "520",
+    "name": "משהד",
+    "aliases": [
+      "MESHHED"
+    ]
+  },
+  {
+    "code": "521",
+    "name": "עין נקובא",
+    "aliases": [
+      "EIN NAQQUBA"
+    ]
+  },
+  {
+    "code": "522",
+    "name": "נחף",
+    "aliases": [
+      "NAHEF"
+    ]
+  },
+  {
+    "code": "523",
+    "name": "ניין",
+    "aliases": [
+      "NEIN"
+    ]
+  },
+  {
+    "code": "524",
+    "name": "נאעורה",
+    "aliases": [
+      "NA'URA"
+    ]
+  },
+  {
+    "code": "525",
+    "name": "סאג'ור",
+    "aliases": [
+      "SAJUR"
+    ]
+  },
+  {
+    "code": "526",
+    "name": "סולם",
+    "aliases": [
+      "SULAM"
+    ]
+  },
+  {
+    "code": "527",
+    "name": "שזור",
+    "aliases": [
+      "SHEZOR"
+    ]
+  },
+  {
+    "code": "528",
+    "name": "עוזייר",
+    "aliases": [
+      "UZEIR"
+    ]
+  },
+  {
+    "code": "529",
+    "name": "אעבלין",
+    "aliases": [
+      "I'BILLIN"
+    ]
+  },
+  {
+    "code": "530",
+    "name": "עיילבון",
+    "aliases": [
+      "EILABUN"
+    ]
+  },
+  {
+    "code": "531",
+    "name": "עראבה",
+    "aliases": [
+      "ARRABE"
+    ]
+  },
+  {
+    "code": "532",
+    "name": "עין מאהל",
+    "aliases": [
+      "EIN MAHEL"
+    ]
+  },
+  {
+    "code": "534",
+    "name": "עספיא",
+    "aliases": [
+      "ISIFYA"
+    ]
+  },
+  {
+    "code": "535",
+    "name": "פסוטה",
+    "aliases": [
+      "FASSUTA"
+    ]
+  },
+  {
+    "code": "536",
+    "name": "פקיעין (בוקייעה)",
+    "aliases": [
+      "PEQI'IN (BUQEI'A)"
+    ]
+  },
+  {
+    "code": "537",
+    "name": "פוריידיס",
+    "aliases": [
+      "FUREIDIS"
+    ]
+  },
+  {
+    "code": "538",
+    "name": "שעב",
+    "aliases": [
+      "SHA'AB"
+    ]
+  },
+  {
+    "code": "539",
+    "name": "רומאנה",
+    "aliases": [
+      "RUMMANE"
+    ]
+  },
+  {
+    "code": "540",
+    "name": "ריחאניה",
+    "aliases": [
+      "REIHANIYYE"
+    ]
+  },
+  {
+    "code": "541",
+    "name": "ג'סר א-זרקא",
+    "aliases": [
+      "JISR AZ-ZARQA"
+    ]
+  },
+  {
+    "code": "542",
+    "name": "ריינה",
+    "aliases": [
+      "REINE"
+    ]
+  },
+  {
+    "code": "543",
+    "name": "ראמה",
+    "aliases": [
+      "RAME"
+    ]
+  },
+  {
+    "code": "546",
+    "name": "עין אל-אסד",
+    "aliases": [
+      "EIN AL-ASAD"
+    ]
+  },
+  {
+    "code": "547",
+    "name": "טמרה (יזרעאל)",
+    "aliases": [
+      "TAMRA (YIZRE'EL)"
+    ]
+  },
+  {
+    "code": "549",
+    "name": "גנות הדר",
+    "aliases": [
+      "GANNOT HADAR"
+    ]
+  },
+  {
+    "code": "553",
+    "name": "ניר בנים",
+    "aliases": [
+      "NIR BANIM"
+    ]
+  },
+  {
+    "code": "555",
+    "name": "שדמה",
+    "aliases": [
+      "SHEDEMA"
+    ]
+  },
+  {
+    "code": "559",
+    "name": "בוסתן הגליל",
+    "aliases": [
+      "BUSTAN HAGALIL"
+    ]
+  },
+  {
+    "code": "562",
+    "name": "בית אלעזרי",
+    "aliases": [
+      "BET EL'AZARI"
+    ]
+  },
+  {
+    "code": "563",
+    "name": "משמר דוד",
+    "aliases": [
+      "MISHMAR DAWID"
+    ]
+  },
+  {
+    "code": "564",
+    "name": "רבדים",
+    "aliases": [
+      "REVADIM"
+    ]
+  },
+  {
+    "code": "565",
+    "name": "אזור",
+    "aliases": [
+      "AZOR"
+    ]
+  },
+  {
+    "code": "566",
+    "name": "גבעת שמש",
+    "aliases": [
+      "GIV'AT SHEMESH"
+    ]
+  },
+  {
+    "code": "567",
+    "name": "צרעה",
+    "aliases": [
+      "ZOR'A"
+    ]
+  },
+  {
+    "code": "570",
+    "name": "מעונה",
+    "aliases": [
+      "ME'ONA"
+    ]
+  },
+  {
+    "code": "571",
+    "name": "בית גמליאל",
+    "aliases": [
+      "BET GAMLI'EL"
+    ]
+  },
+  {
+    "code": "572",
+    "name": "בית העמק",
+    "aliases": [
+      "BET HAEMEQ"
+    ]
+  },
+  {
+    "code": "573",
+    "name": "מבקיעים",
+    "aliases": [
+      "MAVQI'IM"
+    ]
+  },
+  {
+    "code": "574",
+    "name": "גשר הזיו",
+    "aliases": [
+      "GESHER HAZIW"
+    ]
+  },
+  {
+    "code": "575",
+    "name": "יסעור",
+    "aliases": [
+      "YAS'UR"
+    ]
+  },
+  {
+    "code": "576",
+    "name": "כברי",
+    "aliases": [
+      "KABRI"
+    ]
+  },
+  {
+    "code": "577",
+    "name": "יד בנימין",
+    "aliases": [
+      "YAD BINYAMIN"
+    ]
+  },
+  {
+    "code": "578",
+    "name": "סאסא",
+    "aliases": [
+      "SASA"
+    ]
+  },
+  {
+    "code": "579",
+    "name": "כפר ראש הנקרה",
+    "aliases": [
+      "KEFAR ROSH HANIQRA"
+    ]
+  },
+  {
+    "code": "580",
+    "name": "כרם מהר\"ל",
+    "aliases": [
+      "KEREM MAHARAL"
+    ]
+  },
+  {
+    "code": "582",
+    "name": "כפר הנגיד",
+    "aliases": [
+      "KEFAR HANAGID"
+    ]
+  },
+  {
+    "code": "584",
+    "name": "זיקים",
+    "aliases": [
+      "ZIQIM"
+    ]
+  },
+  {
+    "code": "585",
+    "name": "לביא",
+    "aliases": [
+      "LAVI"
+    ]
+  },
+  {
+    "code": "586",
+    "name": "מגידו",
+    "aliases": [
+      "MEGIDDO"
+    ]
+  },
+  {
+    "code": "587",
+    "name": "סביון",
+    "aliases": [
+      "SAVYON"
+    ]
+  },
+  {
+    "code": "588",
+    "name": "בני ראם",
+    "aliases": [
+      "BENE RE'EM"
+    ]
+  },
+  {
+    "code": "589",
+    "name": "בצת",
+    "aliases": [
+      "BEZET"
+    ]
+  },
+  {
+    "code": "590",
+    "name": "נווה אור",
+    "aliases": [
+      "NEWE UR"
+    ]
+  },
+  {
+    "code": "591",
+    "name": "עשרת",
+    "aliases": [
+      "ASERET"
+    ]
+  },
+  {
+    "code": "592",
+    "name": "בני דרום",
+    "aliases": [
+      "BENE DAROM"
+    ]
+  },
+  {
+    "code": "593",
+    "name": "ערוגות",
+    "aliases": [
+      "ARUGOT"
+    ]
+  },
+  {
+    "code": "594",
+    "name": "צפריה",
+    "aliases": [
+      "ZAFRIYYA"
+    ]
+  },
+  {
+    "code": "595",
+    "name": "לוחמי הגיטאות",
+    "aliases": [
+      "LOHAME HAGETA'OT"
+    ]
+  },
+  {
+    "code": "596",
+    "name": "מלכיה",
+    "aliases": [
+      "MALKIYYA"
+    ]
+  },
+  {
+    "code": "597",
+    "name": "פלמחים",
+    "aliases": [
+      "PALMAHIM"
+    ]
+  },
+  {
+    "code": "598",
+    "name": "בית קמה",
+    "aliases": [
+      "BET QAMA"
+    ]
+  },
+  {
+    "code": "599",
+    "name": "פרוד",
+    "aliases": [
+      "PAROD"
+    ]
+  },
+  {
+    "code": "602",
+    "name": "נירים",
+    "aliases": [
+      "NIRIM"
+    ]
+  },
+  {
+    "code": "603",
+    "name": "אלקוש",
+    "aliases": [
+      "ELQOSH"
+    ]
+  },
+  {
+    "code": "604",
+    "name": "בית עריף",
+    "aliases": [
+      "BET ARIF"
+    ]
+  },
+  {
+    "code": "605",
+    "name": "כפר שמאי",
+    "aliases": [
+      "KEFAR SHAMMAY"
+    ]
+  },
+  {
+    "code": "606",
+    "name": "מזור",
+    "aliases": [
+      "MAZOR"
+    ]
+  },
+  {
+    "code": "607",
+    "name": "מירון",
+    "aliases": [
+      "MERON"
+    ]
+  },
+  {
+    "code": "609",
+    "name": "כפר חושן",
+    "aliases": [
+      "KEFAR HOSHEN"
+    ]
+  },
+  {
+    "code": "610",
+    "name": "סתריה",
+    "aliases": [
+      "SITRIYYA"
+    ]
+  },
+  {
+    "code": "612",
+    "name": "צרופה",
+    "aliases": [
+      "ZERUFA"
+    ]
+  },
+  {
+    "code": "613",
+    "name": "ציפורי",
+    "aliases": [
+      "ZIPPORI"
+    ]
+  },
+  {
+    "code": "614",
+    "name": "שומרה",
+    "aliases": [
+      "SHOMERA"
+    ]
+  },
+  {
+    "code": "615",
+    "name": "קדרון",
+    "aliases": [
+      "QIDRON"
+    ]
+  },
+  {
+    "code": "616",
+    "name": "רינתיה",
+    "aliases": [
+      "RINNATYA"
+    ]
+  },
+  {
+    "code": "617",
+    "name": "ברקאי",
+    "aliases": [
+      "BARQAY"
+    ]
+  },
+  {
+    "code": "618",
+    "name": "חדיד",
+    "aliases": [
+      "HADID"
+    ]
+  },
+  {
+    "code": "619",
+    "name": "בית גוברין",
+    "aliases": [
+      "BET GUVRIN"
+    ]
+  },
+  {
+    "code": "620",
+    "name": "משואות יצחק",
+    "aliases": [
+      "MASSUOT YIZHAQ"
+    ]
+  },
+  {
+    "code": "622",
+    "name": "עין צורים",
+    "aliases": [
+      "EN ZURIM"
+    ]
+  },
+  {
+    "code": "623",
+    "name": "יראון",
+    "aliases": [
+      "YIR'ON"
+    ]
+  },
+  {
+    "code": "627",
+    "name": "ג'לג'וליה",
+    "aliases": [
+      "JALJULYE"
+    ]
+  },
+  {
+    "code": "628",
+    "name": "ג'ת",
+    "aliases": [
+      "JAAT"
+    ]
+  },
+  {
+    "code": "633",
+    "name": "כפר ברא",
+    "aliases": [
+      "KAFAR BARA"
+    ]
+  },
+  {
+    "code": "634",
+    "name": "כפר קאסם",
+    "aliases": [
+      "KAFAR QASEM"
+    ]
+  },
+  {
+    "code": "635",
+    "name": "מוקייבלה",
+    "aliases": [
+      "MUQEIBLE"
+    ]
+  },
+  {
+    "code": "636",
+    "name": "צנדלה",
+    "aliases": [
+      "SANDALA"
+    ]
+  },
+  {
+    "code": "637",
+    "name": "ערערה",
+    "aliases": [
+      "AR'ARA"
+    ]
+  },
+  {
+    "code": "638",
+    "name": "קלנסווה",
+    "aliases": [
+      "QALANSAWE"
+    ]
+  },
+  {
+    "code": "648",
+    "name": "מצר",
+    "aliases": [
+      "MEZER"
+    ]
+  },
+  {
+    "code": "649",
+    "name": "מייסר",
+    "aliases": [
+      "MEISER"
+    ]
+  },
+  {
+    "code": "652",
+    "name": "אבטין",
+    "aliases": [
+      "IBTIN"
+    ]
+  },
+  {
+    "code": "654",
+    "name": "כפר קרע",
+    "aliases": [
+      "KAFAR QARA"
+    ]
+  },
+  {
+    "code": "658",
+    "name": "שייח' דנון",
+    "aliases": [
+      "SHEIKH DANNUN"
+    ]
+  },
+  {
+    "code": "661",
+    "name": "שער אפרים",
+    "aliases": [
+      "SHA'AR EFRAYIM"
+    ]
+  },
+  {
+    "code": "662",
+    "name": "חוסן",
+    "aliases": [
+      "HOSEN"
+    ]
+  },
+  {
+    "code": "663",
+    "name": "טירת יהודה",
+    "aliases": [
+      "TIRAT YEHUDA"
+    ]
+  },
+  {
+    "code": "664",
+    "name": "כרם בן זמרה",
+    "aliases": [
+      "KEREM BEN ZIMRA"
+    ]
+  },
+  {
+    "code": "665",
+    "name": "תקומה",
+    "aliases": [
+      "TEQUMA"
+    ]
+  },
+  {
+    "code": "666",
+    "name": "עומר",
+    "aliases": [
+      "OMER"
+    ]
+  },
+  {
+    "code": "667",
+    "name": "ברעם",
+    "aliases": [
+      "BAR'AM"
+    ]
+  },
+  {
+    "code": "668",
+    "name": "מפלסים",
+    "aliases": [
+      "MEFALLESIM"
+    ]
+  },
+  {
+    "code": "670",
+    "name": "משמר איילון",
+    "aliases": [
+      "MISHMAR AYYALON"
+    ]
+  },
+  {
+    "code": "672",
+    "name": "בית נקופה",
+    "aliases": [
+      "BET NEQOFA"
+    ]
+  },
+  {
+    "code": "673",
+    "name": "כפר טרומן",
+    "aliases": [
+      "KEFAR TRUMAN"
+    ]
+  },
+  {
+    "code": "674",
+    "name": "לימן",
+    "aliases": [
+      "LIMAN"
+    ]
+  },
+  {
+    "code": "675",
+    "name": "הבונים",
+    "aliases": [
+      "HABONIM"
+    ]
+  },
+  {
+    "code": "676",
+    "name": "עין השלושה",
+    "aliases": [
+      "EN HASHELOSHA"
+    ]
+  },
+  {
+    "code": "677",
+    "name": "הסוללים",
+    "aliases": [
+      "HASOLELIM"
+    ]
+  },
+  {
+    "code": "678",
+    "name": "מעגן",
+    "aliases": [
+      "MA'AGAN"
+    ]
+  },
+  {
+    "code": "679",
+    "name": "אביאל",
+    "aliases": [
+      "AVI'EL"
+    ]
+  },
+  {
+    "code": "680",
+    "name": "אומץ",
+    "aliases": [
+      "OMEZ"
+    ]
+  },
+  {
+    "code": "681",
+    "name": "גבעת שמואל",
+    "aliases": [
+      "GIV'AT SHEMU'EL"
+    ]
+  },
+  {
+    "code": "682",
+    "name": "אליקים",
+    "aliases": [
+      "ELYAQIM"
+    ]
+  },
+  {
+    "code": "683",
+    "name": "גבע כרמל",
+    "aliases": [
+      "GEVA KARMEL"
+    ]
+  },
+  {
+    "code": "684",
+    "name": "היוגב",
+    "aliases": [
+      "HAYOGEV"
+    ]
+  },
+  {
+    "code": "685",
+    "name": "בניה",
+    "aliases": [
+      "BENAYA"
+    ]
+  },
+  {
+    "code": "686",
+    "name": "נווה ימין",
+    "aliases": [
+      "NEWE YAMIN"
+    ]
+  },
+  {
+    "code": "687",
+    "name": "עין איילה",
+    "aliases": [
+      "EN AYYALA"
+    ]
+  },
+  {
+    "code": "688",
+    "name": "עלמה",
+    "aliases": [
+      "ALMA"
+    ]
+  },
+  {
+    "code": "689",
+    "name": "מגדים",
+    "aliases": [
+      "MEGADIM"
+    ]
+  },
+  {
+    "code": "690",
+    "name": "כפר אחים",
+    "aliases": [
+      "KEFAR AHIM"
+    ]
+  },
+  {
+    "code": "692",
+    "name": "שפיר",
+    "aliases": [
+      "SHAFIR"
+    ]
+  },
+  {
+    "code": "693",
+    "name": "נתיב הל\"ה",
+    "aliases": [
+      "NETIV HALAMED-HE"
+    ]
+  },
+  {
+    "code": "694",
+    "name": "מעגן מיכאל",
+    "aliases": [
+      "MA'AGAN MIKHA'EL"
+    ]
+  },
+  {
+    "code": "695",
+    "name": "מגן",
+    "aliases": [
+      "MAGEN"
+    ]
+  },
+  {
+    "code": "696",
+    "name": "כפר חב\"ד",
+    "aliases": [
+      "KEFAR HABAD"
+    ]
+  },
+  {
+    "code": "697",
+    "name": "בארותיים",
+    "aliases": [
+      "BE'EROTAYIM"
+    ]
+  },
+  {
+    "code": "698",
+    "name": "בורגתה",
+    "aliases": [
+      "BURGETA"
+    ]
+  },
+  {
+    "code": "699",
+    "name": "ניר ישראל",
+    "aliases": [
+      "NIR YISRA'EL"
+    ]
+  },
+  {
+    "code": "700",
+    "name": "חצב",
+    "aliases": [
+      "HAZAV"
+    ]
+  },
+  {
+    "code": "701",
+    "name": "ארבל",
+    "aliases": [
+      "ARBEL"
+    ]
+  },
+  {
+    "code": "702",
+    "name": "האון",
+    "aliases": [
+      "HAON"
+    ]
+  },
+  {
+    "code": "703",
+    "name": "גבעת עוז",
+    "aliases": [
+      "GIV'AT OZ"
+    ]
+  },
+  {
+    "code": "705",
+    "name": "נחשונים",
+    "aliases": [
+      "NAHSHONIM"
+    ]
+  },
+  {
+    "code": "706",
+    "name": "גיאה",
+    "aliases": [
+      "GE'A"
+    ]
+  },
+  {
+    "code": "707",
+    "name": "כפר דניאל",
+    "aliases": [
+      "KEFAR DANIYYEL"
+    ]
+  },
+  {
+    "code": "708",
+    "name": "עמקה",
+    "aliases": [
+      "AMQA"
+    ]
+  },
+  {
+    "code": "709",
+    "name": "תפרח",
+    "aliases": [
+      "TIFRAH"
+    ]
+  },
+  {
+    "code": "710",
+    "name": "בית זית",
+    "aliases": [
+      "BET ZAYIT"
+    ]
+  },
+  {
+    "code": "711",
+    "name": "עזריה",
+    "aliases": [
+      "AZARYA"
+    ]
+  },
+  {
+    "code": "712",
+    "name": "בן עמי",
+    "aliases": [
+      "BEN AMMI"
+    ]
+  },
+  {
+    "code": "713",
+    "name": "רעים",
+    "aliases": [
+      "RE'IM"
+    ]
+  },
+  {
+    "code": "714",
+    "name": "ארז",
+    "aliases": [
+      "EREZ"
+    ]
+  },
+  {
+    "code": "715",
+    "name": "להבות חביבה",
+    "aliases": [
+      "LAHAVOT HAVIVA"
+    ]
+  },
+  {
+    "code": "716",
+    "name": "אייל",
+    "aliases": [
+      "EYAL"
+    ]
+  },
+  {
+    "code": "717",
+    "name": "חגור",
+    "aliases": [
+      "HAGOR"
+    ]
+  },
+  {
+    "code": "718",
+    "name": "ירחיב",
+    "aliases": [
+      "YARHIV"
+    ]
+  },
+  {
+    "code": "719",
+    "name": "תל קציר",
+    "aliases": [
+      "TEL QAZIR"
+    ]
+  },
+  {
+    "code": "720",
+    "name": "ניר גלים",
+    "aliases": [
+      "NIR GALLIM"
+    ]
+  },
+  {
+    "code": "721",
+    "name": "שדה אילן",
+    "aliases": [
+      "SEDE ILAN"
+    ]
+  },
+  {
+    "code": "722",
+    "name": "מגשימים",
+    "aliases": [
+      "MAGSHIMIM"
+    ]
+  },
+  {
+    "code": "723",
+    "name": "בית הגדי",
+    "aliases": [
+      "BET HAGADDI"
+    ]
+  },
+  {
+    "code": "726",
+    "name": "הודיה",
+    "aliases": [
+      "HODIYYA"
+    ]
+  },
+  {
+    "code": "727",
+    "name": "תלמי יחיאל",
+    "aliases": [
+      "TALME YEHI'EL"
+    ]
+  },
+  {
+    "code": "729",
+    "name": "משמר השבעה",
+    "aliases": [
+      "MISHMAR HASHIV'A"
+    ]
+  },
+  {
+    "code": "730",
+    "name": "אליפלט",
+    "aliases": [
+      "ELIFELET"
+    ]
+  },
+  {
+    "code": "731",
+    "name": "מישר",
+    "aliases": [
+      "MESHAR"
+    ]
+  },
+  {
+    "code": "732",
+    "name": "משמר הירדן",
+    "aliases": [
+      "MISHMAR HAYARDEN"
+    ]
+  },
+  {
+    "code": "734",
+    "name": "גן יאשיה",
+    "aliases": [
+      "GAN YOSHIYYA"
+    ]
+  },
+  {
+    "code": "735",
+    "name": "רמות מאיר",
+    "aliases": [
+      "RAMOT ME'IR"
+    ]
+  },
+  {
+    "code": "736",
+    "name": "גילת",
+    "aliases": [
+      "GILAT"
+    ]
+  },
+  {
+    "code": "737",
+    "name": "עולש",
+    "aliases": [
+      "OLESH"
+    ]
+  },
+  {
+    "code": "738",
+    "name": "דור",
+    "aliases": [
+      "DOR"
+    ]
+  },
+  {
+    "code": "739",
+    "name": "שדה עוזיהו",
+    "aliases": [
+      "SEDE UZZIYYAHU"
+    ]
+  },
+  {
+    "code": "740",
+    "name": "אשתאול",
+    "aliases": [
+      "ESHTA'OL"
+    ]
+  },
+  {
+    "code": "741",
+    "name": "שואבה",
+    "aliases": [
+      "SHO'EVA"
+    ]
+  },
+  {
+    "code": "742",
+    "name": "מסילת ציון",
+    "aliases": [
+      "MESILLAT ZIYYON"
+    ]
+  },
+  {
+    "code": "743",
+    "name": "כפר שמואל",
+    "aliases": [
+      "KEFAR SHEMU'EL"
+    ]
+  },
+  {
+    "code": "744",
+    "name": "תלמי יפה",
+    "aliases": [
+      "TALME YAFE"
+    ]
+  },
+  {
+    "code": "745",
+    "name": "גמזו",
+    "aliases": [
+      "GIMZO"
+    ]
+  },
+  {
+    "code": "746",
+    "name": "ברכיה",
+    "aliases": [
+      "BEREKHYA"
+    ]
+  },
+  {
+    "code": "747",
+    "name": "בית שקמה",
+    "aliases": [
+      "BET SHIQMA"
+    ]
+  },
+  {
+    "code": "748",
+    "name": "מסלול",
+    "aliases": [
+      "MASLUL"
+    ]
+  },
+  {
+    "code": "749",
+    "name": "פטיש",
+    "aliases": [
+      "PATTISH"
+    ]
+  },
+  {
+    "code": "750",
+    "name": "פדויים",
+    "aliases": [
+      "PEDUYIM"
+    ]
+  },
+  {
+    "code": "751",
+    "name": "בית מאיר",
+    "aliases": [
+      "BET ME'IR"
+    ]
+  },
+  {
+    "code": "752",
+    "name": "תעוז",
+    "aliases": [
+      "TA'OZ"
+    ]
+  },
+  {
+    "code": "753",
+    "name": "ינוב",
+    "aliases": [
+      "YANUV"
+    ]
+  },
+  {
+    "code": "755",
+    "name": "גורן",
+    "aliases": [
+      "GOREN"
+    ]
+  },
+  {
+    "code": "756",
+    "name": "בית עזרא",
+    "aliases": [
+      "BET EZRA"
+    ]
+  },
+  {
+    "code": "757",
+    "name": "מצליח",
+    "aliases": [
+      "MAZLIAH"
+    ]
+  },
+  {
+    "code": "758",
+    "name": "יד חנה",
+    "aliases": [
+      "YAD HANNA"
+    ]
+  },
+  {
+    "code": "759",
+    "name": "יציץ",
+    "aliases": [
+      "YAZIZ"
+    ]
+  },
+  {
+    "code": "760",
+    "name": "בן זכאי",
+    "aliases": [
+      "BEN ZAKKAY"
+    ]
+  },
+  {
+    "code": "761",
+    "name": "שובה",
+    "aliases": [
+      "SHUVA"
+    ]
+  },
+  {
+    "code": "762",
+    "name": "בטחה",
+    "aliases": [
+      "BITHA"
+    ]
+  },
+  {
+    "code": "763",
+    "name": "שתולים",
+    "aliases": [
+      "SHETULIM"
+    ]
+  },
+  {
+    "code": "764",
+    "name": "כפר מרדכי",
+    "aliases": [
+      "KEFAR MORDEKHAY"
+    ]
+  },
+  {
+    "code": "765",
+    "name": "משגב דב",
+    "aliases": [
+      "MISGAV DOV"
+    ]
+  },
+  {
+    "code": "766",
+    "name": "קוממיות",
+    "aliases": [
+      "QOMEMIYYUT"
+    ]
+  },
+  {
+    "code": "767",
+    "name": "פורת",
+    "aliases": [
+      "PORAT"
+    ]
+  },
+  {
+    "code": "768",
+    "name": "כרמיה",
+    "aliases": [
+      "KARMIYYA"
+    ]
+  },
+  {
+    "code": "769",
+    "name": "ניר עציון",
+    "aliases": [
+      "NIR EZYON"
+    ]
+  },
+  {
+    "code": "771",
+    "name": "מבוא ביתר",
+    "aliases": [
+      "MEVO BETAR"
+    ]
+  },
+  {
+    "code": "772",
+    "name": "אמונים",
+    "aliases": [
+      "EMUNIM"
+    ]
+  },
+  {
+    "code": "773",
+    "name": "עמיקם",
+    "aliases": [
+      "AMMIQAM"
+    ]
+  },
+  {
+    "code": "774",
+    "name": "צוריאל",
+    "aliases": [
+      "ZURI'EL"
+    ]
+  },
+  {
+    "code": "775",
+    "name": "יד נתן",
+    "aliases": [
+      "YAD NATAN"
+    ]
+  },
+  {
+    "code": "776",
+    "name": "מחסיה",
+    "aliases": [
+      "MAHSEYA"
+    ]
+  },
+  {
+    "code": "777",
+    "name": "נחשון",
+    "aliases": [
+      "NAHSHON"
+    ]
+  },
+  {
+    "code": "778",
+    "name": "תרום",
+    "aliases": [
+      "TARUM"
+    ]
+  },
+  {
+    "code": "779",
+    "name": "עמינדב",
+    "aliases": [
+      "AMMINADAV"
+    ]
+  },
+  {
+    "code": "780",
+    "name": "אורה",
+    "aliases": [
+      "ORA"
+    ]
+  },
+  {
+    "code": "783",
+    "name": "אבן ספיר",
+    "aliases": [
+      "EVEN SAPPIR"
+    ]
+  },
+  {
+    "code": "784",
+    "name": "בית נחמיה",
+    "aliases": [
+      "BET NEHEMYA"
+    ]
+  },
+  {
+    "code": "785",
+    "name": "אחיהוד",
+    "aliases": [
+      "AHIHUD"
+    ]
+  },
+  {
+    "code": "786",
+    "name": "כפר זיתים",
+    "aliases": [
+      "KEFAR ZETIM"
+    ]
+  },
+  {
+    "code": "787",
+    "name": "גבעת יערים",
+    "aliases": [
+      "GIV'AT YE'ARIM"
+    ]
+  },
+  {
+    "code": "788",
+    "name": "זיתן",
+    "aliases": [
+      "ZETAN"
+    ]
+  },
+  {
+    "code": "789",
+    "name": "רנן",
+    "aliases": [
+      "RANNEN"
+    ]
+  },
+  {
+    "code": "791",
+    "name": "משען",
+    "aliases": [
+      "MASH'EN"
+    ]
+  },
+  {
+    "code": "792",
+    "name": "נתיב השיירה",
+    "aliases": [
+      "NETIV HASHAYYARA"
+    ]
+  },
+  {
+    "code": "793",
+    "name": "גבעתי",
+    "aliases": [
+      "GIV'ATI"
+    ]
+  },
+  {
+    "code": "794",
+    "name": "עגור",
+    "aliases": [
+      "AGUR"
+    ]
+  },
+  {
+    "code": "795",
+    "name": "יערה",
+    "aliases": [
+      "YA'ARA"
+    ]
+  },
+  {
+    "code": "796",
+    "name": "צלפון",
+    "aliases": [
+      "ZELAFON"
+    ]
+  },
+  {
+    "code": "797",
+    "name": "אחיעזר",
+    "aliases": [
+      "AHI'EZER"
+    ]
+  },
+  {
+    "code": "798",
+    "name": "יגל",
+    "aliases": [
+      "YAGEL"
+    ]
+  },
+  {
+    "code": "799",
+    "name": "זכריה",
+    "aliases": [
+      "ZEKHARYA"
+    ]
+  },
+  {
+    "code": "800",
+    "name": "בית חנניה",
+    "aliases": [
+      "BET HANANYA"
+    ]
+  },
+  {
+    "code": "801",
+    "name": "חמד",
+    "aliases": [
+      "HEMED"
+    ]
+  },
+  {
+    "code": "802",
+    "name": "גבעת כ\"ח",
+    "aliases": [
+      "GIV'AT KOAH"
+    ]
+  },
+  {
+    "code": "803",
+    "name": "יושיביה",
+    "aliases": [
+      "YOSHIVYA"
+    ]
+  },
+  {
+    "code": "804",
+    "name": "אחיסמך",
+    "aliases": [
+      "AHISAMAKH"
+    ]
+  },
+  {
+    "code": "805",
+    "name": "ישעי",
+    "aliases": [
+      "YISH'I"
+    ]
+  },
+  {
+    "code": "806",
+    "name": "עין יהב",
+    "aliases": [
+      "EN YAHAV"
+    ]
+  },
+  {
+    "code": "807",
+    "name": "חניאל",
+    "aliases": [
+      "HANNI'EL"
+    ]
+  },
+  {
+    "code": "808",
+    "name": "ניר אליהו",
+    "aliases": [
+      "NIR ELIYYAHU"
+    ]
+  },
+  {
+    "code": "809",
+    "name": "נחם",
+    "aliases": [
+      "NAHAM"
+    ]
+  },
+  {
+    "code": "810",
+    "name": "עופר",
+    "aliases": [
+      "OFER"
+    ]
+  },
+  {
+    "code": "811",
+    "name": "יכיני",
+    "aliases": [
+      "YAKHINI"
+    ]
+  },
+  {
+    "code": "812",
+    "name": "שלומי",
+    "aliases": [
+      "SHELOMI"
+    ]
+  },
+  {
+    "code": "813",
+    "name": "עין יעקב",
+    "aliases": [
+      "EN YA'AQOV"
+    ]
+  },
+  {
+    "code": "814",
+    "name": "תלמים",
+    "aliases": [
+      "TELAMIM"
+    ]
+  },
+  {
+    "code": "815",
+    "name": "זבדיאל",
+    "aliases": [
+      "ZAVDI'EL"
+    ]
+  },
+  {
+    "code": "816",
+    "name": "זנוח",
+    "aliases": [
+      "ZANOAH"
+    ]
+  },
+  {
+    "code": "817",
+    "name": "עזריקם",
+    "aliases": [
+      "AZRIQAM"
+    ]
+  },
+  {
+    "code": "818",
+    "name": "זרחיה",
+    "aliases": [
+      "ZERAHYA"
+    ]
+  },
+  {
+    "code": "819",
+    "name": "אביגדור",
+    "aliases": [
+      "AVIGEDOR"
+    ]
+  },
+  {
+    "code": "820",
+    "name": "חלץ",
+    "aliases": [
+      "HELEZ"
+    ]
+  },
+  {
+    "code": "821",
+    "name": "אחוזם",
+    "aliases": [
+      "AHUZZAM"
+    ]
+  },
+  {
+    "code": "822",
+    "name": "מטע",
+    "aliases": [
+      "MATTA"
+    ]
+  },
+  {
+    "code": "823",
+    "name": "בר גיורא",
+    "aliases": [
+      "BAR GIYYORA"
+    ]
+  },
+  {
+    "code": "824",
+    "name": "כוכב מיכאל",
+    "aliases": [
+      "KOKHAV MIKHA'EL"
+    ]
+  },
+  {
+    "code": "825",
+    "name": "נס הרים",
+    "aliases": [
+      "NES HARIM"
+    ]
+  },
+  {
+    "code": "826",
+    "name": "עוזה",
+    "aliases": [
+      "UZA"
+    ]
+  },
+  {
+    "code": "827",
+    "name": "נווה מבטח",
+    "aliases": [
+      "NEWE MIVTAH"
+    ]
+  },
+  {
+    "code": "828",
+    "name": "ישרש",
+    "aliases": [
+      "YASHRESH"
+    ]
+  },
+  {
+    "code": "829",
+    "name": "מבטחים",
+    "aliases": [
+      "MIVTAHIM"
+    ]
+  },
+  {
+    "code": "831",
+    "name": "ירוחם",
+    "aliases": [
+      "YEROHAM"
+    ]
+  },
+  {
+    "code": "833",
+    "name": "נורית",
+    "aliases": [
+      "NURIT"
+    ]
+  },
+  {
+    "code": "836",
+    "name": "גנות",
+    "aliases": [
+      "GANNOT"
+    ]
+  },
+  {
+    "code": "837",
+    "name": "עזריאל",
+    "aliases": [
+      "AZRI'EL"
+    ]
+  },
+  {
+    "code": "838",
+    "name": "פדיה",
+    "aliases": [
+      "PEDAYA"
+    ]
+  },
+  {
+    "code": "839",
+    "name": "פתחיה",
+    "aliases": [
+      "PETAHYA"
+    ]
+  },
+  {
+    "code": "840",
+    "name": "כיסופים",
+    "aliases": [
+      "KISSUFIM"
+    ]
+  },
+  {
+    "code": "841",
+    "name": "אלישמע",
+    "aliases": [
+      "ELISHAMA"
+    ]
+  },
+  {
+    "code": "842",
+    "name": "געש",
+    "aliases": [
+      "GA'ASH"
+    ]
+  },
+  {
+    "code": "843",
+    "name": "מרגליות",
+    "aliases": [
+      "MARGALIYYOT"
+    ]
+  },
+  {
+    "code": "844",
+    "name": "נחל עוז",
+    "aliases": [
+      "NAHAL OZ"
+    ]
+  },
+  {
+    "code": "845",
+    "name": "כפר עזה",
+    "aliases": [
+      "KEFAR AZZA"
+    ]
+  },
+  {
+    "code": "846",
+    "name": "שפר",
+    "aliases": [
+      "SHEFER"
+    ]
+  },
+  {
+    "code": "848",
+    "name": "בית רבן",
+    "aliases": [
+      "BET RABBAN"
+    ]
+  },
+  {
+    "code": "849",
+    "name": "דביר",
+    "aliases": [
+      "DVIR"
+    ]
+  },
+  {
+    "code": "850",
+    "name": "אחיטוב",
+    "aliases": [
+      "AHITUV"
+    ]
+  },
+  {
+    "code": "851",
+    "name": "ניצני עוז",
+    "aliases": [
+      "NIZZANE OZ"
+    ]
+  },
+  {
+    "code": "852",
+    "name": "גונן",
+    "aliases": [
+      "GONEN"
+    ]
+  },
+  {
+    "code": "853",
+    "name": "גאליה",
+    "aliases": [
+      "GE'ALYA"
+    ]
+  },
+  {
+    "code": "854",
+    "name": "רחוב",
+    "aliases": [
+      "REHOV"
+    ]
+  },
+  {
+    "code": "856",
+    "name": "שעלבים",
+    "aliases": [
+      "SHA'ALVIM"
+    ]
+  },
+  {
+    "code": "857",
+    "name": "כפר אביב",
+    "aliases": [
+      "KEFAR AVIV"
+    ]
+  },
+  {
+    "code": "858",
+    "name": "נווה ירק",
+    "aliases": [
+      "NEWE YARAQ"
+    ]
+  },
+  {
+    "code": "859",
+    "name": "כסלון",
+    "aliases": [
+      "KESALON"
+    ]
+  },
+  {
+    "code": "861",
+    "name": "שדה אליעזר",
+    "aliases": [
+      "SEDE ELI'EZER"
+    ]
+  },
+  {
+    "code": "862",
+    "name": "גני יוחנן",
+    "aliases": [
+      "GANNE YOHANAN"
+    ]
+  },
+  {
+    "code": "863",
+    "name": "גינתון",
+    "aliases": [
+      "GINNATON"
+    ]
+  },
+  {
+    "code": "864",
+    "name": "בקוע",
+    "aliases": [
+      "BEQOA"
+    ]
+  },
+  {
+    "code": "865",
+    "name": "שיבולים",
+    "aliases": [
+      "SHIBBOLIM"
+    ]
+  },
+  {
+    "code": "866",
+    "name": "יטבתה",
+    "aliases": [
+      "YOTVATA"
+    ]
+  },
+  {
+    "code": "868",
+    "name": "אלוני יצחק",
+    "aliases": [
+      "ALLONE YIZHAQ"
+    ]
+  },
+  {
+    "code": "870",
+    "name": "גבעת השלושה",
+    "aliases": [
+      "GIV'AT HASHELOSHA"
+    ]
+  },
+  {
+    "code": "871",
+    "name": "עינת",
+    "aliases": [
+      "ENAT"
+    ]
+  },
+  {
+    "code": "872",
+    "name": "גאולי תימן",
+    "aliases": [
+      "GE'ULE TEMAN"
+    ]
+  },
+  {
+    "code": "873",
+    "name": "שלווה",
+    "aliases": [
+      "SHALWA"
+    ]
+  },
+  {
+    "code": "874",
+    "name": "מגדל העמק",
+    "aliases": [
+      "MIGDAL HAEMEQ"
+    ]
+  },
+  {
+    "code": "875",
+    "name": "כפר עבודה",
+    "aliases": [
+      "KEFAR AVODA"
+    ]
+  },
+  {
+    "code": "877",
+    "name": "בית חירות",
+    "aliases": [
+      "BET HERUT"
+    ]
+  },
+  {
+    "code": "880",
+    "name": "עין שריד",
+    "aliases": [
+      "EN SARID"
+    ]
+  },
+  {
+    "code": "882",
+    "name": "אורנים",
+    "aliases": [
+      "ORANIM"
+    ]
+  },
+  {
+    "code": "885",
+    "name": "שדה בוקר",
+    "aliases": [
+      "SEDE BOQER"
+    ]
+  },
+  {
+    "code": "886",
+    "name": "איתנים",
+    "aliases": [
+      "ETANIM"
+    ]
+  },
+  {
+    "code": "888",
+    "name": "כפר הרי\"ף",
+    "aliases": [
+      "KEFAR HARIF"
+    ]
+  },
+  {
+    "code": "889",
+    "name": "כפר חסידים ב'",
+    "aliases": [
+      "KEFAR HASIDIM BET"
+    ]
+  },
+  {
+    "code": "890",
+    "name": "כפר הנוער הדתי",
+    "aliases": [
+      "KEFAR HANO'AR HADATI"
+    ]
+  },
+  {
+    "code": "892",
+    "name": "עבדון",
+    "aliases": [
+      "AVDON"
+    ]
+  },
+  {
+    "code": "897",
+    "name": "מדרשת רופין",
+    "aliases": [
+      "MIDRESHET RUPPIN"
+    ]
+  },
+  {
+    "code": "913",
+    "name": "שבלי - אום אל-גנם",
+    "aliases": [
+      "SHIBLI"
+    ]
+  },
+  {
+    "code": "916",
+    "name": "ישע",
+    "aliases": [
+      "YESHA"
+    ]
+  },
+  {
+    "code": "917",
+    "name": "עצמון שגב",
+    "aliases": [
+      "ATSMON-SEGEV"
+    ]
+  },
+  {
+    "code": "919",
+    "name": "גבעת ישעיהו",
+    "aliases": [
+      "GIV'AT YESHA'YAHU"
+    ]
+  },
+  {
+    "code": "921",
+    "name": "שער מנשה",
+    "aliases": [
+      "SHA'AR MENASHE"
+    ]
+  },
+  {
+    "code": "922",
+    "name": "רכסים",
+    "aliases": [
+      "REKHASIM"
+    ]
+  },
+  {
+    "code": "926",
+    "name": "נווה אבות",
+    "aliases": [
+      "NEWE AVOT"
+    ]
+  },
+  {
+    "code": "932",
+    "name": "אבו עמרה (שבט)",
+    "aliases": [
+      "ABU AMRE"
+    ]
+  },
+  {
+    "code": "935",
+    "name": "אבו סריחאן (שבט)",
+    "aliases": [
+      "ABU SUREIHAN"
+    ]
+  },
+  {
+    "code": "939",
+    "name": "מסעודין אל-עזאזמה",
+    "aliases": [
+      "MAS'UDIN AL-'AZAZME"
+    ]
+  },
+  {
+    "code": "942",
+    "name": "סואעד (חמירה)",
+    "aliases": [
+      "SAWA'ID (HUMAYRA)"
+    ]
+  },
+  {
+    "code": "944",
+    "name": "בסמת טבעון",
+    "aliases": [
+      "BASMAT TAB'UN"
+    ]
+  },
+  {
+    "code": "948",
+    "name": "חוג'ייראת (ד'הרה)",
+    "aliases": [
+      "HUJEIRAT (DAHRA)"
+    ]
+  },
+  {
+    "code": "956",
+    "name": "הוזייל (שבט)",
+    "aliases": [
+      "HUZAYYEL"
+    ]
+  },
+  {
+    "code": "957",
+    "name": "עוקבי (בנו עוקבה)",
+    "aliases": [
+      "UQBI (BANU UQBA)"
+    ]
+  },
+  {
+    "code": "958",
+    "name": "אבו עבדון (שבט)",
+    "aliases": [
+      "ABU ABDUN"
+    ]
+  },
+  {
+    "code": "959",
+    "name": "אפיניש (שבט)",
+    "aliases": [
+      "AFEINISH"
+    ]
+  },
+  {
+    "code": "960",
+    "name": "אסד (שבט)",
+    "aliases": [
+      "ASAD"
+    ]
+  },
+  {
+    "code": "961",
+    "name": "אבו רוקייק (שבט)",
+    "aliases": [
+      "ABU RUQAYYEQ"
+    ]
+  },
+  {
+    "code": "962",
+    "name": "טובא-זנגריה",
+    "aliases": [
+      "TUBA-ZANGARIYYE"
+    ]
+  },
+  {
+    "code": "963",
+    "name": "אעצם (שבט)",
+    "aliases": [
+      "A'SAM"
+    ]
+  },
+  {
+    "code": "964",
+    "name": "קודייראת א-צאנע(שבט)",
+    "aliases": [
+      "QUDEIRAT AS-SANI"
+    ]
+  },
+  {
+    "code": "965",
+    "name": "אטרש (שבט)",
+    "aliases": [
+      "ATRASH"
+    ]
+  },
+  {
+    "code": "966",
+    "name": "אבו רובייעה (שבט)",
+    "aliases": [
+      "ABU RUBEI'A"
+    ]
+  },
+  {
+    "code": "967",
+    "name": "אבו ג'ווייעד (שבט)",
+    "aliases": [
+      "ABU JUWEI'ID"
+    ]
+  },
+  {
+    "code": "968",
+    "name": "אבו קורינאת (שבט)",
+    "aliases": [
+      "ABU QUREINAT"
+    ]
+  },
+  {
+    "code": "969",
+    "name": "עטאוונה (שבט)",
+    "aliases": [
+      "ATAWNE"
+    ]
+  },
+  {
+    "code": "970",
+    "name": "תראבין א-צאנע (שבט)",
+    "aliases": [
+      "TARABIN AS-SANI"
+    ]
+  },
+  {
+    "code": "972",
+    "name": "קוואעין (שבט)",
+    "aliases": [
+      "QAWA'IN"
+    ]
+  },
+  {
+    "code": "975",
+    "name": "זרזיר",
+    "aliases": [
+      "ZARZIR"
+    ]
+  },
+  {
+    "code": "976",
+    "name": "ג'נאביב (שבט)",
+    "aliases": [
+      "JUNNABIB"
+    ]
+  },
+  {
+    "code": "978",
+    "name": "כעביה-טבאש-חג'אג'רה",
+    "aliases": [
+      "KA'ABIYYE-TABBASH-HA"
+    ]
+  },
+  {
+    "code": "986",
+    "name": "ח'ואלד (שבט)",
+    "aliases": [
+      "KHAWALED"
+    ]
+  },
+  {
+    "code": "989",
+    "name": "סואעד (כמאנה) (שבט)",
+    "aliases": [
+      "SAWA'ID (KAMANE)"
+    ]
+  },
+  {
+    "code": "990",
+    "name": "ראס עלי",
+    "aliases": [
+      "RAS ALI"
+    ]
+  },
+  {
+    "code": "993",
+    "name": "חמאם",
+    "aliases": [
+      "HAMAM"
+    ]
+  },
+  {
+    "code": "994",
+    "name": "מנשית זבדה",
+    "aliases": [
+      "MANSHIYYET ZABDA"
+    ]
+  },
+  {
+    "code": "997",
+    "name": "רומת הייב",
+    "aliases": [
+      "RUMAT HEIB"
+    ]
+  },
+  {
+    "code": "998",
+    "name": "ביר אל-מכסור",
+    "aliases": [
+      "BIR EL-MAKSUR"
+    ]
+  },
+  {
+    "code": "1015",
+    "name": "מבשרת ציון",
+    "aliases": [
+      "MEVASSERET ZIYYON"
+    ]
+  },
+  {
+    "code": "1020",
+    "name": "אור עקיבא",
+    "aliases": [
+      "OR AQIVA"
+    ]
+  },
+  {
+    "code": "1024",
+    "name": "חרוצים",
+    "aliases": [
+      "HARUZIM"
+    ]
+  },
+  {
+    "code": "1031",
+    "name": "שדרות",
+    "aliases": [
+      "SEDEROT"
+    ]
+  },
+  {
+    "code": "1034",
+    "name": "קרית מלאכי",
+    "aliases": [
+      "QIRYAT MAL'AKHI"
+    ]
+  },
+  {
+    "code": "1041",
+    "name": "נצאצרה (שבט)",
+    "aliases": [
+      "NASASRA"
+    ]
+  },
+  {
+    "code": "1042",
+    "name": "אבו עמאר (שבט)",
+    "aliases": [
+      "ABU AMMAR"
+    ]
+  },
+  {
+    "code": "1043",
+    "name": "גיזו",
+    "aliases": [
+      "GIZO"
+    ]
+  },
+  {
+    "code": "1044",
+    "name": "יעף",
+    "aliases": [
+      "YE'AF"
+    ]
+  },
+  {
+    "code": "1045",
+    "name": "שתולה",
+    "aliases": [
+      "SHETULA"
+    ]
+  },
+  {
+    "code": "1046",
+    "name": "אוהד",
+    "aliases": [
+      "OHAD"
+    ]
+  },
+  {
+    "code": "1047",
+    "name": "חזון",
+    "aliases": [
+      "HAZON"
+    ]
+  },
+  {
+    "code": "1050",
+    "name": "בית חשמונאי",
+    "aliases": [
+      "BET HASHMONAY"
+    ]
+  },
+  {
+    "code": "1051",
+    "name": "תלמי אליהו",
+    "aliases": [
+      "TALME ELIYYAHU"
+    ]
+  },
+  {
+    "code": "1052",
+    "name": "קטורה",
+    "aliases": [
+      "QETURA"
+    ]
+  },
+  {
+    "code": "1053",
+    "name": "עין חצבה",
+    "aliases": [
+      "EN HAZEVA"
+    ]
+  },
+  {
+    "code": "1054",
+    "name": "תל שבע",
+    "aliases": [
+      "TEL SHEVA"
+    ]
+  },
+  {
+    "code": "1056",
+    "name": "עין כרם-בי\"ס חקלאי",
+    "aliases": [
+      "EN KAREM-B.S.HAQLA'I"
+    ]
+  },
+  {
+    "code": "1057",
+    "name": "נווה זוהר",
+    "aliases": [
+      "NEWE ZOHAR"
+    ]
+  },
+  {
+    "code": "1058",
+    "name": "שדה ניצן",
+    "aliases": [
+      "SEDE NIZZAN"
+    ]
+  },
+  {
+    "code": "1059",
+    "name": "כסיפה",
+    "aliases": [
+      "KUSEIFE"
+    ]
+  },
+  {
+    "code": "1060",
+    "name": "לקיה",
+    "aliases": [
+      "LAQYE"
+    ]
+  },
+  {
+    "code": "1061",
+    "name": "נוף הגליל",
+    "aliases": [
+      "NOF HAGALIL"
+    ]
+  },
+  {
+    "code": "1063",
+    "name": "מעלות-תרשיחא",
+    "aliases": [
+      "MA'ALOT-TARSHIHA"
+    ]
+  },
+  {
+    "code": "1064",
+    "name": "אמירים",
+    "aliases": [
+      "AMIRIM"
+    ]
+  },
+  {
+    "code": "1065",
+    "name": "זמרת",
+    "aliases": [
+      "ZIMRAT"
+    ]
+  },
+  {
+    "code": "1066",
+    "name": "בני עי\"ש",
+    "aliases": [
+      "BENE AYISH"
+    ]
+  },
+  {
+    "code": "1067",
+    "name": "דוב\"ב",
+    "aliases": [
+      "DOVEV"
+    ]
+  },
+  {
+    "code": "1068",
+    "name": "אדמית",
+    "aliases": [
+      "ADAMIT"
+    ]
+  },
+  {
+    "code": "1069",
+    "name": "רם-און",
+    "aliases": [
+      "RAM-ON"
+    ]
+  },
+  {
+    "code": "1070",
+    "name": "אביעזר",
+    "aliases": [
+      "AVI'EZER"
+    ]
+  },
+  {
+    "code": "1071",
+    "name": "נווה מיכאל",
+    "aliases": [
+      "NEWE MIKHA'EL"
+    ]
+  },
+  {
+    "code": "1072",
+    "name": "גן הדרום",
+    "aliases": [
+      "GAN HADAROM"
+    ]
+  },
+  {
+    "code": "1076",
+    "name": "בית ברל",
+    "aliases": [
+      "BET BERL"
+    ]
+  },
+  {
+    "code": "1077",
+    "name": "גבעת שפירא",
+    "aliases": [
+      "GIV'AT SHAPPIRA"
+    ]
+  },
+  {
+    "code": "1079",
+    "name": "צפרירים",
+    "aliases": [
+      "ZAFRIRIM"
+    ]
+  },
+  {
+    "code": "1080",
+    "name": "מבועים",
+    "aliases": [
+      "MABBU'IM"
+    ]
+  },
+  {
+    "code": "1081",
+    "name": "אבן מנחם",
+    "aliases": [
+      "EVEN MENAHEM"
+    ]
+  },
+  {
+    "code": "1082",
+    "name": "מעגלים",
+    "aliases": [
+      "MA'GALIM"
+    ]
+  },
+  {
+    "code": "1083",
+    "name": "תושיה",
+    "aliases": [
+      "TUSHIYYA"
+    ]
+  },
+  {
+    "code": "1084",
+    "name": "בן שמן (כפר נוער)",
+    "aliases": [
+      "BEN SHEMEN(K.NO'AR)"
+    ]
+  },
+  {
+    "code": "1085",
+    "name": "כרם שלום",
+    "aliases": [
+      "KEREM SHALOM"
+    ]
+  },
+  {
+    "code": "1094",
+    "name": "כרם ביבנה (ישיבה)",
+    "aliases": [
+      "KEREM BEYAVNE"
+    ]
+  },
+  {
+    "code": "1095",
+    "name": "כפר מימון",
+    "aliases": [
+      "KEFAR MAYMON"
+    ]
+  },
+  {
+    "code": "1098",
+    "name": "מרכז שפירא",
+    "aliases": [
+      "MERKAZ SHAPPIRA"
+    ]
+  },
+  {
+    "code": "1102",
+    "name": "צוקי ים",
+    "aliases": [
+      "SHOSHANNAT HAAMAQIM("
+    ]
+  },
+  {
+    "code": "1103",
+    "name": "גני הדר",
+    "aliases": [
+      "GANNE HADAR"
+    ]
+  },
+  {
+    "code": "1104",
+    "name": "פוריה - כפר עבודה",
+    "aliases": [
+      "PORIYYA-KEFAR AVODA"
+    ]
+  },
+  {
+    "code": "1105",
+    "name": "פוריה - נווה עובד",
+    "aliases": [
+      "PORIYYA-NEWE OVED"
+    ]
+  },
+  {
+    "code": "1108",
+    "name": "אומן",
+    "aliases": [
+      "OMEN"
+    ]
+  },
+  {
+    "code": "1110",
+    "name": "חבר",
+    "aliases": [
+      "HEVER"
+    ]
+  },
+  {
+    "code": "1111",
+    "name": "צופיה",
+    "aliases": [
+      "ZOFIYYA"
+    ]
+  },
+  {
+    "code": "1112",
+    "name": "יודפת",
+    "aliases": [
+      "YODEFAT"
+    ]
+  },
+  {
+    "code": "1113",
+    "name": "צור הדסה",
+    "aliases": [
+      "ZUR HADASSA"
+    ]
+  },
+  {
+    "code": "1114",
+    "name": "שריגים (לי-און)",
+    "aliases": [
+      "LI-ON"
+    ]
+  },
+  {
+    "code": "1115",
+    "name": "אביבים",
+    "aliases": [
+      "AVIVIM"
+    ]
+  },
+  {
+    "code": "1117",
+    "name": "יעל",
+    "aliases": [
+      "YA'EL"
+    ]
+  },
+  {
+    "code": "1123",
+    "name": "אדרת",
+    "aliases": [
+      "ADDERET"
+    ]
+  },
+  {
+    "code": "1124",
+    "name": "נאות הכיכר",
+    "aliases": [
+      "NE'OT HAKIKKAR"
+    ]
+  },
+  {
+    "code": "1125",
+    "name": "אלמגור",
+    "aliases": [
+      "ALMAGOR"
+    ]
+  },
+  {
+    "code": "1126",
+    "name": "אילות",
+    "aliases": [
+      "ELOT"
+    ]
+  },
+  {
+    "code": "1127",
+    "name": "מעלה גלבוע",
+    "aliases": [
+      "MA'ALE GILBOA"
+    ]
+  },
+  {
+    "code": "1128",
+    "name": "מי עמי",
+    "aliases": [
+      "ME AMMI"
+    ]
+  },
+  {
+    "code": "1129",
+    "name": "גרופית",
+    "aliases": [
+      "GEROFIT"
+    ]
+  },
+  {
+    "code": "1130",
+    "name": "כפר רוזנואלד (זרעית)",
+    "aliases": [
+      "KEFAR ROZENWALD(ZAR."
+    ]
+  },
+  {
+    "code": "1132",
+    "name": "שניר",
+    "aliases": [
+      "SENIR"
+    ]
+  },
+  {
+    "code": "1133",
+    "name": "ורדון",
+    "aliases": [
+      "WARDON"
+    ]
+  },
+  {
+    "code": "1134",
+    "name": "יד השמונה",
+    "aliases": [
+      "YAD HASHEMONA"
+    ]
+  },
+  {
+    "code": "1136",
+    "name": "צוחר",
+    "aliases": [
+      "ZOHAR"
+    ]
+  },
+  {
+    "code": "1137",
+    "name": "קרית יערים",
+    "aliases": [
+      "QIRYAT YE'ARIM"
+    ]
+  },
+  {
+    "code": "1138",
+    "name": "יעד",
+    "aliases": [
+      "YA'AD"
+    ]
+  },
+  {
+    "code": "1139",
+    "name": "כרמיאל",
+    "aliases": [
+      "KARMI'EL"
+    ]
+  },
+  {
+    "code": "1140",
+    "name": "מדרשת בן גוריון",
+    "aliases": [
+      "MIDRESHET BEN GURION"
+    ]
+  },
+  {
+    "code": "1141",
+    "name": "מבוא מודיעים",
+    "aliases": [
+      "MEVO MODI'IM"
+    ]
+  },
+  {
+    "code": "1143",
+    "name": "נס עמים",
+    "aliases": [
+      "NES AMMIM"
+    ]
+  },
+  {
+    "code": "1144",
+    "name": "ידידה",
+    "aliases": [
+      "YEDIDA"
+    ]
+  },
+  {
+    "code": "1145",
+    "name": "אלומה",
+    "aliases": [
+      "ALUMMA"
+    ]
+  },
+  {
+    "code": "1146",
+    "name": "עלומים",
+    "aliases": [
+      "ALUMIM"
+    ]
+  },
+  {
+    "code": "1147",
+    "name": "נטועה",
+    "aliases": [
+      "NETU'A"
+    ]
+  },
+  {
+    "code": "1148",
+    "name": "צור נתן",
+    "aliases": [
+      "ZUR NATAN"
+    ]
+  },
+  {
+    "code": "1149",
+    "name": "עזר",
+    "aliases": [
+      "EZER"
+    ]
+  },
+  {
+    "code": "1150",
+    "name": "צופר",
+    "aliases": [
+      "ZOFAR"
+    ]
+  },
+  {
+    "code": "1151",
+    "name": "פארן",
+    "aliases": [
+      "PARAN"
+    ]
+  },
+  {
+    "code": "1152",
+    "name": "אשלים",
+    "aliases": [
+      "ASHALIM"
+    ]
+  },
+  {
+    "code": "1153",
+    "name": "כישור",
+    "aliases": [
+      "KISHOR"
+    ]
+  },
+  {
+    "code": "1154",
+    "name": "מיטל",
+    "aliases": [
+      "METAL"
+    ]
+  },
+  {
+    "code": "1155",
+    "name": "מגן שאול",
+    "aliases": [
+      "MAGEN SHA'UL"
+    ]
+  },
+  {
+    "code": "1156",
+    "name": "סמר",
+    "aliases": [
+      "SAMAR"
+    ]
+  },
+  {
+    "code": "1157",
+    "name": "אחווה",
+    "aliases": [
+      "AHAWA"
+    ]
+  },
+  {
+    "code": "1158",
+    "name": "יהל",
+    "aliases": [
+      "YAHEL"
+    ]
+  },
+  {
+    "code": "1160",
+    "name": "שכניה",
+    "aliases": [
+      "SHEKHANYA"
+    ]
+  },
+  {
+    "code": "1161",
+    "name": "רהט",
+    "aliases": [
+      "RAHAT"
+    ]
+  },
+  {
+    "code": "1162",
+    "name": "בית רימון",
+    "aliases": [
+      "BET RIMMON"
+    ]
+  },
+  {
+    "code": "1163",
+    "name": "מורן",
+    "aliases": [
+      "MORAN"
+    ]
+  },
+  {
+    "code": "1165",
+    "name": "שילת",
+    "aliases": [
+      "SHILAT"
+    ]
+  },
+  {
+    "code": "1166",
+    "name": "כפר רות",
+    "aliases": [
+      "KEFAR RUT"
+    ]
+  },
+  {
+    "code": "1167",
+    "name": "קיסריה",
+    "aliases": [
+      "QESARIYYA"
+    ]
+  },
+  {
+    "code": "1169",
+    "name": "הוואשלה (שבט)",
+    "aliases": [
+      "HAWASHLA"
+    ]
+  },
+  {
+    "code": "1170",
+    "name": "סייד (שבט)",
+    "aliases": [
+      "SAYYID"
+    ]
+  },
+  {
+    "code": "1171",
+    "name": "לוטם",
+    "aliases": [
+      "LOTEM"
+    ]
+  },
+  {
+    "code": "1172",
+    "name": "תובל",
+    "aliases": [
+      "TUVAL"
+    ]
+  },
+  {
+    "code": "1173",
+    "name": "לפידות",
+    "aliases": [
+      "LAPPIDOT"
+    ]
+  },
+  {
+    "code": "1174",
+    "name": "מנוף",
+    "aliases": [
+      "MANOF"
+    ]
+  },
+  {
+    "code": "1175",
+    "name": "עידן",
+    "aliases": [
+      "IDDAN"
+    ]
+  },
+  {
+    "code": "1176",
+    "name": "ספיר",
+    "aliases": [
+      "SAPPIR"
+    ]
+  },
+  {
+    "code": "1177",
+    "name": "טללים",
+    "aliases": [
+      "TELALIM"
+    ]
+  },
+  {
+    "code": "1178",
+    "name": "מורשת",
+    "aliases": [
+      "MORESHET"
+    ]
+  },
+  {
+    "code": "1179",
+    "name": "קורנית",
+    "aliases": [
+      "QORANIT"
+    ]
+  },
+  {
+    "code": "1180",
+    "name": "צביה",
+    "aliases": [
+      "ZVIYYA"
+    ]
+  },
+  {
+    "code": "1181",
+    "name": "טל-אל",
+    "aliases": [
+      "TAL-EL"
+    ]
+  },
+  {
+    "code": "1182",
+    "name": "אלון הגליל",
+    "aliases": [
+      "ALLON HAGALIL"
+    ]
+  },
+  {
+    "code": "1183",
+    "name": "כליל",
+    "aliases": [
+      "KELIL"
+    ]
+  },
+  {
+    "code": "1184",
+    "name": "מתת",
+    "aliases": [
+      "MATTAT"
+    ]
+  },
+  {
+    "code": "1185",
+    "name": "פלך",
+    "aliases": [
+      "PELEKH"
+    ]
+  },
+  {
+    "code": "1186",
+    "name": "הושעיה",
+    "aliases": [
+      "HOSHA'AYA"
+    ]
+  },
+  {
+    "code": "1187",
+    "name": "עיר אובות",
+    "aliases": [
+      "IR OVOT"
+    ]
+  },
+  {
+    "code": "1188",
+    "name": "אשחר",
+    "aliases": [
+      "ESHHAR"
+    ]
+  },
+  {
+    "code": "1190",
+    "name": "מצפה נטופה",
+    "aliases": [
+      "MIZPE NETOFA"
+    ]
+  },
+  {
+    "code": "1191",
+    "name": "בר יוחאי",
+    "aliases": [
+      "BAR YOHAY"
+    ]
+  },
+  {
+    "code": "1192",
+    "name": "ערערה-בנגב",
+    "aliases": [
+      "AR'ARA-BANEGEV"
+    ]
+  },
+  {
+    "code": "1195",
+    "name": "ניצנה (קהילת חינוך)",
+    "aliases": [
+      "NIZZANA (QEHILAT HIN"
+    ]
+  },
+  {
+    "code": "1196",
+    "name": "מחנה יתיר",
+    "aliases": [
+      "MAHANE YATTIR"
+    ]
+  },
+  {
+    "code": "1197",
+    "name": "נאות סמדר",
+    "aliases": [
+      "SHIZZAFON"
+    ]
+  },
+  {
+    "code": "1198",
+    "name": "כרמים",
+    "aliases": [
+      "KERAMIM"
+    ]
+  },
+  {
+    "code": "1199",
+    "name": "עדי",
+    "aliases": [
+      "ADI"
+    ]
+  },
+  {
+    "code": "1200",
+    "name": "מודיעין-מכבים-רעות",
+    "aliases": [
+      "MODI'IN-MAKKABBIM-RE"
+    ]
+  },
+  {
+    "code": "1201",
+    "name": "כמון",
+    "aliases": [
+      "KAMMON"
+    ]
+  },
+  {
+    "code": "1202",
+    "name": "מכמנים",
+    "aliases": [
+      "MIKHMANNIM"
+    ]
+  },
+  {
+    "code": "1203",
+    "name": "הררית",
+    "aliases": [
+      "HARARIT"
+    ]
+  },
+  {
+    "code": "1204",
+    "name": "גילון",
+    "aliases": [
+      "GILON"
+    ]
+  },
+  {
+    "code": "1205",
+    "name": "מנות",
+    "aliases": [
+      "MANOT"
+    ]
+  },
+  {
+    "code": "1206",
+    "name": "גיתה",
+    "aliases": [
+      "GITTA"
+    ]
+  },
+  {
+    "code": "1207",
+    "name": "לבון",
+    "aliases": [
+      "LAVON"
+    ]
+  },
+  {
+    "code": "1208",
+    "name": "הילה",
+    "aliases": [
+      "HILLA"
+    ]
+  },
+  {
+    "code": "1209",
+    "name": "חרשים",
+    "aliases": [
+      "HARASHIM"
+    ]
+  },
+  {
+    "code": "1210",
+    "name": "כחל",
+    "aliases": [
+      "KAHAL"
+    ]
+  },
+  {
+    "code": "1211",
+    "name": "קדרים",
+    "aliases": [
+      "QADDARIM"
+    ]
+  },
+  {
+    "code": "1212",
+    "name": "עמוקה",
+    "aliases": [
+      "AMUQQA"
+    ]
+  },
+  {
+    "code": "1213",
+    "name": "צבעון",
+    "aliases": [
+      "ZIV'ON"
+    ]
+  },
+  {
+    "code": "1214",
+    "name": "טפחות",
+    "aliases": [
+      "TEFAHOT"
+    ]
+  },
+  {
+    "code": "1219",
+    "name": "גורנות הגליל",
+    "aliases": [
+      "GORNOT HAGALIL"
+    ]
+  },
+  {
+    "code": "1220",
+    "name": "אבירים",
+    "aliases": [
+      "ABBIRIM"
+    ]
+  },
+  {
+    "code": "1221",
+    "name": "צורית",
+    "aliases": [
+      "ZURIT"
+    ]
+  },
+  {
+    "code": "1222",
+    "name": "מצפה אבי\"ב",
+    "aliases": [
+      "MIZPE AVIV"
+    ]
+  },
+  {
+    "code": "1223",
+    "name": "שדי אברהם",
+    "aliases": [
+      "SEDE AVRAHAM"
+    ]
+  },
+  {
+    "code": "1224",
+    "name": "כוכב יאיר-צור יגאל",
+    "aliases": [
+      "KOCHAV YAIR TSUR YI"
+    ]
+  },
+  {
+    "code": "1225",
+    "name": "רביד",
+    "aliases": [
+      "RAVID"
+    ]
+  },
+  {
+    "code": "1226",
+    "name": "יובלים",
+    "aliases": [
+      "YUVALIM"
+    ]
+  },
+  {
+    "code": "1227",
+    "name": "יתד",
+    "aliases": [
+      "YATED"
+    ]
+  },
+  {
+    "code": "1228",
+    "name": "רקפת",
+    "aliases": [
+      "RAQEFET"
+    ]
+  },
+  {
+    "code": "1229",
+    "name": "כלנית",
+    "aliases": [
+      "KALLANIT"
+    ]
+  },
+  {
+    "code": "1230",
+    "name": "לבנים",
+    "aliases": [
+      "LIVNIM"
+    ]
+  },
+  {
+    "code": "1231",
+    "name": "פרי גן",
+    "aliases": [
+      "PERI GAN"
+    ]
+  },
+  {
+    "code": "1232",
+    "name": "יבול",
+    "aliases": [
+      "YEVUL"
+    ]
+  },
+  {
+    "code": "1233",
+    "name": "שקף",
+    "aliases": [
+      "SHEQEF"
+    ]
+  },
+  {
+    "code": "1234",
+    "name": "קבועה (שבט)",
+    "aliases": [
+      "QABBO'A"
+    ]
+  },
+  {
+    "code": "1235",
+    "name": "שורשים",
+    "aliases": [
+      "SHORASHIM"
+    ]
+  },
+  {
+    "code": "1236",
+    "name": "נירית",
+    "aliases": [
+      "NIRIT"
+    ]
+  },
+  {
+    "code": "1237",
+    "name": "תלמי יוסף",
+    "aliases": [
+      "TALME YOSEF"
+    ]
+  },
+  {
+    "code": "1238",
+    "name": "סופה",
+    "aliases": [
+      "SUFA"
+    ]
+  },
+  {
+    "code": "1239",
+    "name": "חולית",
+    "aliases": [
+      "HOLIT"
+    ]
+  },
+  {
+    "code": "1240",
+    "name": "עין הבשור",
+    "aliases": [
+      "EN HABESOR"
+    ]
+  },
+  {
+    "code": "1241",
+    "name": "דקל",
+    "aliases": [
+      "DEQEL"
+    ]
+  },
+  {
+    "code": "1242",
+    "name": "נתיב העשרה",
+    "aliases": [
+      "NETIV HAASARA"
+    ]
+  },
+  {
+    "code": "1243",
+    "name": "קציר",
+    "aliases": [
+      "QAZIR"
+    ]
+  },
+  {
+    "code": "1244",
+    "name": "תמרת",
+    "aliases": [
+      "TIMRAT"
+    ]
+  },
+  {
+    "code": "1245",
+    "name": "סלמה",
+    "aliases": [
+      "SALLAMA"
+    ]
+  },
+  {
+    "code": "1246",
+    "name": "עראמשה",
+    "aliases": [
+      "ARAMSHA"
+    ]
+  },
+  {
+    "code": "1247",
+    "name": "חריש",
+    "aliases": [
+      "HARISH"
+    ]
+  },
+  {
+    "code": "1248",
+    "name": "אליפז",
+    "aliases": [
+      "ELIFAZ"
+    ]
+  },
+  {
+    "code": "1249",
+    "name": "הרדוף",
+    "aliases": [
+      "HARDUF"
+    ]
+  },
+  {
+    "code": "1251",
+    "name": "עין תמר",
+    "aliases": [
+      "EN TAMAR"
+    ]
+  },
+  {
+    "code": "1252",
+    "name": "כורזים",
+    "aliases": [
+      "KORAZIM"
+    ]
+  },
+  {
+    "code": "1253",
+    "name": "אמנון",
+    "aliases": [
+      "AMNUN"
+    ]
+  },
+  {
+    "code": "1254",
+    "name": "נטף",
+    "aliases": [
+      "NATAF"
+    ]
+  },
+  {
+    "code": "1255",
+    "name": "לוטן",
+    "aliases": [
+      "LOTAN"
+    ]
+  },
+  {
+    "code": "1256",
+    "name": "אשרת",
+    "aliases": [
+      "ASHERAT"
+    ]
+  },
+  {
+    "code": "1257",
+    "name": "חנתון",
+    "aliases": [
+      "HANNATON"
+    ]
+  },
+  {
+    "code": "1258",
+    "name": "מסד",
+    "aliases": [
+      "MASSAD"
+    ]
+  },
+  {
+    "code": "1259",
+    "name": "נווה שלום",
+    "aliases": [
+      "NEWE SHALOM"
+    ]
+  },
+  {
+    "code": "1260",
+    "name": "רתמים",
+    "aliases": [
+      "RETAMIM"
+    ]
+  },
+  {
+    "code": "1261",
+    "name": "הר עמשא",
+    "aliases": [
+      "HAR AMASA"
+    ]
+  },
+  {
+    "code": "1262",
+    "name": "צוקים",
+    "aliases": [
+      "MAHANE BILDAD"
+    ]
+  },
+  {
+    "code": "1263",
+    "name": "כפר ורדים",
+    "aliases": [
+      "KEFAR WERADIM"
+    ]
+  },
+  {
+    "code": "1264",
+    "name": "כרמי יוסף",
+    "aliases": [
+      "KARME YOSEF"
+    ]
+  },
+  {
+    "code": "1265",
+    "name": "שומריה",
+    "aliases": [
+      "SHOMERIYYA"
+    ]
+  },
+  {
+    "code": "1266",
+    "name": "שחרות",
+    "aliases": [
+      "SHAHARUT"
+    ]
+  },
+  {
+    "code": "1267",
+    "name": "שיטים",
+    "aliases": [
+      "NAHAL SHITTIM"
+    ]
+  },
+  {
+    "code": "1268",
+    "name": "מיתר",
+    "aliases": [
+      "METAR"
+    ]
+  },
+  {
+    "code": "1271",
+    "name": "להבים",
+    "aliases": [
+      "LEHAVIM"
+    ]
+  },
+  {
+    "code": "1272",
+    "name": "חלוץ",
+    "aliases": [
+      "HALUZ"
+    ]
+  },
+  {
+    "code": "1274",
+    "name": "גן נר",
+    "aliases": [
+      "GAN NER"
+    ]
+  },
+  {
+    "code": "1275",
+    "name": "אבטליון",
+    "aliases": [
+      "AVTALYON"
+    ]
+  },
+  {
+    "code": "1276",
+    "name": "אשבל",
+    "aliases": [
+      "NAHAL ESHBAL"
+    ]
+  },
+  {
+    "code": "1278",
+    "name": "באר מילכה",
+    "aliases": [
+      "BE'ER MILKA"
+    ]
+  },
+  {
+    "code": "1279",
+    "name": "נווה חריף",
+    "aliases": [
+      "NEWE HARIF"
+    ]
+  },
+  {
+    "code": "1280",
+    "name": "ניצני סיני",
+    "aliases": [
+      "NIZZANE SINAY"
+    ]
+  },
+  {
+    "code": "1282",
+    "name": "מירב",
+    "aliases": [
+      "MERAV"
+    ]
+  },
+  {
+    "code": "1283",
+    "name": "תל תאומים",
+    "aliases": [
+      "TEL TE'OMIM"
+    ]
+  },
+  {
+    "code": "1284",
+    "name": "נופית",
+    "aliases": [
+      "NOFIT"
+    ]
+  },
+  {
+    "code": "1285",
+    "name": "כרכום",
+    "aliases": [
+      "KARKOM"
+    ]
+  },
+  {
+    "code": "1286",
+    "name": "שגב-שלום",
+    "aliases": [
+      "SEGEV-SHALOM"
+    ]
+  },
+  {
+    "code": "1287",
+    "name": "שני",
+    "aliases": [
+      "SHANI"
+    ]
+  },
+  {
+    "code": "1288",
+    "name": "גבעת אלה",
+    "aliases": [
+      "GIV'AT ELA"
+    ]
+  },
+  {
+    "code": "1290",
+    "name": "זמר",
+    "aliases": [
+      "ZEMER"
+    ]
+  },
+  {
+    "code": "1291",
+    "name": "כמהין",
+    "aliases": [
+      "KEMEHIN"
+    ]
+  },
+  {
+    "code": "1292",
+    "name": "ג'דיידה-מכר",
+    "aliases": [
+      "JUDEIDE-MAKER"
+    ]
+  },
+  {
+    "code": "1293",
+    "name": "גבעת אבני",
+    "aliases": [
+      "GIV'AT AVNI"
+    ]
+  },
+  {
+    "code": "1294",
+    "name": "אור הגנוז",
+    "aliases": [
+      "OR HAGANUZ"
+    ]
+  },
+  {
+    "code": "1295",
+    "name": "יאנוח-ג'ת",
+    "aliases": [
+      "YANUH-JAT"
+    ]
+  },
+  {
+    "code": "1296",
+    "name": "כסרא-סמיע",
+    "aliases": [
+      "KISRA-SUMEI"
+    ]
+  },
+  {
+    "code": "1297",
+    "name": "כפר חנניה",
+    "aliases": [
+      "KEFAR HANANYA"
+    ]
+  },
+  {
+    "code": "1298",
+    "name": "אתגר",
+    "aliases": [
+      "ETGAR"
+    ]
+  },
+  {
+    "code": "1303",
+    "name": "חורה",
+    "aliases": [
+      "HURA"
+    ]
+  },
+  {
+    "code": "1304",
+    "name": "שוהם",
+    "aliases": [
+      "SHOHAM"
+    ]
+  },
+  {
+    "code": "1309",
+    "name": "אלעד",
+    "aliases": [
+      "EL'AD"
+    ]
+  },
+  {
+    "code": "1310",
+    "name": "לפיד",
+    "aliases": [
+      "LAPPID"
+    ]
+  },
+  {
+    "code": "1311",
+    "name": "אבשלום",
+    "aliases": [
+      "AVSHALOM"
+    ]
+  },
+  {
+    "code": "1313",
+    "name": "פוריה עילית",
+    "aliases": [
+      "PORIYYA ILLIT"
+    ]
+  },
+  {
+    "code": "1314",
+    "name": "נווה זיו",
+    "aliases": [
+      "NEWE ZIV"
+    ]
+  },
+  {
+    "code": "1315",
+    "name": "מתן",
+    "aliases": [
+      "MATTAN"
+    ]
+  },
+  {
+    "code": "1316",
+    "name": "אל-עריאן",
+    "aliases": [
+      "AL-ARYAN"
+    ]
+  },
+  {
+    "code": "1317",
+    "name": "דמיידה",
+    "aliases": [
+      "DEMEIDE"
+    ]
+  },
+  {
+    "code": "1318",
+    "name": "מבואות ים",
+    "aliases": [
+      "MEVO'OT YAM"
+    ]
+  },
+  {
+    "code": "1319",
+    "name": "בת חפר",
+    "aliases": [
+      "BAT HEFER"
+    ]
+  },
+  {
+    "code": "1320",
+    "name": "עין חוד",
+    "aliases": [
+      "EIN HOD"
+    ]
+  },
+  {
+    "code": "1321",
+    "name": "ח'ואלד",
+    "aliases": [
+      "KHAWALED"
+    ]
+  },
+  {
+    "code": "1322",
+    "name": "הודיות",
+    "aliases": [
+      "HODAYOT"
+    ]
+  },
+  {
+    "code": "1323",
+    "name": "בת הדר",
+    "aliases": [
+      "BAT HADAR"
+    ]
+  },
+  {
+    "code": "1324",
+    "name": "ארסוף",
+    "aliases": [
+      "ARSUF"
+    ]
+  },
+  {
+    "code": "1325",
+    "name": "כפר זוהרים",
+    "aliases": [
+      "KEFAR ZOHARIM"
+    ]
+  },
+  {
+    "code": "1326",
+    "name": "בסמ\"ה",
+    "aliases": [
+      "BASMA"
+    ]
+  },
+  {
+    "code": "1327",
+    "name": "מעלה עירון",
+    "aliases": [
+      "MA'ALE IRON"
+    ]
+  },
+  {
+    "code": "1330",
+    "name": "אחוזת ברק",
+    "aliases": [
+      "AHUZZAT BARAQ"
+    ]
+  },
+  {
+    "code": "1331",
+    "name": "כמאנה",
+    "aliases": []
+  },
+  {
+    "code": "1332",
+    "name": "חוסנייה",
+    "aliases": [
+      "HUSSNIYYA"
+    ]
+  },
+  {
+    "code": "1333",
+    "name": "נוף איילון",
+    "aliases": [
+      "NOF AYYALON"
+    ]
+  },
+  {
+    "code": "1334",
+    "name": "ראס אל-עין",
+    "aliases": [
+      "RAS AL-EIN"
+    ]
+  },
+  {
+    "code": "1335",
+    "name": "ערב אל נעים",
+    "aliases": [
+      "ARRAB AL NAIM"
+    ]
+  },
+  {
+    "code": "1336",
+    "name": "אירוס",
+    "aliases": [
+      "IRUS"
+    ]
+  },
+  {
+    "code": "1337",
+    "name": "שמשית",
+    "aliases": [
+      "SHIMSHIT"
+    ]
+  },
+  {
+    "code": "1338",
+    "name": "כדיתה",
+    "aliases": [
+      "KADDITA"
+    ]
+  },
+  {
+    "code": "1339",
+    "name": "אל-עזי",
+    "aliases": [
+      "AL-AZY"
+    ]
+  },
+  {
+    "code": "1340",
+    "name": "מרחב עם",
+    "aliases": [
+      "MERHAV AM"
+    ]
+  },
+  {
+    "code": "1341",
+    "name": "רוח מדבר",
+    "aliases": [
+      "RUAH MIDBAR"
+    ]
+  },
+  {
+    "code": "1342",
+    "name": "אבו קרינאת (יישוב)",
+    "aliases": [
+      "ABU QUREINAT"
+    ]
+  },
+  {
+    "code": "1343",
+    "name": "מכחול",
+    "aliases": [
+      "MAKCHUL"
+    ]
+  },
+  {
+    "code": "1344",
+    "name": "גבעות בר",
+    "aliases": [
+      "GEVA'OT BAR"
+    ]
+  },
+  {
+    "code": "1345",
+    "name": "צור יצחק",
+    "aliases": [
+      "ZUR YIZHAQ"
+    ]
+  },
+  {
+    "code": "1346",
+    "name": "תראבין א-צאנע(ישוב)",
+    "aliases": [
+      "TARABIN AS-SANI"
+    ]
+  },
+  {
+    "code": "1347",
+    "name": "קצר א-סר",
+    "aliases": []
+  },
+  {
+    "code": "1348",
+    "name": "ביר הדאג'",
+    "aliases": [
+      "BIR HADAGE"
+    ]
+  },
+  {
+    "code": "1349",
+    "name": "דריג'את",
+    "aliases": [
+      "DERIG'AT"
+    ]
+  },
+  {
+    "code": "1358",
+    "name": "אום בטין",
+    "aliases": [
+      "UMM BATIN"
+    ]
+  },
+  {
+    "code": "1359",
+    "name": "אל סייד",
+    "aliases": [
+      "AL SAYYID"
+    ]
+  },
+  {
+    "code": "1360",
+    "name": "סעוה",
+    "aliases": [
+      "SA'WA"
+    ]
+  },
+  {
+    "code": "1361",
+    "name": "בת חן",
+    "aliases": [
+      "BAT HEN"
+    ]
+  },
+  {
+    "code": "1362",
+    "name": "גבעות עדן",
+    "aliases": [
+      "GIV'OT EDEN"
+    ]
+  },
+  {
+    "code": "1363",
+    "name": "בני נצרים",
+    "aliases": [
+      "BENE NEZARIM"
+    ]
+  },
+  {
+    "code": "1364",
+    "name": "שלומית",
+    "aliases": [
+      "SHLOMIT"
+    ]
+  },
+  {
+    "code": "1365",
+    "name": "אליאב",
+    "aliases": [
+      "ELIAV"
+    ]
+  },
+  {
+    "code": "1366",
+    "name": "נווה",
+    "aliases": [
+      "NAVE"
+    ]
+  },
+  {
+    "code": "1367",
+    "name": "כחלה",
+    "aliases": [
+      "KOCHLEA"
+    ]
+  },
+  {
+    "code": "1368",
+    "name": "בני דקלים",
+    "aliases": [
+      "BNE DKALIM"
+    ]
+  },
+  {
+    "code": "1369",
+    "name": "נטע",
+    "aliases": [
+      "NETA"
+    ]
+  },
+  {
+    "code": "1370",
+    "name": "מצפה אילן",
+    "aliases": [
+      "MITSPE ILAN"
+    ]
+  },
+  {
+    "code": "1371",
+    "name": "גני טל",
+    "aliases": [
+      "GANNE TAL"
+    ]
+  },
+  {
+    "code": "1372",
+    "name": "נצר חזני",
+    "aliases": [
+      "NEZER HAZZANI"
+    ]
+  },
+  {
+    "code": "1373",
+    "name": "שלווה במדבר",
+    "aliases": [
+      "SHALVA BAMIDBAR"
+    ]
+  },
+  {
+    "code": "1374",
+    "name": "כרמי קטיף",
+    "aliases": [
+      "KARME QATIF"
+    ]
+  },
+  {
+    "code": "1375",
+    "name": "אבו תלול",
+    "aliases": [
+      "ABU TULUL"
+    ]
+  },
+  {
+    "code": "1376",
+    "name": "באר גנים",
+    "aliases": [
+      "BEER GANNIM"
+    ]
+  },
+  {
+    "code": "1377",
+    "name": "שבי דרום",
+    "aliases": [
+      "SHAVE DAROM"
+    ]
+  },
+  {
+    "code": "1378",
+    "name": "שיזף",
+    "aliases": [
+      "SHEZAF"
+    ]
+  },
+  {
+    "code": "1411",
+    "name": "מחנה הילה",
+    "aliases": [
+      "MAHANE HILLA"
+    ]
+  },
+  {
+    "code": "1412",
+    "name": "מחנה תל נוף",
+    "aliases": [
+      "MAHANE TEL NOF"
+    ]
+  },
+  {
+    "code": "1413",
+    "name": "מחנה יהודית",
+    "aliases": [
+      "MAHANE YEHUDIT"
+    ]
+  },
+  {
+    "code": "1414",
+    "name": "מחנה מרים",
+    "aliases": [
+      "MAHANE MIRYAM"
+    ]
+  },
+  {
+    "code": "1415",
+    "name": "מחנה יפה",
+    "aliases": [
+      "MAHANE YAFA"
+    ]
+  },
+  {
+    "code": "1416",
+    "name": "מחנה יוכבד",
+    "aliases": [
+      "MAHANE YOKHVED"
+    ]
+  },
+  {
+    "code": "1418",
+    "name": "מחנה טלי",
+    "aliases": [
+      "MAHANE TALI"
+    ]
+  },
+  {
+    "code": "1419",
+    "name": "ניצן ב'",
+    "aliases": [
+      "NIZZAN B"
+    ]
+  },
+  {
+    "code": "2002",
+    "name": "תנובות",
+    "aliases": [
+      "TENUVOT"
+    ]
+  },
+  {
+    "code": "2003",
+    "name": "תלמי אלעזר",
+    "aliases": [
+      "TALME EL'AZAR"
+    ]
+  },
+  {
+    "code": "2006",
+    "name": "כנות",
+    "aliases": [
+      "KANNOT"
+    ]
+  },
+  {
+    "code": "2008",
+    "name": "שדה יצחק",
+    "aliases": [
+      "SEDE YIZHAQ"
+    ]
+  },
+  {
+    "code": "2009",
+    "name": "יובל",
+    "aliases": [
+      "YUVAL"
+    ]
+  },
+  {
+    "code": "2010",
+    "name": "כפר בן נון",
+    "aliases": [
+      "KEFAR BIN NUN"
+    ]
+  },
+  {
+    "code": "2011",
+    "name": "ינון",
+    "aliases": [
+      "YINNON"
+    ]
+  },
+  {
+    "code": "2012",
+    "name": "אורות",
+    "aliases": [
+      "OROT"
+    ]
+  },
+  {
+    "code": "2013",
+    "name": "בן שמן (מושב)",
+    "aliases": [
+      "BEN SHEMEN (MOSHAV)"
+    ]
+  },
+  {
+    "code": "2014",
+    "name": "גבעולים",
+    "aliases": [
+      "GIV'OLIM"
+    ]
+  },
+  {
+    "code": "2015",
+    "name": "שדי חמד",
+    "aliases": [
+      "SEDE HEMED"
+    ]
+  },
+  {
+    "code": "2016",
+    "name": "רוויה",
+    "aliases": [
+      "REWAYA"
+    ]
+  },
+  {
+    "code": "2018",
+    "name": "גבעת חיים (איחוד)",
+    "aliases": [
+      "GIV'AT HAYYIM (IHUD)"
+    ]
+  },
+  {
+    "code": "2021",
+    "name": "אשל הנשיא",
+    "aliases": [
+      "ESHEL HANASI"
+    ]
+  },
+  {
+    "code": "2023",
+    "name": "להב",
+    "aliases": [
+      "LAHAV"
+    ]
+  },
+  {
+    "code": "2024",
+    "name": "אום אל-קוטוף",
+    "aliases": [
+      "UMM AL-QUTUF"
+    ]
+  },
+  {
+    "code": "2026",
+    "name": "ירדנה",
+    "aliases": [
+      "YARDENA"
+    ]
+  },
+  {
+    "code": "2029",
+    "name": "מדרך עוז",
+    "aliases": [
+      "MIDRAKH OZ"
+    ]
+  },
+  {
+    "code": "2030",
+    "name": "מנוחה",
+    "aliases": [
+      "MENUHA"
+    ]
+  },
+  {
+    "code": "2033",
+    "name": "בית חלקיה",
+    "aliases": [
+      "BET HILQIYYA"
+    ]
+  },
+  {
+    "code": "2034",
+    "name": "חצור הגלילית",
+    "aliases": [
+      "HAZOR HAGELILIT"
+    ]
+  },
+  {
+    "code": "2035",
+    "name": "עדנים",
+    "aliases": [
+      "ADANIM"
+    ]
+  },
+  {
+    "code": "2038",
+    "name": "ברקת",
+    "aliases": [
+      "BAREQET"
+    ]
+  },
+  {
+    "code": "2039",
+    "name": "קרית יערים(מוסד)",
+    "aliases": [
+      "QIRYAT YE'ARIM(INSTI"
+    ]
+  },
+  {
+    "code": "2042",
+    "name": "עין גדי",
+    "aliases": [
+      "EN GEDI"
+    ]
+  },
+  {
+    "code": "2043",
+    "name": "בחן",
+    "aliases": [
+      "BAHAN"
+    ]
+  },
+  {
+    "code": "2044",
+    "name": "מלילות",
+    "aliases": [
+      "MELILOT"
+    ]
+  },
+  {
+    "code": "2045",
+    "name": "נחלה",
+    "aliases": [
+      "NAHALA"
+    ]
+  },
+  {
+    "code": "2046",
+    "name": "סגולה",
+    "aliases": [
+      "SEGULA"
+    ]
+  },
+  {
+    "code": "2047",
+    "name": "ניר משה",
+    "aliases": [
+      "NIR MOSHE"
+    ]
+  },
+  {
+    "code": "2048",
+    "name": "ניר עקיבא",
+    "aliases": [
+      "NIR AQIVA"
+    ]
+  },
+  {
+    "code": "2049",
+    "name": "שדה צבי",
+    "aliases": [
+      "SEDE ZEVI"
+    ]
+  },
+  {
+    "code": "2050",
+    "name": "תלמי ביל\"ו",
+    "aliases": [
+      "TALME BILU"
+    ]
+  },
+  {
+    "code": "2051",
+    "name": "רווחה",
+    "aliases": [
+      "REWAHA"
+    ]
+  },
+  {
+    "code": "2052",
+    "name": "אביטל",
+    "aliases": [
+      "AVITAL"
+    ]
+  },
+  {
+    "code": "2053",
+    "name": "פרזון",
+    "aliases": [
+      "PERAZON"
+    ]
+  },
+  {
+    "code": "2054",
+    "name": "מיטב",
+    "aliases": [
+      "METAV"
+    ]
+  },
+  {
+    "code": "2055",
+    "name": "מאור",
+    "aliases": [
+      "MA'OR"
+    ]
+  },
+  {
+    "code": "2057",
+    "name": "שדי תרומות",
+    "aliases": [
+      "SEDE TERUMOT"
+    ]
+  },
+  {
+    "code": "2059",
+    "name": "פעמי תש\"ז",
+    "aliases": [
+      "PA'AME TASHAZ"
+    ]
+  },
+  {
+    "code": "2060",
+    "name": "ברוש",
+    "aliases": [
+      "BEROSH"
+    ]
+  },
+  {
+    "code": "2061",
+    "name": "תדהר",
+    "aliases": [
+      "TIDHAR"
+    ]
+  },
+  {
+    "code": "2062",
+    "name": "תאשור",
+    "aliases": [
+      "TE'ASHUR"
+    ]
+  },
+  {
+    "code": "2063",
+    "name": "דישון",
+    "aliases": [
+      "DISHON"
+    ]
+  },
+  {
+    "code": "2064",
+    "name": "זרועה",
+    "aliases": [
+      "ZERU'A"
+    ]
+  },
+  {
+    "code": "2100",
+    "name": "טירת כרמל",
+    "aliases": [
+      "TIRAT KARMEL"
+    ]
+  },
+  {
+    "code": "2200",
+    "name": "דימונה",
+    "aliases": [
+      "DIMONA"
+    ]
+  },
+  {
+    "code": "2300",
+    "name": "קרית טבעון",
+    "aliases": [
+      "QIRYAT TIV'ON"
+    ]
+  },
+  {
+    "code": "2400",
+    "name": "אור יהודה",
+    "aliases": [
+      "OR YEHUDA"
+    ]
+  },
+  {
+    "code": "2500",
+    "name": "נשר",
+    "aliases": [
+      "NESHER"
+    ]
+  },
+  {
+    "code": "2530",
+    "name": "באר יעקב",
+    "aliases": [
+      "BE'ER YA'AQOV"
+    ]
+  },
+  {
+    "code": "2550",
+    "name": "גדרה",
+    "aliases": [
+      "GEDERA"
+    ]
+  },
+  {
+    "code": "2560",
+    "name": "ערד",
+    "aliases": [
+      "ARAD"
+    ]
+  },
+  {
+    "code": "2600",
+    "name": "אילת",
+    "aliases": [
+      "ELAT"
+    ]
+  },
+  {
+    "code": "2610",
+    "name": "בית שמש",
+    "aliases": [
+      "BET SHEMESH"
+    ]
+  },
+  {
+    "code": "2620",
+    "name": "קרית אונו",
+    "aliases": [
+      "QIRYAT ONO"
+    ]
+  },
+  {
+    "code": "2630",
+    "name": "קרית גת",
+    "aliases": [
+      "QIRYAT GAT"
+    ]
+  },
+  {
+    "code": "2640",
+    "name": "ראש העין",
+    "aliases": [
+      "ROSH HAAYIN"
+    ]
+  },
+  {
+    "code": "2650",
+    "name": "רמת השרון",
+    "aliases": [
+      "RAMAT HASHARON"
+    ]
+  },
+  {
+    "code": "2660",
+    "name": "יבנה",
+    "aliases": [
+      "YAVNE"
+    ]
+  },
+  {
+    "code": "2710",
+    "name": "אום אל-פחם",
+    "aliases": [
+      "UMM AL-FAHM"
+    ]
+  },
+  {
+    "code": "2720",
+    "name": "טירה",
+    "aliases": [
+      "TIRE"
+    ]
+  },
+  {
+    "code": "2730",
+    "name": "טייבה",
+    "aliases": [
+      "TAYIBE"
+    ]
+  },
+  {
+    "code": "2742",
+    "name": "זבארגה (שבט)",
+    "aliases": [
+      "ZABARGA"
+    ]
+  },
+  {
+    "code": "2800",
+    "name": "קרית שמונה",
+    "aliases": [
+      "QIRYAT SHEMONA"
+    ]
+  },
+  {
+    "code": "3000",
+    "name": "ירושלים",
+    "aliases": [
+      "JERUSALEM"
+    ]
+  },
+  {
+    "code": "3400",
+    "name": "חברון",
+    "aliases": []
+  },
+  {
+    "code": "3488",
+    "name": "כפר עציון",
+    "aliases": [
+      "KEFAR EZYON"
+    ]
+  },
+  {
+    "code": "3499",
+    "name": "בר כוכבא",
+    "aliases": [
+      "BAR KOKHVA"
+    ]
+  },
+  {
+    "code": "3555",
+    "name": "נתיב הגדוד",
+    "aliases": [
+      "NETIV HAGEDUD"
+    ]
+  },
+  {
+    "code": "3556",
+    "name": "אלמוג",
+    "aliases": [
+      "ALMOG"
+    ]
+  },
+  {
+    "code": "3557",
+    "name": "קדומים",
+    "aliases": [
+      "QEDUMIM"
+    ]
+  },
+  {
+    "code": "3558",
+    "name": "תומר",
+    "aliases": [
+      "TOMER"
+    ]
+  },
+  {
+    "code": "3560",
+    "name": "אלקנה",
+    "aliases": [
+      "ELQANA"
+    ]
+  },
+  {
+    "code": "3561",
+    "name": "מגדל עוז",
+    "aliases": [
+      "MIGDAL OZ"
+    ]
+  },
+  {
+    "code": "3563",
+    "name": "תקוע",
+    "aliases": [
+      "TEQOA"
+    ]
+  },
+  {
+    "code": "3564",
+    "name": "כוכב השחר",
+    "aliases": [
+      "KOKHAV HASHAHAR"
+    ]
+  },
+  {
+    "code": "3565",
+    "name": "רימונים",
+    "aliases": [
+      "RIMMONIM"
+    ]
+  },
+  {
+    "code": "3566",
+    "name": "יפית",
+    "aliases": [
+      "YAFIT"
+    ]
+  },
+  {
+    "code": "3567",
+    "name": "סלעית",
+    "aliases": [
+      "SAL'IT"
+    ]
+  },
+  {
+    "code": "3568",
+    "name": "ריחן",
+    "aliases": [
+      "REHAN"
+    ]
+  },
+  {
+    "code": "3569",
+    "name": "מבוא דותן",
+    "aliases": [
+      "MEVO DOTAN"
+    ]
+  },
+  {
+    "code": "3570",
+    "name": "אריאל",
+    "aliases": [
+      "ARI'EL"
+    ]
+  },
+  {
+    "code": "3571",
+    "name": "שבי שומרון",
+    "aliases": [
+      "SHAVE SHOMERON"
+    ]
+  },
+  {
+    "code": "3572",
+    "name": "כפר תפוח",
+    "aliases": [
+      "KEFAR TAPPUAH"
+    ]
+  },
+  {
+    "code": "3573",
+    "name": "נוה צוף",
+    "aliases": [
+      "NEVE TSUF"
+    ]
+  },
+  {
+    "code": "3574",
+    "name": "בית אל",
+    "aliases": [
+      "BET EL"
+    ]
+  },
+  {
+    "code": "3575",
+    "name": "בית חורון",
+    "aliases": [
+      "BET HORON"
+    ]
+  },
+  {
+    "code": "3576",
+    "name": "מצפה יריחו",
+    "aliases": [
+      "MIZPE YERIHO"
+    ]
+  },
+  {
+    "code": "3578",
+    "name": "שדמות מחולה",
+    "aliases": [
+      "SHADMOT MEHOLA"
+    ]
+  },
+  {
+    "code": "3579",
+    "name": "אלון מורה",
+    "aliases": [
+      "ELON MORE"
+    ]
+  },
+  {
+    "code": "3598",
+    "name": "ארגמן",
+    "aliases": [
+      "ARGAMAN"
+    ]
+  },
+  {
+    "code": "3599",
+    "name": "מחולה",
+    "aliases": [
+      "MEHOLA"
+    ]
+  },
+  {
+    "code": "3601",
+    "name": "קליה",
+    "aliases": [
+      "QALYA"
+    ]
+  },
+  {
+    "code": "3602",
+    "name": "ראש צורים",
+    "aliases": [
+      "ROSH ZURIM"
+    ]
+  },
+  {
+    "code": "3603",
+    "name": "הר גילה",
+    "aliases": [
+      "HAR GILLO"
+    ]
+  },
+  {
+    "code": "3604",
+    "name": "אלון שבות",
+    "aliases": [
+      "ALLON SHEVUT"
+    ]
+  },
+  {
+    "code": "3605",
+    "name": "משואה",
+    "aliases": [
+      "MASSU'A"
+    ]
+  },
+  {
+    "code": "3606",
+    "name": "גלגל",
+    "aliases": [
+      "GILGAL"
+    ]
+  },
+  {
+    "code": "3607",
+    "name": "ייט\"ב",
+    "aliases": [
+      "YITAV"
+    ]
+  },
+  {
+    "code": "3608",
+    "name": "מעלה אפרים",
+    "aliases": [
+      "MA'ALE EFRAYIM"
+    ]
+  },
+  {
+    "code": "3609",
+    "name": "חמרה",
+    "aliases": [
+      "HAMRA"
+    ]
+  },
+  {
+    "code": "3610",
+    "name": "מצפה שלם",
+    "aliases": [
+      "MIZPE SHALEM"
+    ]
+  },
+  {
+    "code": "3611",
+    "name": "קרית ארבע",
+    "aliases": [
+      "QIRYAT ARBA"
+    ]
+  },
+  {
+    "code": "3612",
+    "name": "בקעות",
+    "aliases": [
+      "BEQA'OT"
+    ]
+  },
+  {
+    "code": "3613",
+    "name": "גיתית",
+    "aliases": [
+      "GITTIT"
+    ]
+  },
+  {
+    "code": "3614",
+    "name": "מכורה",
+    "aliases": [
+      "MEKHORA"
+    ]
+  },
+  {
+    "code": "3615",
+    "name": "פצאל",
+    "aliases": [
+      "PEZA'EL"
+    ]
+  },
+  {
+    "code": "3616",
+    "name": "מעלה אדומים",
+    "aliases": [
+      "MA'ALE ADUMMIM"
+    ]
+  },
+  {
+    "code": "3617",
+    "name": "עופרה",
+    "aliases": [
+      "OFRA"
+    ]
+  },
+  {
+    "code": "3618",
+    "name": "אלעזר",
+    "aliases": [
+      "EL'AZAR"
+    ]
+  },
+  {
+    "code": "3619",
+    "name": "רועי",
+    "aliases": [
+      "RO'I"
+    ]
+  },
+  {
+    "code": "3620",
+    "name": "נערן",
+    "aliases": [
+      "NA'ARAN"
+    ]
+  },
+  {
+    "code": "3638",
+    "name": "כפר אדומים",
+    "aliases": [
+      "KEFAR ADUMMIM"
+    ]
+  },
+  {
+    "code": "3639",
+    "name": "ורד יריחו",
+    "aliases": [
+      "WERED YERIHO"
+    ]
+  },
+  {
+    "code": "3640",
+    "name": "קרני שומרון",
+    "aliases": [
+      "QARNE SHOMERON"
+    ]
+  },
+  {
+    "code": "3641",
+    "name": "שילה",
+    "aliases": [
+      "SHILO"
+    ]
+  },
+  {
+    "code": "3642",
+    "name": "חומש",
+    "aliases": [
+      "HOMESH"
+    ]
+  },
+  {
+    "code": "3643",
+    "name": "חיננית",
+    "aliases": [
+      "HINNANIT"
+    ]
+  },
+  {
+    "code": "3644",
+    "name": "גבעון החדשה",
+    "aliases": [
+      "GIV'ON HAHADASHA"
+    ]
+  },
+  {
+    "code": "3645",
+    "name": "בית הערבה",
+    "aliases": [
+      "BET HAARAVA"
+    ]
+  },
+  {
+    "code": "3646",
+    "name": "חמדת",
+    "aliases": [
+      "NAHAL HEMDAT"
+    ]
+  },
+  {
+    "code": "3647",
+    "name": "יקיר",
+    "aliases": [
+      "YAQIR"
+    ]
+  },
+  {
+    "code": "3648",
+    "name": "מתתיהו",
+    "aliases": [
+      "MATTITYAHU"
+    ]
+  },
+  {
+    "code": "3649",
+    "name": "שקד",
+    "aliases": [
+      "SHAQED"
+    ]
+  },
+  {
+    "code": "3650",
+    "name": "אפרת",
+    "aliases": [
+      "EFRAT"
+    ]
+  },
+  {
+    "code": "3651",
+    "name": "מעלה מכמש",
+    "aliases": [
+      "MA'ALE MIKHMAS"
+    ]
+  },
+  {
+    "code": "3652",
+    "name": "בית אריה",
+    "aliases": [
+      "BET ARYE"
+    ]
+  },
+  {
+    "code": "3653",
+    "name": "מעלה עמוס",
+    "aliases": [
+      "MA'ALE AMOS"
+    ]
+  },
+  {
+    "code": "3654",
+    "name": "ברקן",
+    "aliases": [
+      "BARQAN"
+    ]
+  },
+  {
+    "code": "3655",
+    "name": "ניל\"י",
+    "aliases": [
+      "NILI"
+    ]
+  },
+  {
+    "code": "3656",
+    "name": "כרמל",
+    "aliases": [
+      "KARMEL"
+    ]
+  },
+  {
+    "code": "3657",
+    "name": "מעון",
+    "aliases": [
+      "MA'ON"
+    ]
+  },
+  {
+    "code": "3658",
+    "name": "עטרת",
+    "aliases": [
+      "ATERET"
+    ]
+  },
+  {
+    "code": "3659",
+    "name": "פסגות",
+    "aliases": [
+      "PESAGOT"
+    ]
+  },
+  {
+    "code": "3660",
+    "name": "עמנואל",
+    "aliases": [
+      "IMMANU'EL"
+    ]
+  },
+  {
+    "code": "3709",
+    "name": "מבוא חורון",
+    "aliases": [
+      "MEVO HORON"
+    ]
+  },
+  {
+    "code": "3710",
+    "name": "ברכה",
+    "aliases": [
+      "BERAKHA"
+    ]
+  },
+  {
+    "code": "3711",
+    "name": "שא-נור",
+    "aliases": [
+      "SA-NUR"
+    ]
+  },
+  {
+    "code": "3712",
+    "name": "ענב",
+    "aliases": [
+      "ENAV"
+    ]
+  },
+  {
+    "code": "3713",
+    "name": "נעמ\"ה",
+    "aliases": [
+      "NAAMA"
+    ]
+  },
+  {
+    "code": "3715",
+    "name": "עלמון",
+    "aliases": [
+      "ALMON"
+    ]
+  },
+  {
+    "code": "3717",
+    "name": "חרמש",
+    "aliases": [
+      "HERMESH"
+    ]
+  },
+  {
+    "code": "3719",
+    "name": "תלם",
+    "aliases": [
+      "TELEM"
+    ]
+  },
+  {
+    "code": "3722",
+    "name": "אשכולות",
+    "aliases": [
+      "ESHKOLOT"
+    ]
+  },
+  {
+    "code": "3723",
+    "name": "פני חבר",
+    "aliases": [
+      "PENE HEVER"
+    ]
+  },
+  {
+    "code": "3724",
+    "name": "נגוהות",
+    "aliases": [
+      "NEGOHOT"
+    ]
+  },
+  {
+    "code": "3725",
+    "name": "נווה דניאל",
+    "aliases": [
+      "NEWE DANIYYEL"
+    ]
+  },
+  {
+    "code": "3726",
+    "name": "נוקדים",
+    "aliases": [
+      "NOQEDIM"
+    ]
+  },
+  {
+    "code": "3727",
+    "name": "עלי זהב",
+    "aliases": [
+      "ALE ZAHAV"
+    ]
+  },
+  {
+    "code": "3729",
+    "name": "כדים",
+    "aliases": [
+      "KADDIM"
+    ]
+  },
+  {
+    "code": "3730",
+    "name": "גבעת זאב",
+    "aliases": [
+      "GIV'AT ZE'EV"
+    ]
+  },
+  {
+    "code": "3743",
+    "name": "טנא",
+    "aliases": [
+      "TENE"
+    ]
+  },
+  {
+    "code": "3744",
+    "name": "ברוכין",
+    "aliases": [
+      "BRUKHIN"
+    ]
+  },
+  {
+    "code": "3745",
+    "name": "בית יתיר",
+    "aliases": [
+      "BET YATTIR"
+    ]
+  },
+  {
+    "code": "3746",
+    "name": "קרית נטפים",
+    "aliases": [
+      "QIRYAT NETAFIM"
+    ]
+  },
+  {
+    "code": "3747",
+    "name": "דולב",
+    "aliases": [
+      "DOLEV"
+    ]
+  },
+  {
+    "code": "3748",
+    "name": "עתניאל",
+    "aliases": [
+      "OTNI'EL"
+    ]
+  },
+  {
+    "code": "3749",
+    "name": "יצהר",
+    "aliases": [
+      "YIZHAR"
+    ]
+  },
+  {
+    "code": "3750",
+    "name": "אלפי מנשה",
+    "aliases": [
+      "ALFE MENASHE"
+    ]
+  },
+  {
+    "code": "3751",
+    "name": "מגדלים",
+    "aliases": [
+      "MIGDALIM"
+    ]
+  },
+  {
+    "code": "3752",
+    "name": "מעלה לבונה",
+    "aliases": [
+      "MA'ALE LEVONA"
+    ]
+  },
+  {
+    "code": "3754",
+    "name": "אספר",
+    "aliases": [
+      "ASEFAR"
+    ]
+  },
+  {
+    "code": "3756",
+    "name": "סוסיה",
+    "aliases": [
+      "SUSEYA"
+    ]
+  },
+  {
+    "code": "3757",
+    "name": "ברוש הבקעה",
+    "aliases": [
+      "BROSH HABIK'A"
+    ]
+  },
+  {
+    "code": "3758",
+    "name": "גנים",
+    "aliases": [
+      "GANNIM"
+    ]
+  },
+  {
+    "code": "3759",
+    "name": "אדורה",
+    "aliases": [
+      "ADORA"
+    ]
+  },
+  {
+    "code": "3760",
+    "name": "אורנית",
+    "aliases": [
+      "ORANIT"
+    ]
+  },
+  {
+    "code": "3762",
+    "name": "איתמר",
+    "aliases": [
+      "ITAMAR"
+    ]
+  },
+  {
+    "code": "3763",
+    "name": "גבע בנימין",
+    "aliases": [
+      "GEVA BINYAMIN"
+    ]
+  },
+  {
+    "code": "3764",
+    "name": "חגי",
+    "aliases": [
+      "HAGGAI"
+    ]
+  },
+  {
+    "code": "3765",
+    "name": "עלי",
+    "aliases": [
+      "ELI"
+    ]
+  },
+  {
+    "code": "3766",
+    "name": "כרמי צור",
+    "aliases": [
+      "KARME ZUR"
+    ]
+  },
+  {
+    "code": "3767",
+    "name": "נחליאל",
+    "aliases": [
+      "NAHALI'EL"
+    ]
+  },
+  {
+    "code": "3768",
+    "name": "פדואל",
+    "aliases": [
+      "PEDU'EL"
+    ]
+  },
+  {
+    "code": "3769",
+    "name": "הר אדר",
+    "aliases": [
+      "HAR ADAR"
+    ]
+  },
+  {
+    "code": "3770",
+    "name": "חשמונאים",
+    "aliases": [
+      "HASHMONA'IM"
+    ]
+  },
+  {
+    "code": "3777",
+    "name": "סנסנה",
+    "aliases": []
+  },
+  {
+    "code": "3779",
+    "name": "כוכב יעקב",
+    "aliases": [
+      "KOKHAV YA'AQOV"
+    ]
+  },
+  {
+    "code": "3780",
+    "name": "ביתר עילית",
+    "aliases": [
+      "BETAR ILLIT"
+    ]
+  },
+  {
+    "code": "3781",
+    "name": "קדר",
+    "aliases": [
+      "QEDAR"
+    ]
+  },
+  {
+    "code": "3782",
+    "name": "רותם",
+    "aliases": [
+      "ROTEM"
+    ]
+  },
+  {
+    "code": "3783",
+    "name": "גבעות",
+    "aliases": [
+      "GVA'OT"
+    ]
+  },
+  {
+    "code": "3784",
+    "name": "שמעה",
+    "aliases": [
+      "SHIM'A"
+    ]
+  },
+  {
+    "code": "3785",
+    "name": "משכיות",
+    "aliases": [
+      "MASKIYYOT"
+    ]
+  },
+  {
+    "code": "3786",
+    "name": "אובנת",
+    "aliases": [
+      "OVNAT"
+    ]
+  },
+  {
+    "code": "3787",
+    "name": "נעלה",
+    "aliases": [
+      "NA'ALE"
+    ]
+  },
+  {
+    "code": "3788",
+    "name": "טלמון",
+    "aliases": [
+      "TALMON"
+    ]
+  },
+  {
+    "code": "3790",
+    "name": "נופים",
+    "aliases": [
+      "NOFIM"
+    ]
+  },
+  {
+    "code": "3791",
+    "name": "צופים",
+    "aliases": [
+      "ZUFIN"
+    ]
+  },
+  {
+    "code": "3793",
+    "name": "אבני חפץ",
+    "aliases": [
+      "AVNE HEFEZ"
+    ]
+  },
+  {
+    "code": "3794",
+    "name": "בת עין",
+    "aliases": [
+      "BAT AYIN"
+    ]
+  },
+  {
+    "code": "3795",
+    "name": "רבבה",
+    "aliases": [
+      "REVAVA"
+    ]
+  },
+  {
+    "code": "3796",
+    "name": "כפר האורנים",
+    "aliases": [
+      "KEFAR HAORANIM"
+    ]
+  },
+  {
+    "code": "3797",
+    "name": "מודיעין עילית",
+    "aliases": [
+      "MODI'IN ILLIT"
+    ]
+  },
+  {
+    "code": "3815",
+    "name": "תל ציון",
+    "aliases": [
+      "TEL TSIYON"
+    ]
+  },
+  {
+    "code": "3822",
+    "name": "רחלים",
+    "aliases": [
+      "REHELIM"
+    ]
+  },
+  {
+    "code": "3823",
+    "name": "גני מודיעין",
+    "aliases": [
+      "GANNE MODIIN"
+    ]
+  },
+  {
+    "code": "3824",
+    "name": "עמיחי",
+    "aliases": [
+      "AMMIHAY"
+    ]
+  },
+  {
+    "code": "3825",
+    "name": "מבואות יריחו",
+    "aliases": [
+      "MEVO'OT YERIHO"
+    ]
+  },
+  {
+    "code": "3826",
+    "name": "שער שומרון",
+    "aliases": [
+      "SHA'AR SHOMRON"
+    ]
+  },
+  {
+    "code": "3861",
+    "name": "עשהאל",
+    "aliases": [
+      "ASA'EL"
+    ]
+  },
+  {
+    "code": "3862",
+    "name": "גבעות הרואה",
+    "aliases": [
+      "GIV'OT HARO'E"
+    ]
+  },
+  {
+    "code": "3863",
+    "name": "מלאכי השלום",
+    "aliases": [
+      "MAL'AKHE HASHLOM"
+    ]
+  },
+  {
+    "code": "3864",
+    "name": "בית חוגלה",
+    "aliases": [
+      "BET HOGLA"
+    ]
+  },
+  {
+    "code": "3865",
+    "name": "משמר יהודה",
+    "aliases": [
+      "MISHMAR YEHUDA"
+    ]
+  },
+  {
+    "code": "3868",
+    "name": "שחרית",
+    "aliases": [
+      "SHAHARIT"
+    ]
+  },
+  {
+    "code": "3869",
+    "name": "אביגיל",
+    "aliases": [
+      "AVIGAYIL"
+    ]
+  },
+  {
+    "code": "3870",
+    "name": "חרשה",
+    "aliases": [
+      "HARESHA"
+    ]
+  },
+  {
+    "code": "3871",
+    "name": "מגרון",
+    "aliases": [
+      "MIGRON"
+    ]
+  },
+  {
+    "code": "3872",
+    "name": "שבות רחל",
+    "aliases": [
+      "SHVUT RAHEL"
+    ]
+  },
+  {
+    "code": "3873",
+    "name": "טל מנשה",
+    "aliases": [
+      "TAL MENASHE"
+    ]
+  },
+  {
+    "code": "3874",
+    "name": "עדי עד",
+    "aliases": [
+      "ADE AD"
+    ]
+  },
+  {
+    "code": "3875",
+    "name": "אחיה",
+    "aliases": [
+      "AHIYA"
+    ]
+  },
+  {
+    "code": "3876",
+    "name": "נופי פרת",
+    "aliases": [
+      "NOFE PRAT"
+    ]
+  },
+  {
+    "code": "3877",
+    "name": "נווה גדיד",
+    "aliases": [
+      "NEVE GADID"
+    ]
+  },
+  {
+    "code": "3878",
+    "name": "תמרה",
+    "aliases": [
+      "TMARA"
+    ]
+  },
+  {
+    "code": "3879",
+    "name": "מעוז",
+    "aliases": [
+      "MA'OZ"
+    ]
+  },
+  {
+    "code": "3880",
+    "name": "עיבל",
+    "aliases": [
+      "EVAL"
+    ]
+  },
+  {
+    "code": "3887",
+    "name": "נזר שומרון",
+    "aliases": [
+      "NEZER SHOMRON"
+    ]
+  },
+  {
+    "code": "3889",
+    "name": "כרם רעים",
+    "aliases": [
+      "KEREM RE'IM"
+    ]
+  },
+  {
+    "code": "3890",
+    "name": "נריה",
+    "aliases": [
+      "NERIYA"
+    ]
+  },
+  {
+    "code": "3891",
+    "name": "איבי הנחל",
+    "aliases": [
+      "IBBE HANAHAL"
+    ]
+  },
+  {
+    "code": "3892",
+    "name": "לשם",
+    "aliases": [
+      "LESHEM"
+    ]
+  },
+  {
+    "code": "3893",
+    "name": "גודר",
+    "aliases": [
+      "GODER"
+    ]
+  },
+  {
+    "code": "3894",
+    "name": "פרשים",
+    "aliases": [
+      "PARASHIM"
+    ]
+  },
+  {
+    "code": "3895",
+    "name": "קדם ערבה",
+    "aliases": [
+      "KEDEM ARAVA"
+    ]
+  },
+  {
+    "code": "3896",
+    "name": "יונדב",
+    "aliases": [
+      "YONADAV"
+    ]
+  },
+  {
+    "code": "3897",
+    "name": "בתרון",
+    "aliases": [
+      "BITRON"
+    ]
+  },
+  {
+    "code": "3898",
+    "name": "אלון",
+    "aliases": [
+      "ALLON"
+    ]
+  },
+  {
+    "code": "3899",
+    "name": "מצפה זיף",
+    "aliases": [
+      "MITSPE ZIF"
+    ]
+  },
+  {
+    "code": "3901",
+    "name": "לח\"י",
+    "aliases": [
+      "LEHI"
+    ]
+  },
+  {
+    "code": "3902",
+    "name": "כנפי שחר",
+    "aliases": [
+      "KANFE SHAHAR"
+    ]
+  },
+  {
+    "code": "3903",
+    "name": "מצוקי ארץ",
+    "aliases": [
+      "METSUKE ERETS"
+    ]
+  },
+  {
+    "code": "3904",
+    "name": "עין ייט\"ב",
+    "aliases": [
+      "EN YITAV"
+    ]
+  },
+  {
+    "code": "3905",
+    "name": "אביה",
+    "aliases": [
+      "AVIYA"
+    ]
+  },
+  {
+    "code": "3906",
+    "name": "אסיף",
+    "aliases": [
+      "ASIF"
+    ]
+  },
+  {
+    "code": "3907",
+    "name": "הר בזק",
+    "aliases": [
+      "HAR BEZEK"
+    ]
+  },
+  {
+    "code": "3908",
+    "name": "סחלב",
+    "aliases": [
+      "SAHLAV"
+    ]
+  },
+  {
+    "code": "3909",
+    "name": "כרמי עוז",
+    "aliases": [
+      "KARME OZ"
+    ]
+  },
+  {
+    "code": "3910",
+    "name": "שירה",
+    "aliases": [
+      "SHIRA"
+    ]
+  },
+  {
+    "code": "3922",
+    "name": "פני קדם",
+    "aliases": [
+      "PNE KEDEM"
+    ]
+  },
+  {
+    "code": "3923",
+    "name": "קרן יער",
+    "aliases": [
+      "KEREN YA'AR"
+    ]
+  },
+  {
+    "code": "3987",
+    "name": "אדוריים",
+    "aliases": [
+      "ADORAYIM"
+    ]
+  },
+  {
+    "code": "4000",
+    "name": "חיפה",
+    "aliases": [
+      "HAIFA"
+    ]
+  },
+  {
+    "code": "4001",
+    "name": "בוקעאתא",
+    "aliases": [
+      "BUQ'ATA"
+    ]
+  },
+  {
+    "code": "4002",
+    "name": "אלי-עד",
+    "aliases": [
+      "ELI-AD"
+    ]
+  },
+  {
+    "code": "4003",
+    "name": "אל-רום",
+    "aliases": [
+      "EL-ROM"
+    ]
+  },
+  {
+    "code": "4004",
+    "name": "כפר חרוב",
+    "aliases": [
+      "KEFAR HARUV"
+    ]
+  },
+  {
+    "code": "4005",
+    "name": "חספין",
+    "aliases": [
+      "HASPIN"
+    ]
+  },
+  {
+    "code": "4006",
+    "name": "קשת",
+    "aliases": [
+      "QESHET"
+    ]
+  },
+  {
+    "code": "4007",
+    "name": "יונתן",
+    "aliases": [
+      "YONATAN"
+    ]
+  },
+  {
+    "code": "4008",
+    "name": "מעלה גמלא",
+    "aliases": [
+      "MA'ALE GAMLA"
+    ]
+  },
+  {
+    "code": "4009",
+    "name": "שעל",
+    "aliases": [
+      "SHA'AL"
+    ]
+  },
+  {
+    "code": "4010",
+    "name": "אודם",
+    "aliases": [
+      "ODEM"
+    ]
+  },
+  {
+    "code": "4011",
+    "name": "אבני איתן",
+    "aliases": [
+      "AVNE ETAN"
+    ]
+  },
+  {
+    "code": "4012",
+    "name": "אניעם",
+    "aliases": [
+      "ANI'AM"
+    ]
+  },
+  {
+    "code": "4013",
+    "name": "אורטל",
+    "aliases": [
+      "ORTAL"
+    ]
+  },
+  {
+    "code": "4014",
+    "name": "נטור",
+    "aliases": [
+      "NATUR"
+    ]
+  },
+  {
+    "code": "4015",
+    "name": "בני יהודה",
+    "aliases": [
+      "BENE YEHUDA"
+    ]
+  },
+  {
+    "code": "4017",
+    "name": "אלוני הבשן",
+    "aliases": [
+      "ALLONE HABASHAN"
+    ]
+  },
+  {
+    "code": "4019",
+    "name": "מיצר",
+    "aliases": [
+      "MEZAR"
+    ]
+  },
+  {
+    "code": "4021",
+    "name": "גבעת יואב",
+    "aliases": [
+      "GIV'AT YO'AV"
+    ]
+  },
+  {
+    "code": "4022",
+    "name": "גשור",
+    "aliases": [
+      "GESHUR"
+    ]
+  },
+  {
+    "code": "4024",
+    "name": "קלע",
+    "aliases": [
+      "QELA"
+    ]
+  },
+  {
+    "code": "4025",
+    "name": "קדמת צבי",
+    "aliases": [
+      "QIDMAT ZEVI"
+    ]
+  },
+  {
+    "code": "4026",
+    "name": "חד-נס",
+    "aliases": [
+      "HAD-NES"
+    ]
+  },
+  {
+    "code": "4028",
+    "name": "כנף",
+    "aliases": [
+      "KANAF"
+    ]
+  },
+  {
+    "code": "4029",
+    "name": "רמת הנשיא טראמפ",
+    "aliases": [
+      "PRESIDENT TRUMP HEI"
+    ]
+  },
+  {
+    "code": "4035",
+    "name": "נמרוד",
+    "aliases": [
+      "NIMROD"
+    ]
+  },
+  {
+    "code": "4100",
+    "name": "קצרין",
+    "aliases": [
+      "QAZRIN"
+    ]
+  },
+  {
+    "code": "4101",
+    "name": "מרום גולן",
+    "aliases": [
+      "MEROM GOLAN"
+    ]
+  },
+  {
+    "code": "4201",
+    "name": "מג'דל שמס",
+    "aliases": [
+      "MAJDAL SHAMS"
+    ]
+  },
+  {
+    "code": "4203",
+    "name": "מסעדה",
+    "aliases": [
+      "MAS'ADE"
+    ]
+  },
+  {
+    "code": "4204",
+    "name": "מבוא חמה",
+    "aliases": [
+      "MEVO HAMMA"
+    ]
+  },
+  {
+    "code": "4301",
+    "name": "אפיק",
+    "aliases": [
+      "AFIQ"
+    ]
+  },
+  {
+    "code": "4303",
+    "name": "נווה אטי\"ב",
+    "aliases": [
+      "NEWE ATIV"
+    ]
+  },
+  {
+    "code": "4304",
+    "name": "נוב",
+    "aliases": [
+      "NOV"
+    ]
+  },
+  {
+    "code": "4501",
+    "name": "ע'ג'ר",
+    "aliases": [
+      "GHAJAR"
+    ]
+  },
+  {
+    "code": "4502",
+    "name": "עין קנייא",
+    "aliases": [
+      "EIN QINIYYE"
+    ]
+  },
+  {
+    "code": "4503",
+    "name": "עין זיוון",
+    "aliases": [
+      "EN ZIWAN"
+    ]
+  },
+  {
+    "code": "4551",
+    "name": "נאות גולן",
+    "aliases": [
+      "NE'OT GOLAN"
+    ]
+  },
+  {
+    "code": "4701",
+    "name": "רמת מגשימים",
+    "aliases": [
+      "RAMAT MAGSHIMIM"
+    ]
+  },
+  {
+    "code": "4702",
+    "name": "רמות",
+    "aliases": [
+      "RAMOT"
+    ]
+  },
+  {
+    "code": "5000",
+    "name": "תל אביב - יפו",
+    "aliases": [
+      "TEL AVIV - YAFO"
+    ]
+  },
+  {
+    "code": "6000",
+    "name": "באקה אל-גרביה",
+    "aliases": [
+      "BAQA AL-GHARBIYYE"
+    ]
+  },
+  {
+    "code": "6100",
+    "name": "בני ברק",
+    "aliases": [
+      "BENE BERAQ"
+    ]
+  },
+  {
+    "code": "6200",
+    "name": "בת ים",
+    "aliases": [
+      "BAT YAM"
+    ]
+  },
+  {
+    "code": "6300",
+    "name": "גבעתיים",
+    "aliases": [
+      "GIV'ATAYIM"
+    ]
+  },
+  {
+    "code": "6400",
+    "name": "הרצליה",
+    "aliases": [
+      "HERZELIYYA"
+    ]
+  },
+  {
+    "code": "6500",
+    "name": "חדרה",
+    "aliases": [
+      "HADERA"
+    ]
+  },
+  {
+    "code": "6600",
+    "name": "חולון",
+    "aliases": [
+      "HOLON"
+    ]
+  },
+  {
+    "code": "6700",
+    "name": "טבריה",
+    "aliases": [
+      "TIBERIAS"
+    ]
+  },
+  {
+    "code": "6800",
+    "name": "קרית אתא",
+    "aliases": [
+      "QIRYAT ATTA"
+    ]
+  },
+  {
+    "code": "6900",
+    "name": "כפר סבא",
+    "aliases": [
+      "KEFAR SAVA"
+    ]
+  },
+  {
+    "code": "7000",
+    "name": "לוד",
+    "aliases": [
+      "LOD"
+    ]
+  },
+  {
+    "code": "7100",
+    "name": "אשקלון",
+    "aliases": [
+      "ASHQELON"
+    ]
+  },
+  {
+    "code": "7200",
+    "name": "נס ציונה",
+    "aliases": [
+      "NES ZIYYONA"
+    ]
+  },
+  {
+    "code": "7300",
+    "name": "נצרת",
+    "aliases": [
+      "NAZARETH"
+    ]
+  },
+  {
+    "code": "7400",
+    "name": "נתניה",
+    "aliases": [
+      "NETANYA"
+    ]
+  },
+  {
+    "code": "7500",
+    "name": "סח'נין",
+    "aliases": [
+      "SAKHNIN"
+    ]
+  },
+  {
+    "code": "7600",
+    "name": "עכו",
+    "aliases": [
+      "AKKO"
+    ]
+  },
+  {
+    "code": "7700",
+    "name": "עפולה",
+    "aliases": [
+      "AFULA"
+    ]
+  },
+  {
+    "code": "7800",
+    "name": "פרדס חנה-כרכור",
+    "aliases": [
+      "PARDES HANNA-KARKUR"
+    ]
+  },
+  {
+    "code": "7900",
+    "name": "פתח תקווה",
+    "aliases": [
+      "PETAH TIQWA"
+    ]
+  },
+  {
+    "code": "8000",
+    "name": "צפת",
+    "aliases": [
+      "ZEFAT"
+    ]
+  },
+  {
+    "code": "8200",
+    "name": "קרית מוצקין",
+    "aliases": [
+      "QIRYAT MOTZKIN"
+    ]
+  },
+  {
+    "code": "8300",
+    "name": "ראשון לציון",
+    "aliases": [
+      "RISHON LEZIYYON"
+    ]
+  },
+  {
+    "code": "8400",
+    "name": "רחובות",
+    "aliases": [
+      "REHOVOT"
+    ]
+  },
+  {
+    "code": "8500",
+    "name": "רמלה",
+    "aliases": [
+      "RAMLA"
+    ]
+  },
+  {
+    "code": "8600",
+    "name": "רמת גן",
+    "aliases": [
+      "RAMAT GAN"
+    ]
+  },
+  {
+    "code": "8700",
+    "name": "רעננה",
+    "aliases": [
+      "RA'ANANA"
+    ]
+  },
+  {
+    "code": "8800",
+    "name": "שפרעם",
+    "aliases": [
+      "SHEFAR'AM"
+    ]
+  },
+  {
+    "code": "8900",
+    "name": "טמרה",
+    "aliases": [
+      "TAMRA"
+    ]
+  },
+  {
+    "code": "9000",
+    "name": "באר שבע",
+    "aliases": [
+      "BE'ER SHEVA"
+    ]
+  },
+  {
+    "code": "9100",
+    "name": "נהריה",
+    "aliases": [
+      "NAHARIYYA"
+    ]
+  },
+  {
+    "code": "9200",
+    "name": "בית שאן",
+    "aliases": [
+      "BET SHE'AN"
+    ]
+  },
+  {
+    "code": "9300",
+    "name": "זכרון יעקב",
+    "aliases": [
+      "ZIKHRON YA'AQOV"
+    ]
+  },
+  {
+    "code": "9400",
+    "name": "יהוד-מונוסון",
+    "aliases": [
+      "YEHUD-MONOSON"
+    ]
+  },
+  {
+    "code": "9500",
+    "name": "קרית ביאליק",
+    "aliases": [
+      "QIRYAT BIALIK"
+    ]
+  },
+  {
+    "code": "9600",
+    "name": "קרית ים",
+    "aliases": [
+      "QIRYAT YAM"
+    ]
+  },
+  {
+    "code": "9700",
+    "name": "הוד השרון",
+    "aliases": [
+      "HOD HASHARON"
+    ]
+  },
+  {
+    "code": "9800",
+    "name": "בנימינה-גבעת עדה",
+    "aliases": [
+      "BINYAMINA"
+    ]
+  }
+]

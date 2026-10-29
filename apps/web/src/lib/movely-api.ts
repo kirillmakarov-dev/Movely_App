@@ -17,6 +17,27 @@ export async function getAuthCapabilities(signal?: AbortSignal) {
   return result;
 }
 
+export type Locality = { code: string; name: string };
+
+export async function getLocalities(signal?: AbortSignal): Promise<Locality[]> {
+  const result = await requestJson<unknown>("/api/v1/localities", { method: "GET", signal });
+  const codes = new Set<string>();
+  if (!Array.isArray(result) || result.length === 0 || result.length > 10_000) {
+    throw new MovelyApiError("רשימת היישובים אינה זמינה כרגע.", { errorCode: "LOCALITIES_INVALID_RESPONSE", status: 0 });
+  }
+  return result.map((value: unknown) => {
+    const locality = value as Partial<Locality> | null;
+    if (!locality || typeof locality.code !== "string" || !/^[1-9][0-9]{0,5}$/.test(locality.code)
+      || codes.has(locality.code) || typeof locality.name !== "string" || !locality.name.trim()
+      || locality.name !== locality.name.trim() || locality.name.length > 120 || /[\p{Cc}\p{Cf}]/u.test(locality.name)) {
+      throw new MovelyApiError("רשימת היישובים אינה זמינה כרגע.", { errorCode: "LOCALITIES_INVALID_RESPONSE", status: 0 });
+    }
+    codes.add(locality.code);
+    // Suggestions only need these two public fields; never consume URLs or extra payload metadata.
+    return { code: locality.code, name: locality.name };
+  });
+}
+
 type ApiErrorShape = {
   errorCode?: string;
   message?: string;
@@ -198,6 +219,8 @@ export type ApartmentMoveDetailsDto = {
 };
 
 export type UpdateMoveRequestRequest = {
+  expectedCurrentVersionId?: string | null;
+  contactSharing?: { shareContacts: boolean; disclosureVersion: string; maxRecipients: number } | null;
   requestType: MoveRequestType;
   pickup: MoveLocationDto | null;
   destination: MoveLocationDto | null;
@@ -312,6 +335,7 @@ function toApiError(status: number, payload: unknown, fallbackMessage: string) {
     OTP_NOT_FOUND: "בקשו קוד חדש למספר הטלפון הזה.",
     OTP_EXPIRED: "תוקף הקוד פג. בקשו קוד חדש.",
     OTP_CODE_INVALID: "הקוד אינו תקין. בדקו את הקוד שקיבלתם ונסו שוב.",
+    REQUEST_VERSION_CONFLICT: "הבקשה השתנתה מאז שנפתחה. שמרו עותק של השינויים שלא נשמרו ורעננו את הבקשה לפני ניסיון נוסף.",
   };
   return new MovelyApiError(consentMessages[shape.errorCode ?? ""] ?? shape.message ?? fallbackMessage, {
     errorCode: shape.errorCode ?? "HTTP_ERROR",

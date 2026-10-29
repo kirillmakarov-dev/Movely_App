@@ -1,6 +1,7 @@
 namespace Movely.Api.Modules.MoveRequests;
 
 using Movely.Api.Data;
+using Movely.Api.Modules.Identity;
 
 public sealed record CreateMoveRequestRequest(MoveRequestType RequestType);
 
@@ -14,7 +15,9 @@ public sealed record UpdateMoveRequestRequest(
     MoveScheduleDto? Schedule,
     MoveBudgetBand? BudgetBand,
     string? CustomerComment,
-    IReadOnlyList<MovePhotoDto>? Photos);
+    IReadOnlyList<MovePhotoDto>? Photos,
+    Guid? ExpectedCurrentVersionId = null,
+    ContactSharingRequest? ContactSharing = null);
 
 public sealed record MoveLocationDto(
     string? City,
