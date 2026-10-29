@@ -28,3 +28,8 @@ For the database suite, set `MOVELY_TEST_POSTGRES_CONNECTION_STRING` to a dedica
 Actions are pinned to verified commit SHAs, checkout does not persist credentials, and workflow permissions are read-only. Branch protection is not enabled by this file; configuring required checks remains a repository-owner release decision.
 
 Initial local limitation on 2026-10-29: Docker Desktop failed during Inference Manager initialization. No factory reset or data deletion was attempted. PostgreSQL execution is therefore to be verified through the isolated GitHub service container.
+
+
+## Verified run
+
+[Run 40886340053](https://github.com/kirillmakarov-dev/Movely_App/actions/runs/40886340053) completed successfully for source commit `6d72328c0ca4e45a0eb31474cbd5d7d9f6841b1a`: both jobs passed; 79 API tests and 16 PostgreSQL tests passed with zero skips, along with web audit/tests and both builds. The initial CI run exposed the relational insert cycle in draft creation; the successful run includes the transactional fix and its rollback regression test.
