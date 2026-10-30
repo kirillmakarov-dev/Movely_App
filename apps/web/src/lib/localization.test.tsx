@@ -4,7 +4,10 @@ import { renderToStaticMarkup } from "react-dom/server";
 import sourceMessages from "@/translations/source-messages.json";
 import { NextRequest } from "next/server";
 import { proxy } from "@/proxy";
-import LanguageSwitcher, { languageHref } from "@/components/LanguageSwitcher";
+import LanguageSwitcher, { LanguageProvider, languageHref } from "@/components/LanguageSwitcher";
+import HebrewHeader from "@/components/SiteHeader";
+import EnglishHeader from "@/localized/en/components/SiteHeader";
+import RussianHeader from "@/localized/ru/components/SiteHeader";
 import { messageCatalog, translateSource } from "../../scripts/generate-locales.mjs";
 import EnglishHome from "@/localized/en/app/page";
 import RussianHome from "@/localized/ru/app/page";
@@ -21,6 +24,13 @@ import * as russianApi from "@/localized/ru/lib/movely-api";
 
 afterEach(() => { cleanup(); vi.restoreAllMocks(); vi.unstubAllGlobals(); window.history.replaceState({}, "", "/"); });
 
+function withoutLanguageControls(html: string) {
+  const container = document.createElement("div");
+  container.innerHTML = html;
+  container.querySelectorAll(".language-dropdown").forEach(element => element.remove());
+  return container.innerHTML;
+}
+
 test.each([
   ["/account/support?page=2#reply", "ru", "/ru/account/support?page=2#reply"],
   ["/ru/account/requests/abc?view=full#details", "en", "/en/account/requests/abc?view=full#details"],
@@ -31,6 +41,7 @@ test.each([
 test("language switch warns before discarding edited text and can be cancelled", () => {
   const confirm = vi.spyOn(window, "confirm").mockReturnValue(false);
   render(<><LanguageSwitcher currentLocale="ru" /><textarea aria-label="draft" defaultValue="" /></>);
+  fireEvent.click(screen.getByText("Русский", { selector: "summary span" }));
   fireEvent.input(screen.getByLabelText("draft"), { target: { value: "Личные заметки" } });
   expect(fireEvent.click(screen.getByRole("link", { name: "English" }))).toBe(false);
   expect(confirm).toHaveBeenCalledWith(expect.stringContaining("Сохраните текст"));
@@ -41,6 +52,31 @@ test("server-rendered language links keep the current page before hydration", ()
   const html=renderToStaticMarkup(<LanguageSwitcher currentLocale="en" currentPath="/en/privacy?from=consent" />);
   expect(html).toContain('href="/ru/privacy?from=consent"');
   expect(html).toContain('href="/privacy?from=consent"');
+});
+
+test.each([[HebrewHeader,"he","עברית"],[EnglishHeader,"en","English"],[RussianHeader,"ru","Русский"]] as const)("header offers all three languages beside the menu: %s", (Header, locale, label) => {
+  window.history.replaceState({}, "", languageHref("/help?topic=move#contact", locale));
+  const { container } = render(<LanguageProvider currentLocale={locale} currentPath={languageHref("/help?topic=move#contact", locale)}><Header /></LanguageProvider>);
+  const dropdown = container.querySelector(".header-controls .language-dropdown") as HTMLDetailsElement;
+  expect(dropdown).not.toHaveAttribute("open");
+  expect(dropdown.nextElementSibling?.querySelector(".menu-toggle")).toBeTruthy();
+  fireEvent.click(screen.getByText(label, { selector: "summary span" }));
+  expect(dropdown.open).toBe(true);
+  for (const [code, name] of [["he","עברית"],["en","English"],["ru","Русский"]] as const) {
+    expect(screen.getByRole("link", { name, exact: true })).toHaveAttribute("href", languageHref("/help?topic=move#contact", code));
+  }
+  fireEvent.keyDown(dropdown, { key: "Escape" });
+  expect(dropdown.open).toBe(false);
+  expect(dropdown.querySelector("summary")).toHaveFocus();
+  fireEvent.click(dropdown.querySelector("summary")!);
+  fireEvent.pointerDown(document.body);
+  expect(dropdown.open).toBe(false);
+});
+
+test("header language links receive the server path through shared context", () => {
+  const html = renderToStaticMarkup(<LanguageProvider currentLocale="ru" currentPath="/ru/help?topic=move"><RussianHeader /></LanguageProvider>);
+  expect(html).toContain('href="/en/help?topic=move"');
+  expect(html).toContain('href="/help?topic=move"');
 });
 
 test.each([englishHref,russianHref])("locale navigation preserves external destinations and API paths", (href) => {
@@ -69,7 +105,7 @@ test("compilation fails on missing text instead of silently mixing languages", (
 test.each([[EnglishHome,"en"],[RussianHome,"ru"]] as const)("public home renders translated links and no Hebrew fallback: %s", (Home, locale) => {
   const html=renderToStaticMarkup(<Home />);
   expect(html).toContain(`href="/${locale}/request/new"`);
-  expect(html).not.toMatch(/[\u0590-\u05ff\u2013\u2014]/);
+  expect(withoutLanguageControls(html)).not.toMatch(/[\u0590-\u05ff\u2013\u2014]/);
   expect(html).not.toContain("&amp;larr;");
 });
 
@@ -77,7 +113,7 @@ test.each([[EnglishInfo,enPrivacy],[EnglishInfo,enTerms],[RussianInfo,ruPrivacy]
   const html=renderToStaticMarkup(<Info document={document} />);
   expect(html).toContain("draft-2026-10-29-v2");
   expect(document.draft).toBe(true);
-  expect(html).not.toMatch(/[\u0590-\u05ff\u2013\u2014]/);
+  expect(withoutLanguageControls(html)).not.toMatch(/[\u0590-\u05ff\u2013\u2014]/);
 });
 
 test.each([validateEnglish,validateRussian])("form validation is translated while preserving field IDs", (validate) => {

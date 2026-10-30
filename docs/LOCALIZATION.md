@@ -2,6 +2,8 @@
 
 The user interface supports Hebrew at the original URLs, English at `/en`, and Russian at `/ru`. Locale is explicit in the URL. Switching languages preserves the page, query and fragment; no language cookie, profile field or additional personal data is collected. Switching reloads the page, and edited inputs or wizard selections trigger a warning before leaving. Private support/business drafts are not silently persisted by the language selector.
 
+The header displays the current language in a native disclosure dropdown beside the mobile menu. It offers עברית, English and Русский by their native names, with 48px targets, Escape/focus handling and outside-click dismissal. The header uses compact navigation below 1200px to accommodate translated labels. The mobile request action is available in the menu and the home page's primary content. Pages with custom headers retain a standalone language control; CSS hides that fallback whenever the standard site header is present. Shared server-provided context preserves the requested path before hydration.
+
 ## Source and dictionaries
 
 Hebrew source components remain the single implementation of business behavior. `apps/web/src/translations/part-*.json` contains manually authored English and Russian messages keyed by their exact source text. `heReviewed` records editorial corrections; the corrected Hebrew is also present in the actual source. The source inventory contains 1,429 original messages, supplemented by four historical paragraphs and additional operational copy.

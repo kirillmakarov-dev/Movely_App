@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import type { ReactNode } from "react";
 import "./globals.css";
-import LanguageSwitcher from "@/components/LanguageSwitcher";
+import LanguageSwitcher, { LanguageProvider } from "@/components/LanguageSwitcher";
 import type { Locale } from "@/lib/locale";
 
 const metadataCopy = {
@@ -65,8 +65,10 @@ export default async function RootLayout({
   return (
     <html lang={locale} dir={locale === "he" ? "rtl" : "ltr"} className={`h-full ${hebrewFont.variable}`}>
       <body className="min-h-full text-slate-950">
-        <LanguageSwitcher currentLocale={locale} currentPath={currentPath} />
-        {children}
+        <LanguageProvider currentLocale={locale} currentPath={currentPath}>
+          <div className="locale-bar"><div className="site-container"><LanguageSwitcher /></div></div>
+          {children}
+        </LanguageProvider>
       </body>
     </html>
   );
