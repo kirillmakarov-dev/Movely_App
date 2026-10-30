@@ -1,4 +1,5 @@
 import type { ComponentPropsWithoutRef } from "react";
+import { localeHref } from "@/lib/locale";
 
 type SafeLinkProps = ComponentPropsWithoutRef<"a"> & {
   href: string;
@@ -6,5 +7,5 @@ type SafeLinkProps = ComponentPropsWithoutRef<"a"> & {
 
 // Full-page navigation avoids the current Sites/Vinext client-router failure.
 export default function SafeLink({ href, target, ...props }: SafeLinkProps) {
-  return <a href={href} target={target ?? "_top"} {...props} />;
+  return <a href={localeHref(href)} target={target ?? "_top"} {...props} />;
 }

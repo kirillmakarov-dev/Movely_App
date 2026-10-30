@@ -1,6 +1,9 @@
 import { fileURLToPath } from "node:url";
 import { resolve } from "node:path";
 import { defineConfig } from "vitest/config";
+import { generateLocales } from "./scripts/generate-locales.mjs";
+
+generateLocales();
 
 const rootDir = fileURLToPath(new URL(".", import.meta.url));
 

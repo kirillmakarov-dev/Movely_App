@@ -23,7 +23,7 @@ export default function SiteHeader() {
     }}>
       <a className="skip-link" href="#main-content">דילוג לתוכן הראשי</a>
       <div className="site-container header-layout">
-        <Link href="/" className="brand-mark" aria-label="Movely — דף הבית"><span className="brand-symbol"><Icon name="box" /></span><span dir="ltr">movely<span className="brand-dot">.</span></span></Link>
+        <Link href="/" className="brand-mark" aria-label="Movely - דף הבית"><span className="brand-symbol"><Icon name="box" /></span><span dir="ltr">movely<span className="brand-dot">.</span></span></Link>
         <nav className="desktop-nav" aria-label="ניווט ראשי">{navigation.map((item) => <Link key={item.href} href={item.href} className="nav-link">{item.label}</Link>)}</nav>
         <div className="desktop-actions"><Link href="/auth" className="button button-ghost">התחברות</Link><Link href="/request/new" className="button button-primary">מתחילים בקשה <Icon name="arrow" /></Link></div>
         <div className="mobile-actions"><Link href="/request/new" className="button button-primary">בקשה חדשה</Link><button ref={menuButton} type="button" className="menu-toggle" aria-label={menuOpen ? "סגירת תפריט" : "פתיחת תפריט"} aria-expanded={menuOpen} aria-controls="mobile-navigation" onClick={() => setMenuOpen(!menuOpen)}><Icon name={menuOpen ? "close" : "menu"} /></button></div>

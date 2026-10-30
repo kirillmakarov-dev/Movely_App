@@ -5,7 +5,7 @@ import SiteFooter from "@/components/SiteFooter";
 import SiteHeader from "@/components/SiteHeader";
 
 const questions = [
-  ["צריך להירשם לפני שמתחילים?", "לא. אפשר להתחיל לתאר את ההובלה בלי חשבון. לפני שמירת הבקשה בשרת ופרסומה נדרשים התחברות ואימות מספר הטלפון."],
+  ["צריך להירשם לפני שמתחילים?", "לא. אפשר להתחיל לתאר את ההובלה בלי חשבון. כדי לשמור את הבקשה בשרת צריך להתחבר, ולפני הפרסום צריך גם לאמת את מספר הטלפון."],
   ["אפשר להעביר רק ספה או מקרר?", "כן. בחרו בהובלה קטנה, הוסיפו את הפריטים וציינו מאיפה ולאן צריך להעביר אותם. אין צורך למלא פרטים על דירה שלמה."],
   ["מה אם עדיין לא יודעים את התקציב?", "זה בסדר. בשלב התקציב אפשר לבחור ״לא יודע/ת״. כדאי לתאר את הפריטים והגישה לבניין כדי לעזור למובילים להבין את העבודה."],
   ["האם שליחת בקשה היא הזמנת הובלה?", "לא. בקשה נועדה לתאר את הצורך שלכם. את המחיר הסופי, המועד ותנאי ההובלה מסכמים עם המוביל לפני שמזמינים שירות."],
@@ -22,7 +22,7 @@ export default function HomePage() {
             <div className="hero-content">
               <p className="eyebrow hero-eyebrow"><span /> מקום חדש. התחלה פשוטה.</p>
               <h1 id="hero-heading" className="hero-title">הדרך לבית החדש.<br /><span>מתחילה כאן.</span></h1>
-              <p className="hero-copy">דירה שלמה או רק ספה אחת — תארו מה צריך להעביר, מאיפה ולאן. אנחנו נעזור לכם לעשות סדר בפרטים, צעד אחר צעד.</p>
+              <p className="hero-copy">דירה שלמה או רק ספה אחת - תארו מה צריך להעביר, מאיפה ולאן. אנחנו נעזור לכם לעשות סדר בפרטים, צעד אחר צעד.</p>
               <div className="hero-actions">
                 <Link href="/request/new" className="button button-primary button-large">מתחילים את הבקשה <Icon name="arrow" /></Link>
                 <Link href="#how-it-works" className="button button-secondary button-large">איך זה עובד?</Link>
@@ -45,7 +45,7 @@ export default function HomePage() {
 
         <section id="move-types" className="section-block" aria-labelledby="types-heading">
           <div className="site-container">
-            <div className="section-heading"><p className="eyebrow">מוצאים את המסלול שלכם</p><h2 id="types-heading">מה עוברים היום?</h2><p>בחרו את סוג ההובלה. נציג רק את הפרטים שמתאימים לכם.</p></div>
+            <div className="section-heading"><p className="eyebrow">מוצאים את המסלול שלכם</p><h2 id="types-heading">מה מעבירים היום?</h2><p>בחרו את סוג ההובלה. נציג רק את הפרטים שמתאימים לכם.</p></div>
             <div className="category-grid">
               <Link href="/request/new/apartment" className="move-choice move-choice-apartment">
                 <div className="move-choice-top"><span className="choice-icon"><Icon name="house" /></span><span className="choice-tag">לבית כולו</span></div>

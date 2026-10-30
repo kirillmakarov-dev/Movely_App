@@ -54,7 +54,7 @@ export default function AuthPage() {
               <h2 className="mt-2 text-2xl font-bold">ברוכים הבאים, {user.firstName}</h2>
               {user.role !== "Admin" && <p className="mt-3 text-base leading-7">{user.phoneVerified ? "הטלפון שלכם מאומת." : "אמתו את הטלפון לפני פרסום בקשה או פעילות עסקית."}</p>}
             </div>
-            {(user.role === "Customer" || user.role === "Mover") && <Link href="/account/support" className="button button-secondary">פניות ועזרה אישית — ללא אישור תנאים חדשים</Link>}
+            {(user.role === "Customer" || user.role === "Mover") && <Link href="/account/support" className="button button-secondary">פניות ועזרה אישית - ללא אישור תנאים חדשים</Link>}
             {!user.hasCurrentPolicyAcceptance && <CurrentPolicyAcceptance key={user.id} disabled={busy} onBusyChange={setBusy}
               onAccepted={() => { setUser((current) => current ? { ...current, hasCurrentPolicyAcceptance: true } : current); setStatus("התנאים אושרו. אפשר להמשיך לפעילות בחשבון."); }}
               onSessionInvalid={() => { setUser(null); setStatus("החיבור לחשבון אינו תקף. התחברו מחדש כדי להמשיך."); }} />}

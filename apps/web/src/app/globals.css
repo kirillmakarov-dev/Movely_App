@@ -36,6 +36,14 @@ button, summary { cursor: pointer; }
 :focus-visible { outline: 3px solid #38bdf8; outline-offset: 3px; }
 
 .site-container { width: min(100% - 2rem, 1180px); margin-inline: auto; }
+.locale-bar { background: #eef4f7; border-bottom: 1px solid var(--line); }
+.language-options { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: .25rem; }
+.language-options a { min-height: 44px; min-width: 64px; display: inline-flex; align-items: center; justify-content: center; padding: .4rem .7rem; font-size: .9375rem; border-radius: 8px; color: var(--ink-soft); }
+.language-options a[aria-current="true"] { font-weight: 700; color: var(--brand-dark); text-decoration: underline; text-underline-offset: 5px; }
+html[dir="ltr"] body { font-family: "Segoe UI", Arial, sans-serif; }
+html[dir="ltr"] .text-right { text-align: left; }
+html[dir="ltr"] svg[data-icon="arrow"] { transform: scaleX(-1); }
+html[dir="ltr"] .tracking-\[0\.3em\] { letter-spacing: .06em; }
 .site-header { position: sticky; top: 0; z-index: 40; border-bottom: 1px solid rgba(220, 227, 233, .9); background: rgba(255, 255, 255, .96); }
 .brand-mark { font-size: 1.15rem; font-weight: 700; letter-spacing: .18em; }
 .nav-link { min-height: 44px; display: inline-flex; align-items: center; color: #334155; font-size: .95rem; font-weight: 700; transition: color 180ms ease; }

@@ -39,3 +39,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Reproducible locale modules and routes, generated from reviewed dictionaries.
+/src/localized/
+/src/app/en/
+/src/app/ru/

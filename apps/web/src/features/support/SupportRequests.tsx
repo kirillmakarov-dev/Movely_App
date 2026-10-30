@@ -1,5 +1,6 @@
 "use client";
 import { useCallback } from "react";
+import { localeHref } from "@/lib/locale";
 import Link from "@/components/SafeLink";
 import { MovelyApiError } from "@/lib/movely-api";
 import { getSupportCapabilities, getSupportRequests, supportEffectiveCount, supportStatuses, supportTopics, type SupportAudience, type SupportSearch } from "@/lib/support-api";
@@ -27,7 +28,7 @@ export default function SupportRequests({ audience, search, invalid = false }: {
     {audience === "owner" && <SupportReceiptNotice />}
     <button type="button" className="button button-secondary" onClick={resource.refresh}>רענון הרשימה</button>
     {!capabilities.requestsEnabled && <p role="status" className="rounded-xl border border-amber-200 bg-white p-4 text-base leading-7">שליחת פניות והודעות חדשות אינה זמינה כעת. ההיסטוריה נשארת זמינה.{audience === "owner" ? " אפשר לבטל פנייה פתוחה בעמוד הפנייה." : " אפשר להעביר פנייה פתוחה לבדיקה."}</p>}
-    <form action={base} method="get" className="grid gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto]">
+    <form action={localeHref(base)} method="get" className="grid gap-4 rounded-xl border border-slate-200 bg-white p-5 sm:grid-cols-2 lg:grid-cols-[1fr_1fr_auto]">
       <label className="field-label text-base">נושא<select name="type" defaultValue={type ?? ""} className="field-control min-h-12 text-base" style={{ minHeight: 48 }}><option value="">כל הנושאים</option>{supportTopics.map((topic) => <option key={topic} value={topic}>{supportTopicLabels[topic]}</option>)}</select></label>
       <label className="field-label text-base">מצב<select name="status" defaultValue={status ?? ""} className="field-control min-h-12 text-base" style={{ minHeight: 48 }}><option value="">כל המצבים</option>{supportStatuses.map((value) => <option key={value} value={value}>{supportStatusLabels[value]}</option>)}</select></label>
       <div className="flex flex-wrap items-end gap-3"><button type="submit" className="button button-primary">הצגת פניות</button><Link href={base} className="button button-secondary">איפוס סינון</Link></div>

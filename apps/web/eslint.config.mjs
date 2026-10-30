@@ -14,6 +14,9 @@ const eslintConfig = defineConfig([
     "dist/**",
     ".vinext/**",
     "next-env.d.ts",
+    "src/localized/**",
+    "src/app/en/**",
+    "src/app/ru/**",
   ]),
 ]);
 

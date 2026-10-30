@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1429,
+    "he": "Movely הוא שם המוצר. פרטי הגוף המפעיל והאחראי למידע, כתובתו וערוץ הפנייה לפרטיות טרם פורסמו. זהו תנאי שחייב להיפתר לפני פתיחת שירות ציבורי. אין כרגע מוקד פעיל להגשת בקשות פרטיות דרך האתר.",
+    "en": "Movely is the product name. The identity of the organisation operating the service and responsible for the data, its address and its privacy contact channel have not yet been published. This must be resolved before a public service can open. There is currently no active channel for submitting privacy requests through the site.",
+    "ru": "Movely является названием продукта. Сведения об организации, которая управляет сервисом и отвечает за данные, её адрес и канал связи по вопросам конфиденциальности пока не опубликованы. Это необходимо решить до открытия публичного сервиса. Сейчас на сайте нет действующего канала для подачи запросов о персональных данных."
+  },
+  {
+    "id": 1430,
+    "he": "מחיקה אוטומטית של טיוטות ונתוני חשבון בשרת עדיין לא הושלמה. אין כרגע הבטחה למחיקה אוטומטית לאחר מספר ימים. גם עריכה של בקשה יוצרת גרסאות קודמות, וסגירת בקשה אינה מוחקת אותן.",
+    "en": "Automatic deletion of drafts and account data on the server has not yet been completed. There is currently no promise of automatic deletion after a set number of days. Editing a request also creates previous versions, and closing a request does not delete them.",
+    "ru": "Автоматическое удаление черновиков и данных аккаунта на сервере пока не реализовано полностью. Сейчас нет обещания автоматического удаления через определённое число дней. При редактировании заявки также создаются предыдущие версии, и закрытие заявки их не удаляет."
+  },
+  {
+    "id": 1431,
+    "he": "לפני הפעלה ציבורית נדרשת מדיניות מפורטת לטיוטות, בקשות סגורות, תמונות, הסכמות, תשלומים ויומני אבטחה, יחד עם תהליך מחיקה שמכסה גם גרסאות, ספקים וגיבויים. חריגים הנדרשים על פי דין צריכים להיות מוסברים. אין לשלוח נתוני אמת במסגרת בדיקה שאינה מיועדת לכך.",
+    "en": "Before public operation, a detailed retention policy is required for drafts, closed requests, photos, consent records, payments and security logs, together with a deletion process that also covers versions, service providers and backups. Exceptions required by law must be explained. Do not submit real data in a test that is not intended to handle it.",
+    "ru": "До публичного запуска необходимы подробные правила хранения черновиков, закрытых заявок, фотографий, согласий, платежей и журналов безопасности, а также процесс удаления, охватывающий версии, поставщиков услуг и резервные копии. Исключения, предусмотренные законом, должны быть объяснены. Не отправляйте реальные данные в рамках тестирования, не предназначенного для их обработки."
+  },
+  {
+    "id": 1432,
+    "he": "אפשר לתקן פרטי טיוטה לפני פרסום ולבטל את שמירתה בדפדפן. ערוץ מאומת לפניות על מידע שנשמר בשרת עדיין אינו פעיל. לפני השקת השירות יפורסם כאן כיצד פונים, כיצד מזדהים ומהו תהליך הטיפול. לא נבקש סיסמה או קוד אימות של Google במסגרת פנייה כזו.",
+    "en": "You can correct draft details before publication and turn off saving the draft in your browser. An authenticated channel for enquiries about data stored on the server is not yet active. Before the service launches, this page will explain how to contact us, how to verify your identity and how requests are handled. We will not ask for your Google password or verification code in such an enquiry.",
+    "ru": "До публикации можно исправить данные черновика и отключить его сохранение в браузере. Канал обращений с подтверждением личности по поводу данных на сервере пока не работает. До запуска сервиса здесь будут опубликованы способы обращения, подтверждения личности и порядок обработки запросов. При таком обращении мы не будем просить пароль или код подтверждения Google."
+  }
+]

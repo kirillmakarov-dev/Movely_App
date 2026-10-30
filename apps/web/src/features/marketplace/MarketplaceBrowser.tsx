@@ -1,5 +1,6 @@
 "use client";
 import { useCallback, useMemo, useState } from "react";
+import { localeHref } from "@/lib/locale";
 import Link from "@/components/SafeLink";
 import { getLocalities, MovelyApiError, type Locality } from "@/lib/movely-api";
 import { getMarketplaceRequests, marketplaceBudgets, marketplaceQuery, parseMarketplaceFilters, type MarketplaceFilters } from "@/lib/marketplace-api";
@@ -27,7 +28,7 @@ function BrowserContent({ filters, basePath }: { filters: MarketplaceFilters; ba
     : state.data.totalCount : 0;
   if (state.kind === "error" && state.error instanceof MovelyApiError && [401, 403].includes(state.error.status)) return <MarketplaceError error={state.error} retry={state.retry} />;
   return <div className="min-w-0 space-y-6" dir="rtl">
-    <form key={query} action={basePath} method="get" className="filter-shell space-y-5" aria-label="סינון בקשות הובלה">
+    <form key={query} action={localeHref(basePath)} method="get" className="filter-shell space-y-5" aria-label="סינון בקשות הובלה">
       <input type="hidden" name="page" value="1" /><input type="hidden" name="pageSize" value={filters.pageSize} />
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <label className="field-label">סוג הובלה<select name="requestType" className="field-control" defaultValue={filters.requestType ?? ""}><option value="">כל סוגי ההובלה</option><option value="ApartmentMove">הובלת דירה</option><option value="SmallMove">הובלה קטנה</option></select></label>

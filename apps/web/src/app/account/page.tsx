@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
+import { localeHref } from "@/lib/locale";
 
 export default function AccountPage() {
-  redirect("/account/requests");
+  redirect(localeHref("/account/requests"));
 }

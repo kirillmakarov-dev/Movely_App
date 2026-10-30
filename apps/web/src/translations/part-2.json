@@ -1,0 +1,2860 @@
+[
+  {
+    "id": 476,
+    "he": "אישור החלטת הבדיקה",
+    "en": "Confirm review decision",
+    "ru": "Подтвердить решение по проверке"
+  },
+  {
+    "id": 477,
+    "he": "ההחלטה תירשם ביומן הבדיקות ותשנה את מצב העסק. אישור מאפשר גישה לקטלוג; השעיה עוצרת את הגישה. הודעה לבעל העסק תופיע בפרופיל שלו.",
+    "en": "The decision will be recorded in the review log and will change the business status. Approval grants access to the catalog; suspension removes access. The message to the business owner will appear in their profile.",
+    "ru": "Решение будет сохранено в журнале проверок и изменит статус компании. Одобрение открывает доступ к каталогу, а приостановка закрывает его. Сообщение владельцу появится в его профиле."
+  },
+  {
+    "id": 478,
+    "he": "שומרים החלטה…",
+    "en": "Saving decision…",
+    "ru": "Сохраняем решение…"
+  },
+  {
+    "id": 479,
+    "he": "אישור ושמירת ההחלטה",
+    "en": "Confirm and save decision",
+    "ru": "Подтвердить и сохранить решение"
+  },
+  {
+    "id": 480,
+    "he": "חזרה לעריכת ההחלטה",
+    "en": "Back to editing the decision",
+    "ru": "Вернуться к редактированию решения"
+  },
+  {
+    "id": 481,
+    "he": "מוצגות 100 הבדיקות האחרונות. קיימות החלטות קודמות שנשמרו ביומן ואינן מוצגות במסך הזה.",
+    "en": "The 100 most recent reviews are shown. Earlier decisions remain in the review log but are not displayed here.",
+    "ru": "Показаны 100 последних проверок. Более ранние решения сохранены в журнале, но не отображаются на этом экране."
+  },
+  {
+    "id": 482,
+    "he": "היסטוריית בדיקות",
+    "en": "Review history",
+    "ru": "История проверок"
+  },
+  {
+    "id": 483,
+    "he": "הודעה לבעל העסק:",
+    "en": "Message to the business owner:",
+    "ru": "Сообщение владельцу компании:"
+  },
+  {
+    "id": 484,
+    "he": "לא נכתבה הודעה",
+    "en": "No message provided",
+    "ru": "Сообщение не добавлено"
+  },
+  {
+    "id": 485,
+    "he": "תיעוד פנימי:",
+    "en": "Internal notes:",
+    "ru": "Внутренние заметки:"
+  },
+  {
+    "id": 486,
+    "he": "לא נכתב תיעוד",
+    "en": "No notes provided",
+    "ru": "Заметки не добавлены"
+  },
+  {
+    "id": 487,
+    "he": "בדיקת רישום:",
+    "en": "Registration check:",
+    "ru": "Проверка регистрации:"
+  },
+  {
+    "id": 488,
+    "he": "אושרה",
+    "en": "Approved",
+    "ru": "Подтверждено"
+  },
+  {
+    "id": 489,
+    "he": "לא אושרה",
+    "en": "Not approved",
+    "ru": "Не подтверждено"
+  },
+  {
+    "id": 490,
+    "he": "· בדיקת נציג:",
+    "en": "· Representative check:",
+    "ru": "· Проверка представителя:"
+  },
+  {
+    "id": 491,
+    "he": "אין עדיין החלטות בדיקה.",
+    "en": "No review decisions yet.",
+    "ru": "Решений по проверке пока нет."
+  },
+  {
+    "id": 492,
+    "he": "מצב העסק",
+    "en": "Business status",
+    "ru": "Статус компании"
+  },
+  {
+    "id": 493,
+    "he": "כל המצבים",
+    "en": "All statuses",
+    "ru": "Все статусы"
+  },
+  {
+    "id": 494,
+    "he": "סינון עסקים",
+    "en": "Filter businesses",
+    "ru": "Отфильтровать компании"
+  },
+  {
+    "id": 495,
+    "he": "איפוס סינון",
+    "en": "Clear filters",
+    "ru": "Сбросить фильтры"
+  },
+  {
+    "id": 496,
+    "he": "טוענים עסקים…",
+    "en": "Loading businesses…",
+    "ru": "Загружаем компании…"
+  },
+  {
+    "id": 497,
+    "he": "עסקים · עמוד",
+    "en": "Businesses · Page",
+    "ru": "Компании · Страница"
+  },
+  {
+    "id": 498,
+    "he": "פרופיל עסקי ללא שם",
+    "en": "Unnamed business profile",
+    "ru": "Профиль компании без названия"
+  },
+  {
+    "id": 499,
+    "he": "בדיקת העסק",
+    "en": "Review business",
+    "ru": "Проверить компанию"
+  },
+  {
+    "id": 500,
+    "he": "לא נמצאו עסקים בעמוד הזה",
+    "en": "No businesses found on this page",
+    "ru": "На этой странице компании не найдены"
+  },
+  {
+    "id": 501,
+    "he": "חזרה לעמוד הראשון",
+    "en": "Back to the first page",
+    "ru": "На первую страницу"
+  },
+  {
+    "id": 502,
+    "he": "עמודי עסקים",
+    "en": "Business pages",
+    "ru": "Страницы списка компаний"
+  },
+  {
+    "id": 503,
+    "he": "העמוד הקודם",
+    "en": "Previous page",
+    "ru": "Предыдущая страница"
+  },
+  {
+    "id": 504,
+    "he": "העמוד הבא",
+    "en": "Next page",
+    "ru": "Следующая страница"
+  },
+  {
+    "id": 505,
+    "he": "ממתין לבדיקה",
+    "en": "Awaiting review",
+    "ru": "Ожидает проверки"
+  },
+  {
+    "id": 506,
+    "he": "מאומת",
+    "en": "Verified",
+    "ru": "Проверено"
+  },
+  {
+    "id": 507,
+    "he": "נדרשים תיקונים",
+    "en": "Changes required",
+    "ru": "Нужны исправления"
+  },
+  {
+    "id": 508,
+    "he": "הגישה הושעתה",
+    "en": "Access suspended",
+    "ru": "Доступ приостановлен"
+  },
+  {
+    "id": 509,
+    "he": "לא הצלחנו להשלים את הפעולה. בדקו את החיבור ונסו שוב.",
+    "en": "We couldn't complete the action. Check your connection and try again.",
+    "ru": "Не удалось выполнить действие. Проверьте подключение и попробуйте ещё раз."
+  },
+  {
+    "id": 510,
+    "he": "יש להתחבר שוב לחשבון המתאים.",
+    "en": "Sign in again with the correct account.",
+    "ru": "Войдите снова в нужный аккаунт."
+  },
+  {
+    "id": 511,
+    "he": "קראו ואשרו את התנאים המעודכנים בחשבון, ואז בדקו שוב את הרשאות החשבון כאן.",
+    "en": "Read and accept the updated terms in your account, then check your account permissions here again.",
+    "ru": "Прочитайте и примите обновлённые условия в аккаунте, затем снова проверьте права доступа здесь."
+  },
+  {
+    "id": 512,
+    "he": "יש לאמת את מספר הטלפון בחשבון לפני שליחת פרטי העסק.",
+    "en": "Verify your phone number in your account before submitting business details.",
+    "ru": "Подтвердите номер телефона в аккаунте перед отправкой данных компании."
+  },
+  {
+    "id": 513,
+    "he": "שליחת פרופילים עסקיים עדיין אינה פתוחה. אפשר לבדוק שוב מאוחר יותר.",
+    "en": "Business profile submissions are not open yet. Please check again later.",
+    "ru": "Отправка профилей компаний пока недоступна. Попробуйте позже."
+  },
+  {
+    "id": 514,
+    "he": "פרטי העסק השתנו. טענו את המצב העדכני ובדקו אותו לפני שמירה נוספת. הטופס שלכם נשמר כאן.",
+    "en": "The business details have changed. Load and review the latest version before saving again. Your form entries are still here.",
+    "ru": "Данные компании изменились. Загрузите и проверьте актуальную версию перед повторным сохранением. Введённые данные остались в форме."
+  },
+  {
+    "id": 515,
+    "he": "כבר קיים עסק בחשבון. טענו את פרטיו לפני ניסיון נוסף.",
+    "en": "This account already has a business. Load its details before trying again.",
+    "ru": "К этому аккаунту уже привязана компания. Загрузите её данные перед повторной попыткой."
+  },
+  {
+    "id": 516,
+    "he": "העסק מושעה ולא ניתן לערוך אותו כרגע.",
+    "en": "This business is suspended and cannot be edited right now.",
+    "ru": "Доступ компании приостановлен. Сейчас её профиль нельзя редактировать."
+  },
+  {
+    "id": 517,
+    "he": "העסק לא נמצא או אינו זמין בחשבון הזה.",
+    "en": "The business was not found or is unavailable in this account.",
+    "ru": "Компания не найдена или недоступна в этом аккаунте."
+  },
+  {
+    "id": 518,
+    "he": "בדקו את פרטי העסק ואת אזורי השירות ותקנו את השדות לפני שליחה.",
+    "en": "Check the business details and service areas, and correct the fields before submitting.",
+    "ru": "Проверьте данные компании и районы обслуживания. Исправьте поля перед отправкой."
+  },
+  {
+    "id": 519,
+    "he": "מצב העסק השתנה. טענו את המצב העדכני לפני פעולה נוספת.",
+    "en": "The business status has changed. Load the latest status before taking another action.",
+    "ru": "Статус компании изменился. Загрузите актуальные данные перед следующим действием."
+  },
+  {
+    "id": 520,
+    "he": "בדקו את ההחלטה, הנימוקים ואישורי הבדיקה הנדרשים.",
+    "en": "Check the decision, reasons, and required review confirmations.",
+    "ru": "Проверьте решение, его обоснование и необходимые подтверждения проверки."
+  },
+  {
+    "id": 521,
+    "he": "לא ניתן לבדוק עסק שבבעלות חשבון הבודק.",
+    "en": "You cannot review a business owned by the reviewing account.",
+    "ru": "Нельзя проверять компанию, принадлежащую аккаунту проверяющего."
+  },
+  {
+    "id": 522,
+    "he": "יש לאשר שהשינוי יעביר את העסק לבדיקה חוזרת.",
+    "en": "Confirm that this change will send the business for another review.",
+    "ru": "Подтвердите, что это изменение отправит компанию на повторную проверку."
+  },
+  {
+    "id": 523,
+    "he": "יש לאשר שאתם מורשים לייצג את העסק.",
+    "en": "Confirm that you are authorized to represent the business.",
+    "ru": "Подтвердите, что у вас есть право представлять компанию."
+  },
+  {
+    "id": 524,
+    "he": "טעינת הפרטים נמשכת זמן רב מדי. אפשר לנסות שוב.",
+    "en": "Loading the details is taking too long. Please try again.",
+    "ru": "Загрузка данных занимает слишком много времени. Попробуйте ещё раз."
+  },
+  {
+    "id": 525,
+    "he": "אין הרשאה לצפות בפרטים או לבצע את הפעולה בחשבון הזה.",
+    "en": "This account does not have permission to view these details or perform this action.",
+    "ru": "У этого аккаунта нет прав на просмотр данных или выполнение действия."
+  },
+  {
+    "id": 526,
+    "he": "יש להמתין מעט לפני ניסיון נוסף.",
+    "en": "Please wait a moment before trying again.",
+    "ru": "Подождите немного перед повторной попыткой."
+  },
+  {
+    "id": 527,
+    "he": "לא הצלחנו להשלים את הפעולה. אפשר לנסות שוב מאוחר יותר.",
+    "en": "We couldn't complete the action. Please try again later.",
+    "ru": "Не удалось выполнить действие. Попробуйте позже."
+  },
+  {
+    "id": 528,
+    "he": "השלמת החשבון (לשונית חדשה)",
+    "en": "Complete account setup (new tab)",
+    "ru": "Завершить настройку аккаунта (новая вкладка)"
+  },
+  {
+    "id": 529,
+    "he": "הפרופיל העסקי",
+    "en": "Business profile",
+    "ru": "Профиль компании"
+  },
+  {
+    "id": 530,
+    "he": "מצב:",
+    "en": "Status:",
+    "ru": "Статус:"
+  },
+  {
+    "id": 531,
+    "he": "מספר עוסק / ח.פ.",
+    "en": "Business / company registration number",
+    "ru": "Регистрационный номер предпринимателя / компании (осек / х. п.)"
+  },
+  {
+    "id": 532,
+    "he": "כתובת העסק הרשומה",
+    "en": "Registered business address",
+    "ru": "Адрес регистрации компании"
+  },
+  {
+    "id": 533,
+    "he": "נציג העסק",
+    "en": "Business representative",
+    "ru": "Представитель компании"
+  },
+  {
+    "id": 534,
+    "he": "אזורי שירות",
+    "en": "Service areas",
+    "ru": "Районы обслуживания"
+  },
+  {
+    "id": 535,
+    "he": "הודעה מצוות הבדיקה",
+    "en": "Message from the review team",
+    "ru": "Сообщение от команды проверки"
+  },
+  {
+    "id": 536,
+    "he": "בודקים הרשאות ניהול…",
+    "en": "Checking admin permissions…",
+    "ru": "Проверяем права администратора…"
+  },
+  {
+    "id": 537,
+    "he": "הגישה מיועדת למנהלי האתר",
+    "en": "Access is for site administrators",
+    "ru": "Доступ только для администраторов сайта"
+  },
+  {
+    "id": 538,
+    "he": "טוענים את מצב העסק…",
+    "en": "Loading business status…",
+    "ru": "Загружаем статус компании…"
+  },
+  {
+    "id": 539,
+    "he": "מתחילים עם הפרופיל העסקי",
+    "en": "Start with your business profile",
+    "ru": "Начните с профиля компании"
+  },
+  {
+    "id": 540,
+    "he": "מצב העסק: ",
+    "en": "Business status: ",
+    "ru": "Статус компании: "
+  },
+  {
+    "id": 541,
+    "he": ". אפשר לראות את פרטי העסק ואת הודעות צוות הבדיקה בפרופיל.",
+    "en": ". You can view business details and messages from the review team in the profile.",
+    "ru": ". Данные компании и сообщения команды проверки доступны в профиле."
+  },
+  {
+    "id": 542,
+    "he": "צרו פרופיל עסקי, השלימו את פרטי החשבון ושלחו לבדיקה ידנית. הגישה לקטלוג נפתחת לאחר אישור העסק.",
+    "en": "Create a business profile, complete your account details, and submit it for manual review. Catalog access opens after the business is approved.",
+    "ru": "Создайте профиль компании, заполните данные аккаунта и отправьте профиль на ручную проверку. Доступ к каталогу откроется после одобрения компании."
+  },
+  {
+    "id": 543,
+    "he": "ניהול הפרופיל העסקי",
+    "en": "Manage business profile",
+    "ru": "Управление профилем компании"
+  },
+  {
+    "id": 544,
+    "he": "קטלוג בקשות הובלה",
+    "en": "Moving request catalog",
+    "ru": "Каталог заявок на перевозку"
+  },
+  {
+    "id": 545,
+    "he": "בקשות ההובלה שלי",
+    "en": "My moving requests",
+    "ru": "Мои заявки на перевозку"
+  },
+  {
+    "id": 546,
+    "he": "פרטי קשר, רכישת לידים והצעות ללקוחות אינם זמינים כרגע. הקטלוג מציג פרטי הובלה ללא פרטי קשר או כתובות מדויקות.",
+    "en": "Contact details, lead purchases, and customer offers are currently unavailable. The catalog shows moving details without contact information or exact addresses.",
+    "ru": "Контактные данные, покупка контактов и предложения клиентам сейчас недоступны. В каталоге показаны сведения о перевозке без контактов и точных адресов."
+  },
+  {
+    "id": 547,
+    "he": "טוענים את הפרופיל העסקי…",
+    "en": "Loading business profile…",
+    "ru": "Загружаем профиль компании…"
+  },
+  {
+    "id": 548,
+    "he": "התחברו כדי ליצור או לנהל פרופיל עסקי",
+    "en": "Sign in to create or manage a business profile",
+    "ru": "Войдите, чтобы создать профиль компании или управлять им"
+  },
+  {
+    "id": 549,
+    "he": "חשבון ניהול מיועד לבדיקת עסקים ואינו יכול להגיש פרופיל עסקי.",
+    "en": "Admin accounts are used to review businesses and cannot submit a business profile.",
+    "ru": "Аккаунты администраторов предназначены для проверки компаний. Отправить профиль компании из такого аккаунта нельзя."
+  },
+  {
+    "id": 550,
+    "he": "בחרו אזורי שירות ואשרו שאתם מורשים לייצג את העסק. בשינוי עסק מאומת נדרש גם אישור לבדיקה חוזרת.",
+    "en": "Select service areas and confirm that you are authorized to represent the business. Changes to a verified business also require confirmation of a new review.",
+    "ru": "Выберите районы обслуживания и подтвердите право представлять компанию. При изменении проверенной компании также нужно согласиться на повторную проверку."
+  },
+  {
+    "id": 551,
+    "he": "השלימו את אימות הטלפון ואת אישור התנאים בחשבון לפני שליחה. הפרטים שהזנתם נשמרו כאן.",
+    "en": "Verify your phone and accept the terms in your account before submitting. Your entered details are still here.",
+    "ru": "Перед отправкой подтвердите телефон и примите условия в аккаунте. Введённые данные остались в форме."
+  },
+  {
+    "id": 552,
+    "he": "הפרופיל נשלח לבדיקה ידנית. הגישה לקטלוג תיפתח רק לאחר אישור העסק.",
+    "en": "The profile was submitted for manual review. Catalog access will open only after the business is approved.",
+    "ru": "Профиль отправлен на ручную проверку. Доступ к каталогу откроется только после одобрения компании."
+  },
+  {
+    "id": 553,
+    "he": "לא ידוע אם השמירה הושלמה. בדקו את המצב בשרת לפני ניסיון נוסף; לא נשלח את הפרטים שוב באופן אוטומטי.",
+    "en": "We couldn't confirm whether the save completed. Check the server status before trying again. We won't resubmit the details automatically.",
+    "ru": "Не удалось подтвердить сохранение. Перед повторной попыткой проверьте состояние на сервере. Данные не будут отправлены повторно автоматически."
+  },
+  {
+    "id": 554,
+    "he": "המצב העדכני מוצג להלן. בדקו אותו לפני החלפת תוכן הטופס שלכם.",
+    "en": "The latest saved version is shown below. Review it before replacing the contents of your form.",
+    "ru": "Ниже показана актуальная сохранённая версия. Проверьте её перед заменой данных в форме."
+  },
+  {
+    "id": 555,
+    "he": "לא נמצא פרופיל שמור. אפשר לבדוק את הטופס ולשלוח שוב.",
+    "en": "No saved profile was found. You can review the form and submit it again.",
+    "ru": "Сохранённый профиль не найден. Проверьте форму и отправьте её снова."
+  },
+  {
+    "id": 556,
+    "he": "הפרופיל אינו זמין. אין לשלוח את הטופס הקודם; טענו מחדש את העמוד.",
+    "en": "The profile is unavailable. Do not submit the previous form; reload the page.",
+    "ru": "Профиль недоступен. Не отправляйте прежнюю форму, перезагрузите страницу."
+  },
+  {
+    "id": 557,
+    "he": "החיבור או הרשאות החשבון השתנו. התחברו מחדש וטענו את העמוד כדי להמשיך בחשבון המתאים.",
+    "en": "Your connection or account permissions have changed. Sign in again and reload the page to continue with the correct account.",
+    "ru": "Подключение или права аккаунта изменились. Войдите снова и перезагрузите страницу, чтобы продолжить в нужном аккаунте."
+  },
+  {
+    "id": 558,
+    "he": "בודקים את החשבון לפני הצגת פרטי העסק…",
+    "en": "Checking your account before showing business details…",
+    "ru": "Проверяем аккаунт перед показом данных компании…"
+  },
+  {
+    "id": 559,
+    "he": "בדיקת זמינות מחדש",
+    "en": "Check availability again",
+    "ru": "Проверить доступность снова"
+  },
+  {
+    "id": 560,
+    "he": "פרטי העסק והנציג משמשים לבדיקה ידנית של צוות האתר ואינם מוצגים בקטלוג הבקשות. אין צורך להעלות תעודות או מסמכים כאן. מספר העסק נבדק בטופס מבחינת המבנה בלבד; שליחת הטופס אינה אישור שהעסק אומת.",
+    "en": "The site team uses business and representative details for manual review. These details do not appear in the request catalog. You do not need to upload certificates or documents here. The form only checks the format of the business number; submitting it does not mean the business is verified.",
+    "ru": "Команда сайта использует данные компании и её представителя для ручной проверки. Эти данные не публикуются в каталоге заявок. Загружать удостоверения или документы здесь не нужно. Форма проверяет только формат регистрационного номера. Отправка формы не означает, что компания прошла проверку."
+  },
+  {
+    "id": 561,
+    "he": "הגרסה העדכנית שנשמרה",
+    "en": "Latest saved version",
+    "ru": "Последняя сохранённая версия"
+  },
+  {
+    "id": 562,
+    "he": "טעינת הגרסה הזו תחליף את השינויים שטרם נשמרו בטופס.",
+    "en": "Loading this version will replace any unsaved changes in your form.",
+    "ru": "Загрузка этой версии заменит несохранённые изменения в форме."
+  },
+  {
+    "id": 563,
+    "he": "החלפת הטופס בגרסה העדכנית",
+    "en": "Replace form with the latest version",
+    "ru": "Заменить данные формы актуальной версией"
+  },
+  {
+    "id": 564,
+    "he": "לא ניתן לערוך עסק מושעה. הודעת צוות הבדיקה מופיעה למעלה. פתיחה מחדש דורשת בדיקה של צוות האתר.",
+    "en": "A suspended business cannot be edited. The review team's message is shown above. Restoring access requires a review by the site team.",
+    "ru": "Профиль компании с приостановленным доступом нельзя редактировать. Сообщение команды проверки приведено выше. Для восстановления доступа нужна проверка команды сайта."
+  },
+  {
+    "id": 565,
+    "he": "השלמת פרטי החשבון לפני שליחה",
+    "en": "Complete account details before submitting",
+    "ru": "Заполните данные аккаунта перед отправкой"
+  },
+  {
+    "id": 566,
+    "he": "יש לאמת טלפון ולאשר את התנאים המעודכנים. הטופס יישאר כאן בזמן שתעברו לחשבון בלשונית חדשה.",
+    "en": "Verify your phone and accept the updated terms. Your form will stay here while you open your account in a new tab.",
+    "ru": "Подтвердите телефон и примите обновлённые условия. Форма останется здесь, пока вы откроете аккаунт в новой вкладке."
+  },
+  {
+    "id": 567,
+    "he": "אימות ואישור בחשבון (לשונית חדשה)",
+    "en": "Verify and accept in your account (new tab)",
+    "ru": "Подтвердить телефон и принять условия (новая вкладка)"
+  },
+  {
+    "id": 568,
+    "he": "החשבון מוכן לשליחת הפרטים. הטופס שלכם נשמר.",
+    "en": "Your account is ready to submit the details. Your form entries are still here.",
+    "ru": "Аккаунт готов к отправке данных. Введённые данные остались в форме."
+  },
+  {
+    "id": 569,
+    "he": "בדיקת החשבון מחדש",
+    "en": "Check account again",
+    "ru": "Проверить аккаунт снова"
+  },
+  {
+    "id": 570,
+    "he": "עדכון פרטי העסק",
+    "en": "Update business details",
+    "ru": "Изменить данные компании"
+  },
+  {
+    "id": 571,
+    "he": "שם העסק",
+    "en": "Business name",
+    "ru": "Название компании"
+  },
+  {
+    "id": 572,
+    "he": "שם הנציג המורשה",
+    "en": "Authorized representative's name",
+    "ru": "Имя уполномоченного представителя"
+  },
+  {
+    "id": 573,
+    "he": "9 ספרות, כולל אפסים בתחילת המספר. אין להזין מספר נוסף של תעודת זהות.",
+    "en": "9 digits, including any leading zeros. Do not enter an additional identity card number.",
+    "ru": "9 цифр, включая нули в начале. Не вводите дополнительный номер удостоверения личности."
+  },
+  {
+    "id": 574,
+    "he": "אני מורשה/ית לייצג את העסק ולאשר שהפרטים שנמסרו נכונים.",
+    "en": "I am authorized to represent the business and confirm that the details provided are correct.",
+    "ru": "У меня есть право представлять компанию. Подтверждаю, что указанные данные верны."
+  },
+  {
+    "id": 575,
+    "he": "שמירת שינויים תעביר את העסק לבדיקה חוזרת ותעצור את הגישה לקטלוג עד לאישור.",
+    "en": "Saving changes will send the business for another review and pause catalog access until approval.",
+    "ru": "Сохранение изменений отправит компанию на повторную проверку. Доступ к каталогу будет приостановлен до одобрения."
+  },
+  {
+    "id": 576,
+    "he": "אני מבין/ה ומאשר/ת את המעבר לבדיקה חוזרת.",
+    "en": "I understand and agree to the business being reviewed again.",
+    "ru": "Я понимаю и подтверждаю отправку компании на повторную проверку."
+  },
+  {
+    "id": 577,
+    "he": "בודקים ושומרים…",
+    "en": "Checking and saving…",
+    "ru": "Проверяем и сохраняем…"
+  },
+  {
+    "id": 578,
+    "he": "שליחה חוזרת לבדיקה",
+    "en": "Resubmit for review",
+    "ru": "Отправить на повторную проверку"
+  },
+  {
+    "id": 579,
+    "he": "שליחת הפרופיל לבדיקה",
+    "en": "Submit profile for review",
+    "ru": "Отправить профиль на проверку"
+  },
+  {
+    "id": 580,
+    "he": "בחרו בין יישוב אחד ל־20 יישובים שבהם העסק נותן שירות. אפשר לחפש שם ולהוסיף כמה יישובים.",
+    "en": "Choose between 1 and 20 localities where your business provides services. You can search by name and add several localities.",
+    "ru": "Выберите от 1 до 20 населённых пунктов, в которых работает компания. Можно искать по названию и добавлять несколько пунктов."
+  },
+  {
+    "id": 581,
+    "he": "חיפוש יישוב",
+    "en": "Search for a locality",
+    "ru": "Поиск населённого пункта"
+  },
+  {
+    "id": 582,
+    "he": "יישוב להוספה",
+    "en": "Locality to add",
+    "ru": "Населённый пункт для добавления"
+  },
+  {
+    "id": 583,
+    "he": "בחרו יישוב",
+    "en": "Choose a locality",
+    "ru": "Выберите населённый пункт"
+  },
+  {
+    "id": 584,
+    "he": "הוספת יישוב",
+    "en": "Add locality",
+    "ru": "Добавить населённый пункт"
+  },
+  {
+    "id": 585,
+    "he": "טוענים יישובים…",
+    "en": "Loading localities…",
+    "ru": "Загружаем населённые пункты…"
+  },
+  {
+    "id": 586,
+    "he": "לא הצלחנו לטעון את היישובים. הבחירות שלכם נשמרו.",
+    "en": "We couldn't load the localities. Your selections have been kept.",
+    "ru": "Не удалось загрузить населённые пункты. Ваш выбор сохранён."
+  },
+  {
+    "id": 587,
+    "he": "טעינת יישובים מחדש",
+    "en": "Reload localities",
+    "ru": "Загрузить населённые пункты снова"
+  },
+  {
+    "id": 588,
+    "he": "מקור שמות היישובים:",
+    "en": "Locality names source:",
+    "ru": "Источник названий населённых пунктов:"
+  },
+  {
+    "id": 589,
+    "he": "רשות האוכלוסין וההגירה / data.gov.il (נפתח בלשונית חדשה)",
+    "en": "Population and Immigration Authority / data.gov.il (opens in a new tab)",
+    "ru": "Управление народонаселения и миграции / data.gov.il (откроется в новой вкладке)"
+  },
+  {
+    "id": 590,
+    "he": "נבחרו",
+    "en": "Selected",
+    "ru": "Выбрано"
+  },
+  {
+    "id": 591,
+    "he": "מתוך 20 יישובים",
+    "en": "of 20 localities",
+    "ru": "из 20 населённых пунктов"
+  },
+  {
+    "id": 592,
+    "he": "הסרת ",
+    "en": "Remove ",
+    "ru": "Удалить "
+  },
+  {
+    "id": 593,
+    "he": "הסרה",
+    "en": "Remove",
+    "ru": "Удалить"
+  },
+  {
+    "id": 594,
+    "he": "נדרש אישור התנאים המעודכנים",
+    "en": "Acceptance of the updated terms is required",
+    "ru": "Нужно принять обновлённые условия"
+  },
+  {
+    "id": 595,
+    "he": "התחברו כדי לצפות בבקשות",
+    "en": "Sign in to view requests",
+    "ru": "Войдите, чтобы просматривать заявки"
+  },
+  {
+    "id": 596,
+    "he": "הגישה לבקשות אינה זמינה בחשבון הזה",
+    "en": "Requests are not available to this account",
+    "ru": "Заявки недоступны этому аккаунту"
+  },
+  {
+    "id": 597,
+    "he": "הבקשה אינה זמינה",
+    "en": "Request unavailable",
+    "ru": "Заявка недоступна"
+  },
+  {
+    "id": 598,
+    "he": "יש להמתין לפני ניסיון נוסף",
+    "en": "Please wait before trying again",
+    "ru": "Подождите перед повторной попыткой"
+  },
+  {
+    "id": 599,
+    "he": "הצפייה בבקשות עדיין אינה פתוחה",
+    "en": "Request browsing is not open yet",
+    "ru": "Просмотр заявок пока недоступен"
+  },
+  {
+    "id": 600,
+    "he": "שירות הבקשות אינו זמין כרגע",
+    "en": "The request service is currently unavailable",
+    "ru": "Сервис заявок сейчас недоступен"
+  },
+  {
+    "id": 601,
+    "he": "הטעינה נמשכת זמן רב מדי",
+    "en": "Loading is taking too long",
+    "ru": "Загрузка занимает слишком много времени"
+  },
+  {
+    "id": 602,
+    "he": "לא הצלחנו לטעון את הבקשות",
+    "en": "We couldn't load the requests",
+    "ru": "Не удалось загрузить заявки"
+  },
+  {
+    "id": 603,
+    "he": "קראו את התנאים ואת הודעת הפרטיות המעודכנים ואשרו אותם בחשבון לפני צפייה בבקשות.",
+    "en": "Read and accept the updated terms and privacy notice in your account before viewing requests.",
+    "ru": "Перед просмотром заявок прочитайте обновлённые условия и уведомление о конфиденциальности и подтвердите согласие в аккаунте."
+  },
+  {
+    "id": 604,
+    "he": "ייתכן שהבקשה נסגרה או שאינה זמינה לצפייה. אפשר לחזור לרשימת הבקשות.",
+    "en": "The request may have been closed or may no longer be available to view. You can return to the request list.",
+    "ru": "Возможно, заявка закрыта или больше недоступна для просмотра. Можно вернуться к списку заявок."
+  },
+  {
+    "id": 605,
+    "he": "נסו שוב בעוד זמן קצר. אין צורך לשלוח שוב ושוב את אותה בקשה.",
+    "en": "Try again shortly. There is no need to keep resending the same request.",
+    "ru": "Попробуйте немного позже. Не нужно отправлять один и тот же запрос несколько раз подряд."
+  },
+  {
+    "id": 606,
+    "he": "הצפייה מיועדת לחשבון מוביל עם עסק מאומת. בדקו שאתם מחוברים לחשבון המתאים.",
+    "en": "Viewing is available to mover accounts with a verified business. Check that you are signed in with the correct account.",
+    "ru": "Просмотр доступен аккаунтам перевозчиков с проверенной компанией. Убедитесь, что вы вошли в нужный аккаунт."
+  },
+  {
+    "id": 607,
+    "he": "אפשר לבדוק את החיבור ולנסות שוב מאוחר יותר.",
+    "en": "Check your connection and try again later.",
+    "ru": "Проверьте подключение и попробуйте позже."
+  },
+  {
+    "id": 608,
+    "he": "בודקים את הגישה לבקשות…",
+    "en": "Checking access to requests…",
+    "ru": "Проверяем доступ к заявкам…"
+  },
+  {
+    "id": 609,
+    "he": "נדרש אימות טלפון",
+    "en": "Phone verification required",
+    "ru": "Нужно подтвердить телефон"
+  },
+  {
+    "id": 610,
+    "he": "יש לאמת את מספר הטלפון בחשבון לפני צפייה בבקשות.",
+    "en": "Verify your phone number in your account before viewing requests.",
+    "ru": "Перед просмотром заявок подтвердите номер телефона в аккаунте."
+  },
+  {
+    "id": 611,
+    "he": "אימות טלפון בחשבון",
+    "en": "Verify phone in your account",
+    "ru": "Подтвердить телефон в аккаунте"
+  },
+  {
+    "id": 612,
+    "he": "קראו את התנאים ואת הודעת הפרטיות ואשרו אותם בחשבון לפני צפייה בבקשות.",
+    "en": "Read the terms and privacy notice, and confirm your acceptance in your account before viewing requests.",
+    "ru": "Перед просмотром заявок прочитайте условия и уведомление о конфиденциальности и подтвердите согласие в аккаунте."
+  },
+  {
+    "id": 613,
+    "he": "קריאת התנאים בחשבון",
+    "en": "Read terms in your account",
+    "ru": "Прочитать условия в аккаунте"
+  },
+  {
+    "id": 614,
+    "he": "הבקשות מיועדות למובילים עם עסק מאומת",
+    "en": "Requests are for movers with a verified business",
+    "ru": "Заявки доступны перевозчикам с проверенной компанией"
+  },
+  {
+    "id": 615,
+    "he": "עדיין אין עסק משויך לחשבון",
+    "en": "No business is linked to this account yet",
+    "ru": "К аккаунту пока не привязана компания"
+  },
+  {
+    "id": 616,
+    "he": "העסק עדיין ממתין לאימות",
+    "en": "The business is still awaiting verification",
+    "ru": "Компания ещё ожидает проверки"
+  },
+  {
+    "id": 617,
+    "he": "הגישה של העסק מוגבלת כרגע",
+    "en": "Business access is currently restricted",
+    "ru": "Доступ компании сейчас ограничен"
+  },
+  {
+    "id": 618,
+    "he": "העסק אינו מאושר לצפייה בבקשות",
+    "en": "This business is not approved to view requests",
+    "ru": "У компании нет одобрения для просмотра заявок"
+  },
+  {
+    "id": 619,
+    "he": "אימות העסק נדרש לצפייה בבקשות",
+    "en": "Business verification is required to view requests",
+    "ru": "Для просмотра заявок нужно пройти проверку компании"
+  },
+  {
+    "id": 620,
+    "he": "הצפייה זמינה לבעלי עסק שאומת. אפשר לנהל פרופיל עסקי ובקשות הובלה באותו חשבון.",
+    "en": "Viewing is available for verified businesses. You can manage a business profile and moving requests in the same account.",
+    "ru": "Просмотр доступен владельцам проверенных компаний. В одном аккаунте можно управлять профилем компании и заявками на перевозку."
+  },
+  {
+    "id": 621,
+    "he": "בדיקת הגישה מחדש",
+    "en": "Check access again",
+    "ru": "Проверить доступ снова"
+  },
+  {
+    "id": 622,
+    "he": "סינון בקשות הובלה",
+    "en": "Filter moving requests",
+    "ru": "Фильтры заявок на перевозку"
+  },
+  {
+    "id": 623,
+    "he": "סוג הובלה",
+    "en": "Move type",
+    "ru": "Тип перевозки"
+  },
+  {
+    "id": 624,
+    "he": "כל סוגי ההובלה",
+    "en": "All move types",
+    "ru": "Все типы перевозок"
+  },
+  {
+    "id": 625,
+    "he": "הובלת דירה",
+    "en": "Home move",
+    "ru": "Квартирный переезд"
+  },
+  {
+    "id": 626,
+    "he": "הובלה קטנה",
+    "en": "Small move",
+    "ru": "Небольшая перевозка"
+  },
+  {
+    "id": 627,
+    "he": "כל התקציבים",
+    "en": "All budgets",
+    "ru": "Любой бюджет"
+  },
+  {
+    "id": 628,
+    "he": "מיון",
+    "en": "Sort by",
+    "ru": "Сортировка"
+  },
+  {
+    "id": 629,
+    "he": "החדשות ביותר",
+    "en": "Newest first",
+    "ru": "Сначала новые"
+  },
+  {
+    "id": 630,
+    "he": "טוענים את רשימת היישובים…",
+    "en": "Loading the list of localities…",
+    "ru": "Загружаем список населённых пунктов…"
+  },
+  {
+    "id": 631,
+    "he": "רשימת היישובים אינה זמינה. אפשר להשתמש בשאר המסננים או לנסות לטעון אותה שוב.",
+    "en": "The list of localities is unavailable. You can use the other filters or try loading it again.",
+    "ru": "Список населённых пунктов недоступен. Можно воспользоваться другими фильтрами или повторить загрузку."
+  },
+  {
+    "id": 632,
+    "he": "טעינת היישובים מחדש",
+    "en": "Reload the list of localities",
+    "ru": "Загрузить список населённых пунктов снова"
+  },
+  {
+    "id": 633,
+    "he": "הצגת בקשות",
+    "en": "Show requests",
+    "ru": "Показать заявки"
+  },
+  {
+    "id": 634,
+    "he": "איפוס מסננים",
+    "en": "Reset filters",
+    "ru": "Сбросить фильтры"
+  },
+  {
+    "id": 635,
+    "he": "טוענים בקשות הובלה…",
+    "en": "Loading moving requests…",
+    "ru": "Загружаем заявки на перевозку…"
+  },
+  {
+    "id": 636,
+    "he": "בקשות מתאימות · עמוד",
+    "en": "Matching requests · Page",
+    "ru": "Подходящие заявки · Страница"
+  },
+  {
+    "id": 637,
+    "he": "אין בקשות בעמוד הזה",
+    "en": "No requests on this page",
+    "ru": "На этой странице нет заявок"
+  },
+  {
+    "id": 638,
+    "he": "לא נמצאו בקשות למסננים האלה",
+    "en": "No requests match these filters",
+    "ru": "По этим фильтрам заявки не найдены"
+  },
+  {
+    "id": 639,
+    "he": "אין כרגע בקשות זמינות",
+    "en": "No requests are currently available",
+    "ru": "Сейчас нет доступных заявок"
+  },
+  {
+    "id": 640,
+    "he": "אפשר לשנות את המסננים או לבדוק שוב מאוחר יותר.",
+    "en": "Change the filters or check again later.",
+    "ru": "Измените фильтры или загляните позже."
+  },
+  {
+    "id": 641,
+    "he": "חזרה לכל הבקשות",
+    "en": "Back to all requests",
+    "ru": "Ко всем заявкам"
+  },
+  {
+    "id": 642,
+    "he": "עמודי בקשות",
+    "en": "Request pages",
+    "ru": "Страницы списка заявок"
+  },
+  {
+    "id": 643,
+    "he": "עיר איסוף",
+    "en": "Pickup city",
+    "ru": "Город отправления"
+  },
+  {
+    "id": 644,
+    "he": "עיר יעד",
+    "en": "Destination city",
+    "ru": "Город назначения"
+  },
+  {
+    "id": 645,
+    "he": "כל היישובים",
+    "en": "All localities",
+    "ru": "Все населённые пункты"
+  },
+  {
+    "id": 646,
+    "he": "היישוב שנבחר בקישור",
+    "en": "Locality selected in the link",
+    "ru": "Населённый пункт, выбранный в ссылке"
+  },
+  {
+    "id": 647,
+    "he": "התאמה לרהיטים",
+    "en": "Furniture fit in the lift",
+    "ru": "Мебель помещается в лифт"
+  },
+  {
+    "id": 648,
+    "he": "מרחק חניה",
+    "en": "Parking distance",
+    "ru": "Расстояние до парковки"
+  },
+  {
+    "id": 649,
+    "he": "פריט ביתי",
+    "en": "Household item",
+    "ru": "Предмет домашнего обихода"
+  },
+  {
+    "id": 650,
+    "he": "פריט מיוחד",
+    "en": "Special item",
+    "ru": "Предмет, требующий особого обращения"
+  },
+  {
+    "id": 651,
+    "he": "פריט להובלה",
+    "en": "Item to move",
+    "ru": "Предмет для перевозки"
+  },
+  {
+    "id": 652,
+    "he": "חזרה לבקשות",
+    "en": "Back to requests",
+    "ru": "К заявкам"
+  },
+  {
+    "id": 653,
+    "he": "מאיפה",
+    "en": "From",
+    "ru": "Откуда"
+  },
+  {
+    "id": 654,
+    "he": "יישוב לא מזוהה",
+    "en": "Unrecognized locality",
+    "ru": "Неизвестный населённый пункт"
+  },
+  {
+    "id": 655,
+    "he": "לאן",
+    "en": "To",
+    "ru": "Куда"
+  },
+  {
+    "id": 656,
+    "he": "חדרים",
+    "en": "Rooms",
+    "ru": "Комнаты"
+  },
+  {
+    "id": 657,
+    "he": "ארגזים",
+    "en": "Boxes",
+    "ru": "Коробки"
+  },
+  {
+    "id": 658,
+    "he": "כמות פריטים",
+    "en": "Number of items",
+    "ru": "Количество предметов"
+  },
+  {
+    "id": 659,
+    "he": "פורסם בתאריך",
+    "en": "Published on",
+    "ru": "Дата публикации"
+  },
+  {
+    "id": 660,
+    "he": "אין מקומות נוספים לבקשה הזאת.",
+    "en": "No more contact-access slots are available for this request.",
+    "ru": "В этой заявке больше нет свободных мест для доступа к контактам."
+  },
+  {
+    "id": 661,
+    "he": "גישה באיסוף",
+    "en": "Pickup access",
+    "ru": "Доступ в месте отправления"
+  },
+  {
+    "id": 662,
+    "he": "גישה ביעד",
+    "en": "Destination access",
+    "ru": "Доступ в месте назначения"
+  },
+  {
+    "id": 663,
+    "he": "לא צוינו פריטים בתצוגה הזאת.",
+    "en": "No items are listed in this view.",
+    "ru": "В этом представлении предметы не указаны."
+  },
+  {
+    "id": 664,
+    "he": "פרטי הקשר אינם זמינים",
+    "en": "Contact details unavailable",
+    "ru": "Контактные данные недоступны"
+  },
+  {
+    "id": 665,
+    "he": "פרטי הקשר והכתובות המדויקות אינם מוצגים כאן. רכישת לידים ויצירת קשר דרך האתר אינן זמינות כרגע.",
+    "en": "Contact details and exact addresses are not shown here. Buying leads and contacting customers through the site are currently unavailable.",
+    "ru": "Контактные данные и точные адреса здесь не отображаются. Покупка контактов и связь с клиентами через сайт пока недоступны."
+  },
+  {
+    "id": 666,
+    "he": "אין מקומות נוספים",
+    "en": "No more contact-access slots",
+    "ru": "Свободных мест для доступа к контактам нет"
+  },
+  {
+    "id": 667,
+    "he": "מאיפה:",
+    "en": "From:",
+    "ru": "Откуда:"
+  },
+  {
+    "id": 668,
+    "he": "לאן:",
+    "en": "To:",
+    "ru": "Куда:"
+  },
+  {
+    "id": 669,
+    "he": "פורסם ב־",
+    "en": "Published on ",
+    "ru": "Опубликовано "
+  },
+  {
+    "id": 670,
+    "he": "הטעינה נמשכת זמן רב מדי.",
+    "en": "Loading is taking too long.",
+    "ru": "Загрузка занимает слишком много времени."
+  },
+  {
+    "id": 671,
+    "he": "נדרש אישור לפני המשך",
+    "en": "Confirmation required to continue",
+    "ru": "Для продолжения нужно подтверждение"
+  },
+  {
+    "id": 672,
+    "he": "הבקשה נכשלה",
+    "en": "The request failed",
+    "ru": "Не удалось выполнить запрос"
+  },
+  {
+    "id": 673,
+    "he": "משהו השתבש.",
+    "en": "Something went wrong.",
+    "ru": "Что-то пошло не так."
+  },
+  {
+    "id": 674,
+    "he": "שירות החשבון איטי מהצפוי.",
+    "en": "The account service is slower than expected.",
+    "ru": "Сервис аккаунтов отвечает медленнее обычного."
+  },
+  {
+    "id": 675,
+    "he": "מוכנים להתחיל.",
+    "en": "Ready to start.",
+    "ru": "Можно начинать."
+  },
+  {
+    "id": 676,
+    "he": "בדיקה ושמירת שינויים",
+    "en": "Review and save changes",
+    "ru": "Проверить и сохранить изменения"
+  },
+  {
+    "id": 677,
+    "he": "עברו על כל הפרטים וההבדלים לפני שמירת גרסה חדשה.",
+    "en": "Review all details and differences before saving a new version.",
+    "ru": "Проверьте все данные и изменения перед сохранением новой версии."
+  },
+  {
+    "id": 678,
+    "he": "מחוברים כ-",
+    "en": "Signed in as ",
+    "ru": "Вы вошли как "
+  },
+  {
+    "id": 679,
+    "he": ". עדיין נדרש אימות טלפון.",
+    "en": ". Phone verification is still required.",
+    "ru": ". Номер телефона ещё нужно подтвердить."
+  },
+  {
+    "id": 680,
+    "he": "שירות החשבון אינו זמין כרגע. אפשר למלא את הפרטים ולבחור שמירה בכרטיסייה.",
+    "en": "The account service is currently unavailable. You can fill in the details and choose to save a draft in this tab.",
+    "ru": "Сервис аккаунтов сейчас недоступен. Вы можете заполнить данные и включить сохранение черновика в этой вкладке."
+  },
+  {
+    "id": 681,
+    "he": "הטיוטה שוחזרה מהכרטיסייה הזאת.",
+    "en": "The draft was restored from this tab.",
+    "ru": "Черновик восстановлен из этой вкладки."
+  },
+  {
+    "id": 682,
+    "he": "טיוטה ",
+    "en": "Draft ",
+    "ru": "Черновик "
+  },
+  {
+    "id": 683,
+    "he": " נטענה.",
+    "en": " loaded.",
+    "ru": " загружен."
+  },
+  {
+    "id": 684,
+    "he": "הטיוטה חודשה",
+    "en": "Draft resumed",
+    "ru": "Черновик открыт для продолжения"
+  },
+  {
+    "id": 685,
+    "he": "אפשר להמשיך כעת מהמצב שנשמר בשרת.",
+    "en": "You can now continue from the version saved on the server.",
+    "ru": "Теперь можно продолжить с версии, сохранённой на сервере."
+  },
+  {
+    "id": 686,
+    "he": "סוג ההובלה עודכן בטופס בלבד",
+    "en": "The move type has only changed in this form",
+    "ru": "Тип перевозки изменён только в форме"
+  },
+  {
+    "id": 687,
+    "he": "הפרטים של שני הסוגים נשארים בעמוד. רק בשמירה הסופית תוחלף תכולת הגרסה לפי הסוג שנבחר, לאחר אישור מפורש.",
+    "en": "Details for both types remain on this page. Only the final save, after your explicit confirmation, will replace the version's contents with those for the selected type.",
+    "ru": "Данные обоих типов остаются на странице. Содержимое версии будет заменено данными выбранного типа только при окончательном сохранении после вашего явного подтверждения."
+  },
+  {
+    "id": 688,
+    "he": "נבחרה הובלת דירה",
+    "en": "Home move selected",
+    "ru": "Выбран квартирный переезд"
+  },
+  {
+    "id": 689,
+    "he": "נבחרה הובלה קטנה",
+    "en": "Small move selected",
+    "ru": "Выбрана небольшая перевозка"
+  },
+  {
+    "id": 690,
+    "he": "המשיכו לבנות ולשמור את טיוטת הבקשה.",
+    "en": "Continue filling in and saving your request draft.",
+    "ru": "Продолжайте заполнять и сохранять черновик заявки."
+  },
+  {
+    "id": 691,
+    "he": "אפשר להמשיך לעצב את הבקשה לפני ההתחברות. טיוטת השרת תיווצר כששומרים.",
+    "en": "You can continue filling in the request before signing in. A server draft will be created when you save.",
+    "ru": "Можно продолжить заполнять заявку до входа в аккаунт. Черновик на сервере будет создан при сохранении."
+  },
+  {
+    "id": 692,
+    "he": "אין ליצור טיוטה מתוך עריכת בקשה שפורסמה.",
+    "en": "A draft cannot be created while editing a published request.",
+    "ru": "При редактировании опубликованной заявки нельзя создать черновик."
+  },
+  {
+    "id": 693,
+    "he": "בחרו קודם סוג הובלה.",
+    "en": "Choose a move type first.",
+    "ru": "Сначала выберите тип перевозки."
+  },
+  {
+    "id": 694,
+    "he": "התחברו כדי ליצור את הטיוטה השמורה.",
+    "en": "Sign in to create a saved draft.",
+    "ru": "Войдите, чтобы создать сохранённый черновик."
+  },
+  {
+    "id": 695,
+    "he": "תקנו את השדות המסומנים לפני השמירה.",
+    "en": "Correct the highlighted fields before saving.",
+    "ru": "Исправьте отмеченные поля перед сохранением."
+  },
+  {
+    "id": 696,
+    "he": "המשיכו מקומית ואז התחברו כדי לשמור את הטיוטה.",
+    "en": "Continue on this page, then sign in to save the draft.",
+    "ru": "Продолжайте заполнять заявку на этой странице, затем войдите, чтобы сохранить черновик."
+  },
+  {
+    "id": 697,
+    "he": "בחרו סוג הובלה",
+    "en": "Choose a move type",
+    "ru": "Выберите тип перевозки"
+  },
+  {
+    "id": 698,
+    "he": "בחרו הובלת דירה או הובלה קטנה כדי להמשיך.",
+    "en": "Choose a home move or a small move to continue.",
+    "ru": "Выберите квартирный переезд или небольшую перевозку, чтобы продолжить."
+  },
+  {
+    "id": 699,
+    "he": "שומרים את השלב",
+    "en": "Saving this step",
+    "ru": "Сохраняем этот шаг"
+  },
+  {
+    "id": 700,
+    "he": "עובדים מקומית. התחברו כשתהיו מוכנים לשמור.",
+    "en": "Your details are only on this page. Sign in when you're ready to save.",
+    "ru": "Данные пока находятся только на этой странице. Войдите, когда будете готовы сохранить их."
+  },
+  {
+    "id": 701,
+    "he": "השלב נשמר",
+    "en": "Step saved",
+    "ru": "Шаг сохранён"
+  },
+  {
+    "id": 702,
+    "he": "אפשר להמשיך",
+    "en": "You can continue",
+    "ru": "Можно продолжать"
+  },
+  {
+    "id": 703,
+    "he": "הטיוטה נשמרה בשרת.",
+    "en": "The draft has been saved on the server.",
+    "ru": "Черновик сохранён на сервере."
+  },
+  {
+    "id": 704,
+    "he": "הפרטים נשארים בעמוד. מצב שמירת הטיוטה מוצג מתחת לטופס.",
+    "en": "Your details remain on this page. The draft save status is shown below the form.",
+    "ru": "Данные остаются на этой странице. Состояние сохранения черновика показано под формой."
+  },
+  {
+    "id": 705,
+    "he": "טוענים טיוטה",
+    "en": "Loading draft",
+    "ru": "Загружаем черновик"
+  },
+  {
+    "id": 706,
+    "he": "התחברות הצליחה",
+    "en": "Signed in successfully",
+    "ru": "Вход выполнен"
+  },
+  {
+    "id": 707,
+    "he": "מספר הטלפון כבר מאומת.",
+    "en": "Your phone number is already verified.",
+    "ru": "Номер телефона уже подтверждён."
+  },
+  {
+    "id": 708,
+    "he": "אמתו את מספר הטלפון לפני הפרסום.",
+    "en": "Verify your phone number before publishing.",
+    "ru": "Подтвердите номер телефона перед публикацией."
+  },
+  {
+    "id": 709,
+    "he": "מתנתקים",
+    "en": "Signing out",
+    "ru": "Выходим из аккаунта"
+  },
+  {
+    "id": 710,
+    "he": "התנתקתם.",
+    "en": "You have signed out.",
+    "ru": "Вы вышли из аккаунта."
+  },
+  {
+    "id": 711,
+    "he": "התנתקתם",
+    "en": "Signed out",
+    "ru": "Вы вышли из аккаунта"
+  },
+  {
+    "id": 712,
+    "he": "פרטי הבקשה הוסרו מהעמוד. טיוטות שנשמרו בחשבון יישארו בחשבון.",
+    "en": "Request details have been removed from this page. Drafts saved in your account will remain there.",
+    "ru": "Данные заявки удалены со страницы. Черновики, сохранённые в аккаунте, останутся в нём."
+  },
+  {
+    "id": 713,
+    "he": "מפרסמים",
+    "en": "Publishing",
+    "ru": "Публикуем"
+  },
+  {
+    "id": 714,
+    "he": "נדרשת התחברות",
+    "en": "Sign-in required",
+    "ru": "Нужно войти в аккаунт"
+  },
+  {
+    "id": 715,
+    "he": "צרו או אשרו את החשבון לפני פרסום הבקשה.",
+    "en": "Create or confirm your account before publishing the request.",
+    "ru": "Создайте или подтвердите аккаунт перед публикацией заявки."
+  },
+  {
+    "id": 716,
+    "he": "אמתו את מספר הטלפון לפני פרסום הבקשה.",
+    "en": "Verify your phone number before publishing the request.",
+    "ru": "Подтвердите номер телефона перед публикацией заявки."
+  },
+  {
+    "id": 717,
+    "he": "אשרו גיל 18 ומעלה ואת תנאי השימוש לאחר קריאת הודעת הפרטיות.",
+    "en": "Confirm that you are 18 or older and accept the terms of use after reading the privacy notice.",
+    "ru": "Подтвердите, что вам исполнилось 18 лет, и примите условия использования после прочтения уведомления о конфиденциальности."
+  },
+  {
+    "id": 718,
+    "he": "שמרו את הטיוטה ואשרו בנפרד את העברת פרטי הקשר למובילים לפני הפרסום.",
+    "en": "Save the draft and separately consent to sharing your contact details with movers before publishing.",
+    "ru": "Перед публикацией сохраните черновик и отдельно подтвердите согласие на передачу контактных данных перевозчикам."
+  },
+  {
+    "id": 719,
+    "he": "לא ניתן לפרסם לפני שמירת הבקשה.",
+    "en": "You must save the request before publishing it.",
+    "ru": "Перед публикацией нужно сохранить заявку."
+  },
+  {
+    "id": 720,
+    "he": "מגבלת המובילים השתנתה. קראו ואשרו שוב את הודעת העברת הפרטים.",
+    "en": "The mover limit has changed. Read and confirm the contact-sharing notice again.",
+    "ru": "Лимит перевозчиков изменился. Ещё раз прочитайте уведомление о передаче данных и подтвердите согласие."
+  },
+  {
+    "id": 721,
+    "he": "הבקשה פורסמה.",
+    "en": "The request has been published.",
+    "ru": "Заявка опубликована."
+  },
+  {
+    "id": 722,
+    "he": "זוהתה כפילות אפשרית",
+    "en": "Possible duplicate detected",
+    "ru": "Возможно, такая заявка уже есть"
+  },
+  {
+    "id": 723,
+    "he": "פורסם",
+    "en": "Published",
+    "ru": "Опубликовано"
+  },
+  {
+    "id": 724,
+    "he": "נראה שכבר יש לכם בקשה פעילה דומה.",
+    "en": "It looks like you already have a similar active request.",
+    "ru": "Похоже, у вас уже есть похожая активная заявка."
+  },
+  {
+    "id": 725,
+    "he": "בקשת הלקוח שלכם כעת פעילה.",
+    "en": "Your moving request is now active.",
+    "ru": "Ваша заявка на перевозку теперь активна."
+  },
+  {
+    "id": 726,
+    "he": "מוכנים לבקשה חדשה",
+    "en": "Ready for a new request",
+    "ru": "Можно создать новую заявку"
+  },
+  {
+    "id": 727,
+    "he": "בחרו סוג הובלה והתחילו מחדש.",
+    "en": "Choose a move type and start again.",
+    "ru": "Выберите тип перевозки и начните заново."
+  },
+  {
+    "id": 728,
+    "he": "אפשר לבחור עכשיו סוג הובלה ולהמשיך לעצב את הבקשה מקומית. התחברו כשתהיו מוכנים לשמור את הטיוטה בשרת.",
+    "en": "You can choose a move type now and continue filling in the request on this page. Sign in when you're ready to save the draft on the server.",
+    "ru": "Вы можете выбрать тип перевозки и продолжить заполнять заявку на этой странице. Войдите, когда будете готовы сохранить черновик на сервере."
+  },
+  {
+    "id": 729,
+    "he": "עיר (חובה לפרסום)",
+    "en": "City (required to publish)",
+    "ru": "Город (обязательно для публикации)"
+  },
+  {
+    "id": 730,
+    "he": "השתמשו בשם העיר המדויק במסלול ההובלה.",
+    "en": "Use the exact city name for the moving route.",
+    "ru": "Укажите точное название города для маршрута перевозки."
+  },
+  {
+    "id": 731,
+    "he": " עיר",
+    "en": " city",
+    "ru": ": город"
+  },
+  {
+    "id": 732,
+    "he": "כתובת מדויקת (חובה לפרסום)",
+    "en": "Exact address (required to publish)",
+    "ru": "Точный адрес (обязательно для публикации)"
+  },
+  {
+    "id": 733,
+    "he": "רחוב, מספר בית ודירה, אם יש.",
+    "en": "Street, building number, and apartment number if applicable.",
+    "ru": "Улица, номер дома и квартиры, если есть."
+  },
+  {
+    "id": 734,
+    "he": " כתובת מדויקת",
+    "en": " exact address",
+    "ru": ": точный адрес"
+  },
+  {
+    "id": 735,
+    "he": "קומה, מעלית וגישה לבניין",
+    "en": "Floor, elevator, and building access",
+    "ru": "Этаж, лифт и доступ в здание"
+  },
+  {
+    "id": 736,
+    "he": "לא חובה, אבל מועיל לתכנון הגישה.",
+    "en": "Optional, but helpful for planning access.",
+    "ru": "Необязательно, но поможет спланировать доступ."
+  },
+  {
+    "id": 737,
+    "he": " קומה",
+    "en": " floor",
+    "ru": ": этаж"
+  },
+  {
+    "id": 738,
+    "he": "כן או לא.",
+    "en": "Yes or no.",
+    "ru": "Да или нет."
+  },
+  {
+    "id": 739,
+    "he": "כן",
+    "en": "Yes",
+    "ru": "Да"
+  },
+  {
+    "id": 740,
+    "he": "לא",
+    "en": "No",
+    "ru": "Нет"
+  },
+  {
+    "id": 741,
+    "he": "מעלית מתאימה לרהיטים גדולים",
+    "en": "Elevator suitable for large furniture",
+    "ru": "Лифт подходит для крупной мебели"
+  },
+  {
+    "id": 742,
+    "he": "בחרו את ההתאמה הקרובה ביותר למעלית בבניין.",
+    "en": "Choose the option that best describes the building's elevator.",
+    "ru": "Выберите вариант, который лучше всего описывает лифт в здании."
+  },
+  {
+    "id": 743,
+    "he": "לא יודע/ת",
+    "en": "Not sure",
+    "ru": "Не знаю"
+  },
+  {
+    "id": 744,
+    "he": "מדרגות / הערות גישה",
+    "en": "Stairs / access notes",
+    "ru": "Лестница / особенности доступа"
+  },
+  {
+    "id": 745,
+    "he": "תארו מדרגות, פניות חדות או מגבלות גישה אחרות.",
+    "en": "Describe stairs, tight turns, or other access restrictions.",
+    "ru": "Опишите лестницы, узкие повороты и другие ограничения доступа."
+  },
+  {
+    "id": 746,
+    "he": " מדרגות או הערות גישה",
+    "en": " stairs or access notes",
+    "ru": ": лестница или особенности доступа"
+  },
+  {
+    "id": 747,
+    "he": "גישה למשאית / חניה",
+    "en": "Truck access / parking",
+    "ru": "Подъезд грузовика / парковка"
+  },
+  {
+    "id": 748,
+    "he": "תארו את מסלול ההעמסה ואת הגישה מהכביש.",
+    "en": "Describe the loading route and access from the road.",
+    "ru": "Опишите путь погрузки и подъезд с дороги."
+  },
+  {
+    "id": 749,
+    "he": " גישה למשאית או חניה",
+    "en": " truck access or parking",
+    "ru": ": подъезд грузовика или парковка"
+  },
+  {
+    "id": 750,
+    "he": "כמה רחוקה המשאית מהכניסה?",
+    "en": "How far is the truck from the entrance?",
+    "ru": "Как далеко грузовик будет стоять от входа?"
+  },
+  {
+    "id": 751,
+    "he": " מרחק חניה",
+    "en": " parking distance",
+    "ru": ": расстояние до парковки"
+  },
+  {
+    "id": 752,
+    "he": "קטגוריה",
+    "en": "Category",
+    "ru": "Категория"
+  },
+  {
+    "id": 753,
+    "he": "בחרו את סוג ההובלה.",
+    "en": "Choose the move type.",
+    "ru": "Выберите тип перевозки."
+  },
+  {
+    "id": 754,
+    "he": "שם / תיאור",
+    "en": "Name / description",
+    "ru": "Название / описание"
+  },
+  {
+    "id": 755,
+    "he": "שם ברור של הפריט עוזר למובילים להעריך את המאמץ.",
+    "en": "A clear item name helps movers estimate the work involved.",
+    "ru": "Понятное название предмета поможет перевозчикам оценить объём работы."
+  },
+  {
+    "id": 756,
+    "he": "השתמשו בכפתורי ההגדלה וההפחתה.",
+    "en": "Use the plus and minus buttons.",
+    "ru": "Используйте кнопки увеличения и уменьшения."
+  },
+  {
+    "id": 757,
+    "he": "כמות בפריט ",
+    "en": "Quantity for item ",
+    "ru": "Количество предметов в позиции "
+  },
+  {
+    "id": 758,
+    "he": "אורך ס\"מ",
+    "en": "Length, cm",
+    "ru": "Длина, см"
+  },
+  {
+    "id": 759,
+    "he": "מידות אופציונליות.",
+    "en": "Optional dimensions.",
+    "ru": "Размеры необязательны."
+  },
+  {
+    "id": 760,
+    "he": "אורך ס\"מ בפריט ",
+    "en": "Length in cm for item ",
+    "ru": "Длина в см для позиции "
+  },
+  {
+    "id": 761,
+    "he": "רוחב ס\"מ",
+    "en": "Width, cm",
+    "ru": "Ширина, см"
+  },
+  {
+    "id": 762,
+    "he": "רוחב ס\"מ בפריט ",
+    "en": "Width in cm for item ",
+    "ru": "Ширина в см для позиции "
+  },
+  {
+    "id": 763,
+    "he": "גובה ס\"מ / ק\"ג",
+    "en": "Height, cm",
+    "ru": "Высота, см",
+    "heReviewed": "גובה בס״מ"
+  },
+  {
+    "id": 764,
+    "he": "מידות או משקל אופציונליים.",
+    "en": "Optional dimensions or weight.",
+    "ru": "Размеры или вес необязательны."
+  },
+  {
+    "id": 765,
+    "he": "גובה ס\"מ בפריט ",
+    "en": "Height in cm for item ",
+    "ru": "Высота в см для позиции "
+  },
+  {
+    "id": 766,
+    "he": "משקל משוער ק\"ג",
+    "en": "Estimated weight, kg",
+    "ru": "Примерный вес, кг"
+  },
+  {
+    "id": 767,
+    "he": "אופציונלי אם המוביל צריך עוד פרטי תכנון.",
+    "en": "Optional details to help the mover plan.",
+    "ru": "Дополнительные данные для планирования перевозки. Необязательно."
+  },
+  {
+    "id": 768,
+    "he": "משקל משוער ק\"ג בפריט ",
+    "en": "Estimated weight in kg for item ",
+    "ru": "Примерный вес в кг для позиции "
+  },
+  {
+    "id": 769,
+    "he": "הוסיפו פריט נוסף",
+    "en": "Add another item",
+    "ru": "Добавить ещё один предмет"
+  },
+  {
+    "id": 770,
+    "he": "מספר שלם, לפחות 1.",
+    "en": "A whole number, at least 1.",
+    "ru": "Целое число, не меньше 1."
+  },
+  {
+    "id": 771,
+    "he": "כמות ",
+    "en": "Quantity: ",
+    "ru": "Количество: "
+  },
+  {
+    "id": 772,
+    "he": "הפריט",
+    "en": "the item",
+    "ru": "предмет"
+  },
+  {
+    "id": 773,
+    "he": "מידות ומשקל (רשות)",
+    "en": "Dimensions and weight (optional)",
+    "ru": "Размеры и вес (необязательно)"
+  },
+  {
+    "id": 774,
+    "he": "אורך בסנטימטרים",
+    "en": "Length in centimeters",
+    "ru": "Длина в сантиметрах"
+  },
+  {
+    "id": 775,
+    "he": "רוחב בסנטימטרים",
+    "en": "Width in centimeters",
+    "ru": "Ширина в сантиметрах"
+  },
+  {
+    "id": 776,
+    "he": "גובה בסנטימטרים",
+    "en": "Height in centimeters",
+    "ru": "Высота в сантиметрах"
+  },
+  {
+    "id": 777,
+    "he": "משקל בקילוגרמים",
+    "en": "Weight in kilograms",
+    "ru": "Вес в килограммах"
+  },
+  {
+    "id": 778,
+    "he": "נבחר עבור תכולת הדירה.",
+    "en": "Selected as part of the home contents.",
+    "ru": "Добавлено в список вещей для переезда."
+  },
+  {
+    "id": 779,
+    "he": "שם תצוגה",
+    "en": "Display name",
+    "ru": "Название для отображения"
+  },
+  {
+    "id": 780,
+    "he": "שנו את השם אם צריך עוד פירוט.",
+    "en": "Change the name if more detail is needed.",
+    "ru": "Уточните название, если нужно больше подробностей."
+  },
+  {
+    "id": 781,
+    "he": "תיאור",
+    "en": "Description",
+    "ru": "Описание"
+  },
+  {
+    "id": 782,
+    "he": "מידע נוסף אופציונלי.",
+    "en": "Optional additional information.",
+    "ru": "Дополнительная информация по желанию."
+  },
+  {
+    "id": 783,
+    "he": "סמנו כשהמוביל צריך לתכנן טיפול מיוחד.",
+    "en": "Select this if the mover needs to plan for special handling.",
+    "ru": "Отметьте, если перевозчику нужно предусмотреть особое обращение с предметом."
+  },
+  {
+    "id": 784,
+    "he": "נבחר כפריט הדורש טיפול מיוחד.",
+    "en": "Selected as an item requiring special handling.",
+    "ru": "Добавлено как предмет, требующий особого обращения."
+  },
+  {
+    "id": 785,
+    "he": "גודל הדירה (חובה לפרסום)",
+    "en": "Home size (required to publish)",
+    "ru": "Размер квартиры (обязательно для публикации)"
+  },
+  {
+    "id": 786,
+    "he": "חדר אחד",
+    "en": "1 room",
+    "ru": "1 комната"
+  },
+  {
+    "id": 787,
+    "he": " חדרים",
+    "en": " rooms",
+    "ru": " комн."
+  },
+  {
+    "id": 788,
+    "he": "הפחתת ",
+    "en": "Decrease ",
+    "ru": "Уменьшить: "
+  },
+  {
+    "id": 789,
+    "he": "הוספת ",
+    "en": "Increase ",
+    "ru": "Увеличить: "
+  },
+  {
+    "id": 790,
+    "he": "רהיטים ותכולה",
+    "en": "Furniture and contents",
+    "ru": "Мебель и вещи"
+  },
+  {
+    "id": 791,
+    "he": "הוסיפו את הפריטים המשפיעים ביותר על הצעת המחיר.",
+    "en": "Add the items that will have the biggest impact on the quote.",
+    "ru": "Добавьте предметы, которые больше всего влияют на стоимость перевозки."
+  },
+  {
+    "id": 792,
+    "he": "תאריך הובלה (חובה לפרסום)",
+    "en": "Moving date (required to publish)",
+    "ru": "Дата перевозки (обязательно для публикации)"
+  },
+  {
+    "id": 793,
+    "he": "בחרו את התאריך המועדף.",
+    "en": "Choose your preferred date.",
+    "ru": "Выберите удобную дату."
+  },
+  {
+    "id": 794,
+    "he": "שעה מועדפת (חובה לפרסום)",
+    "en": "Preferred time (required to publish)",
+    "ru": "Предпочтительное время (обязательно для публикации)"
+  },
+  {
+    "id": 795,
+    "he": "בחרו את חלון ההגעה.",
+    "en": "Choose an arrival window.",
+    "ru": "Выберите интервал прибытия."
+  },
+  {
+    "id": 796,
+    "he": "גמישות בתאריך (חובה לפרסום)",
+    "en": "Date flexibility (required to publish)",
+    "ru": "Гибкость даты (обязательно для публикации)"
+  },
+  {
+    "id": 797,
+    "he": "ציינו עד כמה התאריך קשיח.",
+    "en": "Let movers know how flexible your date is.",
+    "ru": "Укажите, можно ли изменить дату."
+  },
+  {
+    "id": 798,
+    "he": "טווח תקציב (רשות)",
+    "en": "Budget range (optional)",
+    "ru": "Бюджет (необязательно)"
+  },
+  {
+    "id": 799,
+    "he": "בחרו את הטווח הקרוב ביותר לתקציב שלכם.",
+    "en": "Choose the range closest to your budget.",
+    "ru": "Выберите диапазон, ближайший к вашему бюджету."
+  },
+  {
+    "id": 800,
+    "he": "העלאת תמונות עדיין אינה זמינה. בינתיים אפשר לתאר פריטים, גודל או בעיות גישה בהערות למטה.",
+    "en": "Photo uploads are not available yet. For now, describe items, sizes, or access issues in the notes below.",
+    "ru": "Загрузка фотографий пока недоступна. Сейчас можно описать предметы, размеры и сложности доступа в примечаниях ниже."
+  },
+  {
+    "id": 801,
+    "he": "הערות (רשות)",
+    "en": "Notes (optional)",
+    "ru": "Примечания (необязательно)"
+  },
+  {
+    "id": 802,
+    "he": "ספרו למובילים על כל דבר שלא נכנס לטופס.",
+    "en": "Tell movers about anything the form hasn't covered.",
+    "ru": "Расскажите перевозчикам о том, что не удалось указать в форме."
+  },
+  {
+    "id": 803,
+    "he": "התצוגה המקדימה עדיין מקומית. התחברו ושמרו כדי לבדוק את הבקשה שמגובה בשרת.",
+    "en": "This preview is still local. Sign in and save to review the request stored on the server.",
+    "ru": "Это предварительный просмотр данных на вашем устройстве. Войдите и сохраните заявку, чтобы проверить версию на сервере."
+  },
+  {
+    "id": 804,
+    "he": "לא נבחרה הובלה",
+    "en": "No move selected",
+    "ru": "Тип перевозки не выбран"
+  },
+  {
+    "id": 805,
+    "he": "מסלול",
+    "en": "Route",
+    "ru": "Маршрут"
+  },
+  {
+    "id": 806,
+    "he": "איסוף ",
+    "en": "Pickup ",
+    "ru": "Отправление: "
+  },
+  {
+    "id": 807,
+    "he": " · יעד ",
+    "en": " · Destination ",
+    "ru": " · Назначение: "
+  },
+  {
+    "id": 808,
+    "he": "קומה ",
+    "en": "Floor ",
+    "ru": "Этаж: "
+  },
+  {
+    "id": 809,
+    "he": " מ' מהחניה",
+    "en": " m from parking",
+    "ru": " м до парковки"
+  },
+  {
+    "id": 810,
+    "he": "אין עדיין הערות על מדרגות",
+    "en": "No stair access notes yet",
+    "ru": "Примечаний о лестнице пока нет"
+  },
+  {
+    "id": 811,
+    "he": "פרטי הדירה",
+    "en": "Home details",
+    "ru": "Данные квартиры"
+  },
+  {
+    "id": 812,
+    "he": "מספר החדרים לא הוגדר",
+    "en": "Number of rooms not set",
+    "ru": "Количество комнат не указано"
+  },
+  {
+    "id": 813,
+    "he": "ארגזים: ",
+    "en": "Boxes: ",
+    "ru": "Коробки: "
+  },
+  {
+    "id": 814,
+    "he": " קטנים, ",
+    "en": " small, ",
+    "ru": " мал., "
+  },
+  {
+    "id": 815,
+    "he": " בינוניים, ",
+    "en": " medium, ",
+    "ru": " сред., "
+  },
+  {
+    "id": 816,
+    "he": " גדולים",
+    "en": " large",
+    "ru": " бол."
+  },
+  {
+    "id": 817,
+    "he": "ארגזים ותכולה",
+    "en": "Boxes and contents",
+    "ru": "Коробки и вещи"
+  },
+  {
+    "id": 818,
+    "he": " פריטי תכולה",
+    "en": " inventory items",
+    "ru": " поз. в списке вещей"
+  },
+  {
+    "id": 819,
+    "he": "עדיין לא נוספה תכולה",
+    "en": "No contents added yet",
+    "ru": "Вещи пока не добавлены"
+  },
+  {
+    "id": 820,
+    "he": "פירוק",
+    "en": "Disassembly",
+    "ru": "Разборка"
+  },
+  {
+    "id": 821,
+    "he": "הרכבה",
+    "en": "Assembly",
+    "ru": "Сборка"
+  },
+  {
+    "id": 822,
+    "he": "עזרה באריזה",
+    "en": "Packing help",
+    "ru": "Помощь с упаковкой"
+  },
+  {
+    "id": 823,
+    "he": "לא נבחרו שירותים",
+    "en": "No services selected",
+    "ru": "Услуги не выбраны"
+  },
+  {
+    "id": 824,
+    "he": "עדיין לא נוספו פריטים מיוחדים",
+    "en": "No special items added yet",
+    "ru": "Предметы с особыми требованиями пока не добавлены"
+  },
+  {
+    "id": 825,
+    "he": "פריטים",
+    "en": "Items",
+    "ru": "Предметы"
+  },
+  {
+    "id": 826,
+    "he": " פריטים",
+    "en": " items",
+    "ru": " шт."
+  },
+  {
+    "id": 827,
+    "he": "עדיין לא נוספו פריטים",
+    "en": "No items added yet",
+    "ru": "Предметы пока не добавлены"
+  },
+  {
+    "id": 828,
+    "he": "תאריך ותקציב",
+    "en": "Date and budget",
+    "ru": "Дата и бюджет"
+  },
+  {
+    "id": 829,
+    "he": "התאריך לא הוגדר",
+    "en": "Date not set",
+    "ru": "Дата не указана"
+  },
+  {
+    "id": 830,
+    "he": "שעה מועדפת: ",
+    "en": "Preferred time: ",
+    "ru": "Предпочтительное время: "
+  },
+  {
+    "id": 831,
+    "he": "גמישות: ",
+    "en": "Date flexibility: ",
+    "ru": "Гибкость даты: "
+  },
+  {
+    "id": 832,
+    "he": "טווח תקציב: ",
+    "en": "Budget range: ",
+    "ru": "Бюджет: "
+  },
+  {
+    "id": 833,
+    "he": " בחירות מקומיות",
+    "en": " local selections",
+    "ru": " выбрано на устройстве"
+  },
+  {
+    "id": 834,
+    "he": "אין עדיין תמונות",
+    "en": "No photos yet",
+    "ru": "Фотографий пока нет"
+  },
+  {
+    "id": 835,
+    "he": "גבול ההעלאה נשאר מקומי עד שיחובר אחסון האובייקטים.",
+    "en": "Photo uploads will remain unavailable until file storage is connected.",
+    "ru": "Загрузка фотографий будет недоступна до подключения файлового хранилища."
+  },
+  {
+    "id": 836,
+    "he": "הערות",
+    "en": "Notes",
+    "ru": "Примечания"
+  },
+  {
+    "id": 837,
+    "he": "אין עדיין הערות",
+    "en": "No notes yet",
+    "ru": "Примечаний пока нет"
+  },
+  {
+    "id": 838,
+    "he": "צפייה בבקשה קיימת",
+    "en": "View existing request",
+    "ru": "Посмотреть существующую заявку"
+  },
+  {
+    "id": 839,
+    "he": "להמשיך בכל זאת",
+    "en": "Continue anyway",
+    "ru": "Всё равно продолжить"
+  },
+  {
+    "id": 840,
+    "he": "מי יקבל את הפרטים שלי?",
+    "en": "Who will receive my details?",
+    "ru": "Кто получит мои данные?"
+  },
+  {
+    "id": 841,
+    "he": "עסקים להובלה יוכלו לרכוש גישה לשם, לטלפון ולכתובות המדויקות בבקשה זו כדי ליצור איתכם קשר ולהציע מחיר. הפרטים האלה לא יוצגו בכרטיס הציבורי.",
+    "en": "Moving businesses will be able to purchase access to the name, phone number, and exact addresses in this request to contact you and offer a quote. These details will not appear on the public listing.",
+    "ru": "Компании-перевозчики смогут купить доступ к имени, телефону и точным адресам в этой заявке, чтобы связаться с вами и предложить цену. Эти данные не будут показаны в общедоступной карточке."
+  },
+  {
+    "id": 842,
+    "he": "זו אינה הזמנת הובלה ואין התחייבות לקבל הצעה. גרסת בדיקה: רכישת הגישה עדיין אינה פעילה.",
+    "en": "This is not a moving booking and does not guarantee that you will receive an offer. Test version: purchasing access is not active yet.",
+    "ru": "Это не заказ перевозки. Получение предложения не гарантируется. Тестовая версия: покупка доступа пока не работает.",
+    "heReviewed": "זו אינה הזמנת הובלה ואין הבטחה לקבלת הצעה. גרסת בדיקה: רכישת הגישה עדיין אינה פעילה."
+  },
+  {
+    "id": 843,
+    "he": "אני מאשר / מאשרת העברת פרטי קשר וכתובות לעד",
+    "en": "I agree to share my contact details and addresses with moving businesses. Maximum number of recipients:",
+    "ru": "Я разрешаю передать контактные данные и адреса компаниям-перевозчикам. Максимальное число получателей:"
+  },
+  {
+    "id": 844,
+    "he": "עסקים להובלה עבור בקשה זו.",
+    "en": "for this request.",
+    "ru": "по этой заявке."
+  },
+  {
+    "id": 845,
+    "he": "ללא אישור, הבקשה תישאר טיוטה. אפשר לחזור ולערוך לפני הפרסום.",
+    "en": "Without consent, the request will remain a draft. You can go back and edit it before publishing.",
+    "ru": "Без согласия заявка останется черновиком. Перед публикацией можно вернуться и изменить её."
+  },
+  {
+    "id": 846,
+    "he": "לאחר התחברות ושמירת טיוטה, תוצג כאן מגבלת המובילים ותוכלו להחליט אם לאשר את העברת הפרטים.",
+    "en": "After you sign in and save a draft, the mover limit will appear here and you can decide whether to agree to share your details.",
+    "ru": "После входа и сохранения черновика здесь появится лимит перевозчиков. Вы сможете решить, согласны ли передать данные."
+  },
+  {
+    "id": 847,
+    "he": "שומרים",
+    "en": "Saving",
+    "ru": "Сохраняем"
+  },
+  {
+    "id": 848,
+    "he": "שמירת טיוטה לקראת פרסום",
+    "en": "Save draft before publishing",
+    "ru": "Сохранить черновик перед публикацией"
+  },
+  {
+    "id": 849,
+    "he": "אימות החשבון",
+    "en": "Account verification",
+    "ru": "Подтверждение аккаунта"
+  },
+  {
+    "id": 850,
+    "he": "החשבון שלכם",
+    "en": "Your account",
+    "ru": "Ваш аккаунт"
+  },
+  {
+    "id": 851,
+    "he": "כניסה או יצירת חשבון",
+    "en": "Sign in or create an account",
+    "ru": "Войти или создать аккаунт"
+  },
+  {
+    "id": 852,
+    "he": "מספר הטלפון מאומת.",
+    "en": "Your phone number is verified.",
+    "ru": "Номер телефона подтверждён."
+  },
+  {
+    "id": 853,
+    "he": "לפני פרסום הבקשה צריך לאמת את מספר הטלפון.",
+    "en": "Verify your phone number before publishing the request.",
+    "ru": "Перед публикацией заявки подтвердите номер телефона."
+  },
+  {
+    "id": 854,
+    "he": "התנתקות",
+    "en": "Sign out",
+    "ru": "Выйти"
+  },
+  {
+    "id": 855,
+    "he": "מתחברים",
+    "en": "Signing in",
+    "ru": "Входим в аккаунт"
+  },
+  {
+    "id": 856,
+    "he": "מאמתים טלפון",
+    "en": "Verifying phone",
+    "ru": "Подтверждаем телефон"
+  },
+  {
+    "id": 857,
+    "he": "הטלפון אומת. בדקו את האישורים לפני הפרסום.",
+    "en": "Phone verified. Review the confirmations before publishing.",
+    "ru": "Телефон подтверждён. Проверьте согласия перед публикацией."
+  },
+  {
+    "id": 858,
+    "he": "תודה, הפרטים נשמרו.",
+    "en": "Thank you, your details have been saved.",
+    "ru": "Спасибо, данные сохранены."
+  },
+  {
+    "id": 859,
+    "he": "הבקשה פעילה ומוכנה לשלב הבא של המוצר.",
+    "en": "The request is active and ready for the next stage of the service.",
+    "ru": "Заявка активна и готова к следующему этапу работы сервиса."
+  },
+  {
+    "id": 860,
+    "he": "בקשה שפורסמה",
+    "en": "Published request",
+    "ru": "Опубликованная заявка"
+  },
+  {
+    "id": 861,
+    "he": "סטטוס: ",
+    "en": "Status: ",
+    "ru": "Статус: "
+  },
+  {
+    "id": 862,
+    "he": ". מובילים יוכלו לאתר את הבקשה הזו כשהגישה לשוק תהיה זמינה.",
+    "en": ". Movers will be able to find this request when marketplace access becomes available.",
+    "ru": ". Перевозчики смогут найти эту заявку, когда откроется доступ к каталогу."
+  },
+  {
+    "id": 863,
+    "he": "בחרו קודם סוג הובלה כדי שהאשף יטען את השדות המתאימים.",
+    "en": "Choose a move type first so the form can show the right fields.",
+    "ru": "Сначала выберите тип перевозки, чтобы в форме появились нужные поля."
+  },
+  {
+    "id": 864,
+    "he": "איסוף",
+    "en": "Pickup",
+    "ru": "Отправление"
+  },
+  {
+    "id": 865,
+    "he": "יעד",
+    "en": "Destination",
+    "ru": "Назначение"
+  },
+  {
+    "id": 866,
+    "he": "שירותים נוספים ופריטים מיוחדים (רשות)",
+    "en": "Additional services and special items (optional)",
+    "ru": "Дополнительные услуги и особые предметы (необязательно)"
+  },
+  {
+    "id": 867,
+    "he": " בחירות",
+    "en": " selections",
+    "ru": " выбрано"
+  },
+  {
+    "id": 868,
+    "he": "פריטים מיוחדים מהגרסה הקודמת",
+    "en": "Special items from the previous version",
+    "ru": "Предметы с особыми требованиями из предыдущей версии"
+  },
+  {
+    "id": 869,
+    "he": "פריטים מיוחדים שנשמרו בטיוטה",
+    "en": "Special items saved in the draft",
+    "ru": "Предметы с особыми требованиями, сохранённые в черновике"
+  },
+  {
+    "id": 870,
+    "he": "פריטים אלה נשמרו לפני שינוי סוג ההובלה. אפשר לערוך או להסיר אותם.",
+    "en": "These items were saved before the move type was changed. You can edit or remove them.",
+    "ru": "Эти предметы были сохранены до изменения типа перевозки. Их можно отредактировать или удалить."
+  },
+  {
+    "id": 871,
+    "he": "הבקשה פורסמה",
+    "en": "Request published",
+    "ru": "Заявка опубликована"
+  },
+  {
+    "id": 872,
+    "he": "שלב ",
+    "en": "Step ",
+    "ru": "Шаг "
+  },
+  {
+    "id": 873,
+    "he": " מתוך ",
+    "en": " of ",
+    "ru": " из "
+  },
+  {
+    "id": 874,
+    "he": "בודקים את החשבון ואת הגרסה העדכנית של הבקשה…",
+    "en": "Checking your account and the latest request version…",
+    "ru": "Проверяем аккаунт и последнюю версию заявки…"
+  },
+  {
+    "id": 875,
+    "he": "התחברו לחשבון שבו נוצרה הבקשה. לאחר ההתחברות חזרו לכאן ובדקו מחדש.",
+    "en": "Sign in to the account where the request was created. After signing in, return here and check again.",
+    "ru": "Войдите в аккаунт, в котором создана заявка. Затем вернитесь сюда и повторите проверку."
+  },
+  {
+    "id": 876,
+    "he": "הבקשה אינה זמינה לעריכה בחשבון הזה. בדקו שנכנסתם לחשבון הנכון. עריכות מהחשבון הקודם הוסרו מהעמוד.",
+    "en": "This request cannot be edited in this account. Check that you are signed in to the correct account. Edits from the previous account have been removed from this page.",
+    "ru": "Эту заявку нельзя редактировать в данном аккаунте. Проверьте, что вы вошли в нужный аккаунт. Изменения из предыдущего аккаунта удалены со страницы."
+  },
+  {
+    "id": 877,
+    "he": "לא הצלחנו לבדוק את הבקשה. בדקו את החיבור ונסו שוב.",
+    "en": "We couldn't check the request. Check your connection and try again.",
+    "ru": "Не удалось проверить заявку. Проверьте подключение и попробуйте ещё раз."
+  },
+  {
+    "id": 878,
+    "he": "הקישור לבקשה אינו תקין. פתחו אותה מחדש מתוך החשבון שלכם.",
+    "en": "This request link is invalid. Open the request again from your account.",
+    "ru": "Ссылка на заявку недействительна. Откройте её снова из своего аккаунта."
+  },
+  {
+    "id": 879,
+    "he": "עריכת בקשה שפורסמה",
+    "en": "Edit a published request",
+    "ru": "Редактирование опубликованной заявки"
+  },
+  {
+    "id": 880,
+    "he": "כניסה לחשבון (בכרטיסייה חדשה)",
+    "en": "Sign in (new tab)",
+    "ru": "Войти в аккаунт (новая вкладка)"
+  },
+  {
+    "id": 881,
+    "he": "בדיקה מחדש",
+    "en": "Check again",
+    "ru": "Проверить снова"
+  },
+  {
+    "id": 882,
+    "he": "חזרה לחשבון",
+    "en": "Back to account",
+    "ru": "В аккаунт"
+  },
+  {
+    "id": 883,
+    "he": "השינויים נשמרו",
+    "en": "Changes saved",
+    "ru": "Изменения сохранены"
+  },
+  {
+    "id": 884,
+    "he": "נשמרה בשרת, יחד עם האישור להעברת פרטים עבור גרסה זו.",
+    "en": "has been saved on the server, along with your consent to share details for this version.",
+    "ru": "сохранена на сервере вместе с согласием на передачу данных для этой версии."
+  },
+  {
+    "id": 885,
+    "he": "מצב הפרסום תלוי בבדיקות העדכניות. השמירה אינה הזמנת הובלה ואינה מבטיחה פנייה ממוביל.",
+    "en": "Publication status depends on the latest checks. Saving is not a moving booking and does not guarantee that a mover will contact you.",
+    "ru": "Статус публикации зависит от актуальных проверок. Сохранение не является заказом перевозки и не гарантирует обращение перевозчика."
+  },
+  {
+    "id": 886,
+    "he": "המשך עריכה לאחר בדיקה מחדש",
+    "en": "Continue editing after checking again",
+    "ru": "Продолжить редактирование после повторной проверки"
+  },
+  {
+    "id": 887,
+    "he": "טוענים את הטיוטה שנבחרה…",
+    "en": "Loading the selected draft…",
+    "ru": "Загружаем выбранный черновик…"
+  },
+  {
+    "id": 888,
+    "he": "כדי להמשיך את הטיוטה, התחברו לחשבון שבו נוצרה. לאחר ההתחברות חזרו לכאן ולחצו על בדיקה מחדש.",
+    "en": "To continue this draft, sign in to the account where it was created. Then return here and select Check again.",
+    "ru": "Чтобы продолжить черновик, войдите в аккаунт, в котором он создан. Затем вернитесь сюда и нажмите «Проверить снова»."
+  },
+  {
+    "id": 889,
+    "he": "הקישור לטיוטה אינו תקין. פתחו אותה מחדש מתוך החשבון שלכם.",
+    "en": "This draft link is invalid. Open the draft again from your account.",
+    "ru": "Ссылка на черновик недействительна. Откройте его снова из своего аккаунта."
+  },
+  {
+    "id": 890,
+    "he": "הטיוטה לא נמצאה או שאינה שייכת לחשבון הזה. בדקו שהתחברתם לחשבון הנכון.",
+    "en": "The draft was not found or does not belong to this account. Check that you are signed in to the correct account.",
+    "ru": "Черновик не найден или принадлежит другому аккаунту. Проверьте, что вы вошли в нужный аккаунт."
+  },
+  {
+    "id": 891,
+    "he": "הבקשה הזאת כבר אינה טיוטה ולא ניתן לערוך אותה כאן. אפשר לצפות במצב שלה בחשבון.",
+    "en": "This request is no longer a draft and cannot be edited here. You can view its status in your account.",
+    "ru": "Эта заявка больше не является черновиком, и здесь её нельзя редактировать. Статус доступен в аккаунте."
+  },
+  {
+    "id": 892,
+    "he": "לא הצלחנו לטעון את הטיוטה. בדקו את החיבור ונסו שוב. הפרטים השמורים לא שונו.",
+    "en": "We couldn't load the draft. Check your connection and try again. Your saved details have not changed.",
+    "ru": "Не удалось загрузить черновик. Проверьте подключение и попробуйте ещё раз. Сохранённые данные не изменены."
+  },
+  {
+    "id": 893,
+    "he": "המשך טיוטת בקשה",
+    "en": "Continue a request draft",
+    "ru": "Продолжить черновик заявки"
+  },
+  {
+    "id": 894,
+    "he": "בדיקה מחדש לאחר התחברות",
+    "en": "Check again after signing in",
+    "ru": "Проверить снова после входа"
+  },
+  {
+    "id": 895,
+    "he": "נסו שוב",
+    "en": "Try again",
+    "ru": "Попробовать ещё раз"
+  },
+  {
+    "id": 896,
+    "he": "&larr; חזרה לדף הבית",
+    "en": "← Back to home",
+    "ru": "← На главную"
+  },
+  {
+    "id": 897,
+    "he": "יוצרים בקשת הובלה תוך דקות.",
+    "en": "Create a moving request in minutes.",
+    "ru": "Создайте заявку на перевозку за несколько минут."
+  },
+  {
+    "id": 898,
+    "he": "השינויים נשארים בעמוד בלבד. מעבר בין השלבים אינו שומר דבר; בסיום תבדקו את כל הפרטים ותאשרו שמירת גרסה חדשה.",
+    "en": "Changes stay on this page only. Moving between steps does not save anything. At the end, you'll review all details and confirm saving a new version.",
+    "ru": "Изменения остаются только на этой странице. Переход между шагами ничего не сохраняет. В конце вы проверите все данные и подтвердите сохранение новой версии."
+  },
+  {
+    "id": 899,
+    "he": "ספרו למובילים מה צריך להעביר, לאן ומתי. לאחר ההתחברות הטיוטה נשמרת תוך כדי ההתקדמות.",
+    "en": "Tell movers what you need to move, where, and when. After you sign in, your draft is saved as you progress.",
+    "ru": "Расскажите перевозчикам, что, куда и когда нужно перевезти. После входа черновик сохраняется по мере заполнения."
+  },
+  {
+    "id": 900,
+    "he": "בואו נתחיל",
+    "en": "Let's get started",
+    "ru": "Начнём"
+  },
+  {
+    "id": 901,
+    "he": "התקדמות בשלבי הבקשה",
+    "en": "Request progress",
+    "ru": "Этапы заполнения заявки"
+  },
+  {
+    "id": 902,
+    "he": "מעבר לשלב אחר",
+    "en": "Go to another step",
+    "ru": "Перейти к другому шагу"
+  },
+  {
+    "id": 903,
+    "he": "שלבי הבקשה",
+    "en": "Request steps",
+    "ru": "Шаги заявки"
+  },
+  {
+    "id": 904,
+    "he": "יש פרטים שצריך לתקן או להשלים",
+    "en": "Some details need to be corrected or completed",
+    "ru": "Некоторые данные нужно исправить или дополнить"
+  },
+  {
+    "id": 905,
+    "he": "לפני שמירת הגרסה החדשה צריך להשלים את הפרטים הבאים:",
+    "en": "Complete the following details before saving the new version:",
+    "ru": "Перед сохранением новой версии заполните следующие данные:"
+  },
+  {
+    "id": 906,
+    "he": "אפשר להמשיך לערוך את הטיוטה. לפני הפרסום צריך להשלים את הפרטים הבאים:",
+    "en": "You can continue editing the draft. Complete the following details before publishing:",
+    "ru": "Вы можете продолжить редактировать черновик. Перед публикацией заполните следующие данные:"
+  },
+  {
+    "id": 907,
+    "he": "צריכים עזרה? (לשונית חדשה)",
+    "en": "Need help? (new tab)",
+    "ru": "Нужна помощь? (новая вкладка)"
+  },
+  {
+    "id": 908,
+    "he": "איך נשמרים הפרטים? (לשונית חדשה)",
+    "en": "How are your details saved? (new tab)",
+    "ru": "Как сохраняются данные? (новая вкладка)"
+  },
+  {
+    "id": 909,
+    "he": "לשמור טיוטה בכרטיסייה הזאת",
+    "en": "Save a draft in this tab",
+    "ru": "Сохранять черновик в этой вкладке"
+  },
+  {
+    "id": 910,
+    "he": "כתובות והערות יישמרו עד 24 שעות מהעדכון האחרון, ללא תמונות או קודי אימות. לא מומלץ במחשב משותף.",
+    "en": "Addresses and notes will be kept for up to 24 hours after the last update, without photos or verification codes. Not recommended on a shared computer.",
+    "ru": "Адреса и примечания будут храниться до 24 часов с последнего обновления, без фотографий и кодов подтверждения. Не рекомендуется на общем компьютере."
+  },
+  {
+    "id": 911,
+    "he": "הדפדפן לא מאפשר לשמור. אל תסגרו את העמוד לפני שמירה בחשבון.",
+    "en": "Your browser won't allow saving. Keep this page open until you save to your account.",
+    "ru": "Браузер не разрешает сохранение. Не закрывайте страницу, пока не сохраните данные в аккаунте."
+  },
+  {
+    "id": 912,
+    "he": "שמירת טיוטה מופעלת. ביטול הסימון מוחק את העותק מהדפדפן.",
+    "en": "Draft saving is on. Unchecking this option deletes the copy from your browser.",
+    "ru": "Сохранение черновика включено. Если снять отметку, копия будет удалена из браузера."
+  },
+  {
+    "id": 913,
+    "he": "הפרטים נשארים בעמוד בלבד ועלולים להימחק ברענון או בסגירה.",
+    "en": "Details stay on this page only and may be lost if you refresh or close it.",
+    "ru": "Данные остаются только на этой странице и могут исчезнуть при обновлении или закрытии."
+  },
+  {
+    "id": 914,
+    "he": "חזרה",
+    "en": "Back",
+    "ru": "Назад"
+  },
+  {
+    "id": 915,
+    "he": "שמירת גרסה חדשה",
+    "en": "Save new version",
+    "ru": "Сохранить новую версию"
+  },
+  {
+    "id": 916,
+    "he": "פרסום הבקשה",
+    "en": "Publish request",
+    "ru": "Опубликовать заявку"
+  },
+  {
+    "id": 917,
+    "he": "המשך",
+    "en": "Continue",
+    "ru": "Продолжить"
+  },
+  {
+    "id": 918,
+    "he": "אל תסגרו את העמוד עד לקבלת אישור.",
+    "en": "Keep this page open until you receive confirmation.",
+    "ru": "Не закрывайте страницу, пока не получите подтверждение."
+  },
+  {
+    "id": 919,
+    "he": "השינויים נשארים בעמוד עד לשמירה הסופית.",
+    "en": "Changes stay on this page until the final save.",
+    "ru": "Изменения остаются на этой странице до окончательного сохранения."
+  },
+  {
+    "id": 920,
+    "he": "המשך בקשה",
+    "en": "Continue a request",
+    "ru": "Продолжить заявку"
+  },
+  {
+    "id": 921,
+    "he": "המשיכו טיוטה שמורה מהמקום שבו עצרתם.",
+    "en": "Pick up a saved draft where you left off.",
+    "ru": "Продолжите сохранённый черновик с того места, где остановились."
+  },
+  {
+    "id": 922,
+    "he": " נשמרו",
+    "en": " saved",
+    "ru": " сохранено"
+  },
+  {
+    "id": 923,
+    "he": "טיוטה",
+    "en": "Draft",
+    "ru": "Черновик"
+  },
+  {
+    "id": 924,
+    "he": "נוצרה",
+    "en": "Created",
+    "ru": "Создано"
+  },
+  {
+    "id": 925,
+    "he": "עדיין אין בקשה שמורה. התחילו למעלה והטיוטה תופיע כאן לאחר השמירה הראשונה.",
+    "en": "No saved requests yet. Start above, and your draft will appear here after the first save.",
+    "ru": "Сохранённых заявок пока нет. Начните выше, и после первого сохранения черновик появится здесь."
+  },
+  {
+    "id": 926,
+    "he": "חזרה לכל הבקשות בחשבון",
+    "en": "Back to all requests in your account",
+    "ru": "Ко всем заявкам в аккаунте"
+  },
+  {
+    "id": 927,
+    "he": "הבקשה שלכם",
+    "en": "Your request",
+    "ru": "Ваша заявка"
+  },
+  {
+    "id": 928,
+    "he": "הובלה חדשה",
+    "en": "New move",
+    "ru": "Новая перевозка"
+  },
+  {
+    "id": 929,
+    "he": "הוסיפו מסלול",
+    "en": "Add a route",
+    "ru": "Добавьте маршрут"
+  },
+  {
+    "id": 930,
+    "he": "תקציב",
+    "en": "Budget",
+    "ru": "Бюджет"
+  },
+  {
+    "id": 931,
+    "he": "הוסיפו תקציב",
+    "en": "Add a budget",
+    "ru": "Укажите бюджет"
+  },
+  {
+    "id": 932,
+    "he": "התקדמות",
+    "en": "Progress",
+    "ru": "Прогресс"
+  },
+  {
+    "id": 933,
+    "he": "מצב שמירה",
+    "en": "Save status",
+    "ru": "Состояние сохранения"
+  },
+  {
+    "id": 934,
+    "he": "שינויים בעמוד בלבד",
+    "en": "Changes are only on this page",
+    "ru": "Изменения только на этой странице"
+  },
+  {
+    "id": 935,
+    "he": "ללא שינויים מקומיים",
+    "en": "No local changes",
+    "ru": "Локальных изменений нет"
+  },
+  {
+    "id": 936,
+    "he": "טיוטה נשמרה",
+    "en": "Draft saved",
+    "ru": "Черновик сохранён"
+  },
+  {
+    "id": 937,
+    "he": "מוכנים לשמירה",
+    "en": "Ready to save",
+    "ru": "Готово к сохранению"
+  },
+  {
+    "id": 938,
+    "he": "התחברו כדי לשמור",
+    "en": "Sign in to save",
+    "ru": "Войдите, чтобы сохранить"
+  },
+  {
+    "id": 939,
+    "he": "הבקשה אינה פתוחה לעריכה",
+    "en": "This request is not open for editing",
+    "ru": "Редактирование этой заявки недоступно"
+  },
+  {
+    "id": 940,
+    "he": "צריך לבדוק את הגרסה העדכנית",
+    "en": "Check the latest version",
+    "ru": "Нужно проверить актуальную версию"
+  },
+  {
+    "id": 941,
+    "he": "צריך לבדוק אם השינוי נשמר",
+    "en": "Check whether the change was saved",
+    "ru": "Нужно проверить, сохранилось ли изменение"
+  },
+  {
+    "id": 942,
+    "he": "מצב העריכה",
+    "en": "Editing status",
+    "ru": "Состояние редактирования"
+  },
+  {
+    "id": 943,
+    "he": "מצב הבקשה השתנה ואי אפשר לשמור בה גרסה חדשה. העריכות המקומיות עדיין מופיעות בעמוד לעיון, אך לא יישלחו לשרת.",
+    "en": "The request status has changed, so a new version cannot be saved. Your local edits are still shown here for reference, but will not be sent to the server.",
+    "ru": "Статус заявки изменился, поэтому сохранить новую версию нельзя. Локальные изменения остаются на странице для просмотра, но не будут отправлены на сервер."
+  },
+  {
+    "id": 944,
+    "he": "בדיקת הגרסה בשרת",
+    "en": "Check server version",
+    "ru": "Проверить версию на сервере"
+  },
+  {
+    "id": 945,
+    "he": "זו גרסת השרת העדכנית לעומת כל הפרטים שבטופס שלכם. המשך עם העריכות שלכם עשוי להחליף שינויים שנשמרו ממקום אחר. הבחירה אינה שומרת דבר.",
+    "en": "This is the latest server version compared with all the details in your form. Continuing with your edits may replace changes saved elsewhere. Your choice does not save anything.",
+    "ru": "Здесь последняя версия на сервере сравнивается со всеми данными в вашей форме. Если продолжить со своими изменениями, они могут заменить изменения, сохранённые в другом месте. Сам выбор ничего не сохраняет."
+  },
+  {
+    "id": 946,
+    "he": "להמשיך עם הפרטים שלי לבדיקה מחדש",
+    "en": "Continue with my details and review again",
+    "ru": "Продолжить с моими данными и проверить снова"
+  },
+  {
+    "id": 947,
+    "he": "להחליף את העריכות שלי בגרסת השרת",
+    "en": "Replace my edits with the server version",
+    "ru": "Заменить мои изменения версией с сервера"
+  },
+  {
+    "id": 948,
+    "he": "צפייה בבקשה שבשרת",
+    "en": "View request on the server",
+    "ru": "Посмотреть заявку на сервере"
+  },
+  {
+    "id": 949,
+    "he": "לפני שמירת השינויים",
+    "en": "Before saving changes",
+    "ru": "Перед сохранением изменений"
+  },
+  {
+    "id": 950,
+    "he": "השירות עדיין אינו פתוח לשמירת שינויים בבקשה שפורסמה. אפשר לערוך בעמוד, אך העריכות לא יישמרו עד לפתיחת השירות.",
+    "en": "Saving changes to published requests is not available yet. You can edit on this page, but your edits won't be saved until the service opens.",
+    "ru": "Сохранение изменений опубликованных заявок пока недоступно. Можно редактировать данные на странице, но изменения не сохранятся до открытия сервиса."
+  },
+  {
+    "id": 951,
+    "he": "נוסח ההסכמה בעמוד אינו תואם לגרסה העדכנית. שמירה נעולה. העתיקו לעצמכם עריכות חשובות לפני טעינה מחדש של העמוד.",
+    "en": "The consent wording on this page does not match the current version. Saving is locked. Copy any important edits before reloading the page.",
+    "ru": "Текст согласия на странице не соответствует актуальной версии. Сохранение заблокировано. Скопируйте важные изменения перед перезагрузкой страницы."
+  }
+]

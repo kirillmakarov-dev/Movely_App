@@ -332,6 +332,10 @@ async function readJson(response: Response) {
 function toApiError(status: number, payload: unknown, fallbackMessage: string) {
   const shape = (payload ?? {}) as ApiErrorShape;
   const consentMessages: Record<string, string> = {
+    ACTIVE_REQUEST_LIMIT_REACHED: "הגעתם למספר הבקשות הפעילות המותר. סגרו או בטלו בקשה שאינה נחוצה לפני פרסום בקשה נוספת.",
+    INVALID_REQUEST_STATE: "מצב הבקשה אינו מאפשר את הפעולה. רעננו את הפרטים ובדקו את האפשרויות הזמינות.",
+    REQUEST_INCOMPLETE: "חסרים פרטים בבקשה. בדקו את השדות המסומנים והשלימו אותם לפני הפרסום.",
+    MOVE_REQUEST_NOT_FOUND: "הבקשה לא נמצאה או שאינה זמינה בחשבון הנוכחי.",
     POLICY_ACCEPTANCE_REQUIRED: "אשרו גיל 18 ומעלה ואת תנאי השימוש לאחר קריאת הודעת הפרטיות.",
     POLICY_VERSION_CHANGED: "המסמכים השתנו. רעננו את העמוד לאחר שמירת הטיוטה, קראו ואשרו שוב.",
     CONTACT_SHARING_REQUIRED: "נדרש אישור נפרד להעברת פרטי הקשר לפני הפרסום.",
@@ -350,7 +354,9 @@ function toApiError(status: number, payload: unknown, fallbackMessage: string) {
     OTP_CODE_INVALID: "הקוד אינו תקין. בדקו את הקוד שקיבלתם ונסו שוב.",
     REQUEST_VERSION_CONFLICT: "הבקשה השתנתה מאז שנפתחה. שמרו עותק של השינויים שלא נשמרו ורעננו את הבקשה לפני ניסיון נוסף.",
   };
-  return new MovelyApiError(consentMessages[shape.errorCode ?? ""] ?? shape.message ?? fallbackMessage, {
+  // Backend messages may contain a different language or internal details.
+  // Known error codes receive specific copy; unknown failures use safe UI copy.
+  return new MovelyApiError(consentMessages[shape.errorCode ?? ""] ?? fallbackMessage, {
     errorCode: shape.errorCode ?? "HTTP_ERROR",
     status,
     details: shape.details,
@@ -373,7 +379,7 @@ async function requestJson<TResponse>(
 
   if (!response.ok) {
     const payload = await readJson(response);
-    throw toApiError(response.status, payload, `Request failed with ${response.status}`);
+    throw toApiError(response.status, payload, "לא הצלחנו להשלים את הפעולה. בדקו את החיבור ונסו שוב.");
   }
 
   if (response.status === 204) {

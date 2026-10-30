@@ -9,7 +9,7 @@ export default function MoverPlaceholder({ title, description, action }: { title
       <div className="mt-8 rounded-xl border border-slate-200 bg-white p-7">
         <p className="text-sm font-bold uppercase tracking-wider text-slate-500">תצוגה מקדימה של שלב 5</p>
         <h2 className="mt-3 text-2xl font-bold">אזור העבודה הזה עדיין לא פעיל.</h2>
-        <p className="mt-3 max-w-2xl leading-7 text-slate-600">לא מסומלצים כאן יתרות ארנק, לידים שנרכשו, הצעות או פעילות עסקית. המסגרת הזו מגדירה רק את הניווט העתידי.</p>
+        <p className="mt-3 max-w-2xl leading-7 text-slate-600">לא מוצגים כאן נתונים מדומים של יתרות ארנק, לידים שנרכשו, הצעות או פעילות עסקית. העמוד מציג רק את הניווט המתוכנן.</p>
         {action ? <Link href={action.href} className="button button-primary mt-6">{action.label}</Link> : null}
       </div>
     </div>

@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "@/components/SafeLink";
-import { UI_LOCALE as locale } from "@/lib/locale";
 import PolicyConsentFields, { emptyPolicyChoice, policyPayload } from "@/components/PolicyConsentFields";
 import { LEGAL_DRAFT_VERSION } from "@/lib/legal-content";
 import { acceptPolicies } from "@/lib/movely-api";
@@ -86,7 +85,7 @@ function normalizeApiError(error: unknown) {
   if (error instanceof MovelyApiError) {
     return {
       tone: "error" as const,
-      title: ["POLICY_ACCEPTANCE_REQUIRED", "POLICY_VERSION_CHANGED", "CONTACT_SHARING_REQUIRED", "RECIPIENT_LIMIT_CHANGED", "LEGAL_NOT_READY"].includes(error.errorCode) ? "נדרש אישור לפני המשך" : error.errorCode,
+      title: ["POLICY_ACCEPTANCE_REQUIRED", "POLICY_VERSION_CHANGED", "CONTACT_SHARING_REQUIRED", "RECIPIENT_LIMIT_CHANGED", "LEGAL_NOT_READY"].includes(error.errorCode) ? "נדרש אישור לפני המשך" : `${"הבקשה נכשלה"} (${error.errorCode})`,
       message: error.message,
     };
   }
@@ -94,7 +93,7 @@ function normalizeApiError(error: unknown) {
   return {
     tone: "error" as const,
     title: "הבקשה נכשלה",
-    message: error instanceof Error ? error.message : "משהו השתבש.",
+    message: "לא הצלחנו להשלים את הפעולה. בדקו את החיבור ונסו שוב.",
   };
 }
 
@@ -1089,7 +1088,7 @@ export default function CustomerRequestFlow({
         <div className="mt-3 grid gap-3 sm:grid-cols-2">
           {([["lengthCm", "אורך בסנטימטרים"], ["widthCm", "רוחב בסנטימטרים"], ["heightCm", "גובה בסנטימטרים"], ["approximateWeightKg", "משקל בקילוגרמים"]] as const).map(([key, label]) => <label key={key} className="space-y-2">
             {renderInputLabel(label)}
-            <input {...fieldProps(`${collection}.${item.id}.${key}`, `${label} — ${item.name || "הפריט"}`)} type="number" min={0} step="any" value={item[key]}
+            <input {...fieldProps(`${collection}.${item.id}.${key}`, `${label} - ${item.name || "הפריט"}`)} type="number" min={0} step="any" value={item[key]}
               onChange={(event) => setForm((current) => ({ ...current, apartmentInventory: current.apartmentInventory.map((row) => row.id === item.id ? { ...row, [key]: event.target.value } : row) }))}
               className="field-control" />
             {renderFieldError(`${collection}.${item.id}.${key}`)}
@@ -1730,7 +1729,7 @@ export default function CustomerRequestFlow({
       <h3 className="font-bold">מי יקבל את הפרטים שלי?</h3>
       {activeRequest ? <>
         <p className="mt-2">לאחר הפרסום, עד {activeRequest.maxLeadBuyers} עסקים להובלה יוכלו לרכוש גישה לשם, לטלפון ולכתובות המדויקות בבקשה זו כדי ליצור איתכם קשר ולהציע מחיר. הפרטים האלה לא יוצגו בכרטיס הציבורי.</p>
-        <p className="mt-2">זו אינה הזמנת הובלה ואין התחייבות לקבל הצעה. גרסת בדיקה: רכישת הגישה עדיין אינה פעילה.</p>
+        <p className="mt-2">זו אינה הזמנת הובלה ואין הבטחה לקבלת הצעה. גרסת בדיקה: רכישת הגישה עדיין אינה פעילה.</p>
         <label className="mt-3 flex min-h-12 cursor-pointer items-start gap-3 py-2">
           <input type="checkbox" className="mt-1.5 size-5 shrink-0 accent-slate-950"
             checked={sharingChoice?.requestId === activeRequest.id && sharingChoice.maxRecipients === activeRequest.maxLeadBuyers}
@@ -1915,7 +1914,7 @@ export default function CustomerRequestFlow({
   return (
     <>
       <SiteHeader />
-      <main id="main-content" className="site-container request-flow-page py-6 sm:py-10" tabIndex={-1}>
+      <main id="main-content" className="site-container request-flow-page py-6 sm:py-10" tabIndex={-1} data-language-guard>
         <header className="request-flow-intro mb-6 max-w-3xl">
           <Link href="/" className="inline-link mt-0">&larr; חזרה לדף הבית</Link>
           <h1 className="mt-2 text-3xl font-bold tracking-tight text-slate-950 sm:text-5xl">
@@ -2054,7 +2053,7 @@ export default function CustomerRequestFlow({
                 <p className="mt-1 text-sm text-slate-500">המשיכו טיוטה שמורה מהמקום שבו עצרתם.</p>
               </div>
               <div className="text-sm text-slate-500">
-                {locale === "he" ? `${drafts.length} נשמרו` : `${drafts.length} saved`}
+                {`${drafts.length} נשמרו`}
               </div>
             </div>
 

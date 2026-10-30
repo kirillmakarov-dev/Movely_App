@@ -58,7 +58,7 @@ export default function PublishedEditReview({ editor }: { editor: PublishedEdito
     {editor.legalReady && max > 0 && isEditableStatus(context.request.status) && !editor.pending && !editor.needsRefresh && !editor.uncertain && <section className="rounded-xl border border-sky-200 bg-sky-50 p-5">
       <h3 className="text-lg font-bold">אישור חדש להעברת פרטים עבור הגרסה הזאת</h3>
       <p className="mt-2">עד {max} עסקים להובלה יוכלו לקבל גישה לשם, לטלפון ולכתובות המדויקות בבקשה כדי ליצור איתכם קשר ולהציע מחיר. הפרטים האלה לא יוצגו בכרטיס הציבורי.</p>
-      <p className="mt-2">זו אינה הזמנת הובלה ואין התחייבות לקבל הצעה. רכישת גישה לפרטי קשר עדיין אינה פעילה. שמירת עריכה אינה מבטלת מידע שכבר נמסר או הסכם נפרד עם מוביל.</p>
+      <p className="mt-2">זו אינה הזמנת הובלה ואין הבטחה לקבלת הצעה. רכישת גישה לפרטי קשר עדיין אינה פעילה. שמירת עריכה אינה מבטלת מידע שכבר נמסר או הסכם נפרד עם מוביל.</p>
       {context.publication.isTestOnly && <p className="mt-2">המסמכים עדיין מסומנים כטיוטה. אישורים לגרסה הזאת מיועדים לבדיקות בלבד; פתיחת השירות תלויה במסמכים מאושרים.</p>}
       <label className="mt-3 flex min-h-12 items-start gap-3"><input type="checkbox" className="mt-1.5 size-5 shrink-0 accent-sky-800" checked={editor.accepted} onChange={(event) => editor.setAccepted(event.target.checked)} /><span>אני מאשר / מאשרת העברת פרטי קשר וכתובות לעד {max} עסקים להובלה עבור הגרסה החדשה שבדקתי.</span></label>
       <p className="mt-2">ללא אישור ושמירה מפורשת, הגרסה שבשרת תישאר ללא שינוי. שינוי נוסף בטופס מבטל את הסימון ומצריך בדיקה ואישור מחדש.</p>

@@ -35,15 +35,15 @@ export function getRequestChanges(before: MoveRequestVersionResponse, after: Upd
   }
   add("requestType", "סוג ההובלה", formatRequestType(before.requestType), formatRequestType(after.requestType));
   function location(prefix: string, title: string, previous: MoveLocationDto | null, next: MoveLocationDto | null) {
-    add(`${prefix}.city`, `${title} — יישוב`, text(previous?.city), text(next?.city));
-    add(`${prefix}.exactAddress`, `${title} — כתובת`, text(previous?.exactAddress), text(next?.exactAddress));
-    add(`${prefix}.floor`, `${title} — קומה`, text(previous?.floor), text(next?.floor));
-    add(`${prefix}.hasElevator`, `${title} — מעלית`, yesNo(previous?.hasElevator), yesNo(next?.hasElevator));
+    add(`${prefix}.city`, `${title} - יישוב`, text(previous?.city), text(next?.city));
+    add(`${prefix}.exactAddress`, `${title} - כתובת`, text(previous?.exactAddress), text(next?.exactAddress));
+    add(`${prefix}.floor`, `${title} - קומה`, text(previous?.floor), text(next?.floor));
+    add(`${prefix}.hasElevator`, `${title} - מעלית`, yesNo(previous?.hasElevator), yesNo(next?.hasElevator));
     const suitability = (value: MoveLocationDto["elevatorFurnitureSuitability"] | undefined) => value === "Yes" ? "מתאימה" : value === "No" ? "אינה מתאימה" : "לא ידוע";
-    add(`${prefix}.elevatorFurnitureSuitability`, `${title} — התאמת המעלית לרהיטים`, suitability(previous?.elevatorFurnitureSuitability), suitability(next?.elevatorFurnitureSuitability));
-    add(`${prefix}.stairsInfo`, `${title} — מדרגות`, text(previous?.stairsInfo), text(next?.stairsInfo));
-    add(`${prefix}.truckAccessInfo`, `${title} — גישה למשאית`, text(previous?.truckAccessInfo), text(next?.truckAccessInfo));
-    add(`${prefix}.parkingDistanceMeters`, `${title} — מרחק מהחניה במטרים`, text(previous?.parkingDistanceMeters), text(next?.parkingDistanceMeters));
+    add(`${prefix}.elevatorFurnitureSuitability`, `${title} - התאמת המעלית לרהיטים`, suitability(previous?.elevatorFurnitureSuitability), suitability(next?.elevatorFurnitureSuitability));
+    add(`${prefix}.stairsInfo`, `${title} - מדרגות`, text(previous?.stairsInfo), text(next?.stairsInfo));
+    add(`${prefix}.truckAccessInfo`, `${title} - גישה למשאית`, text(previous?.truckAccessInfo), text(next?.truckAccessInfo));
+    add(`${prefix}.parkingDistanceMeters`, `${title} - מרחק מהחניה במטרים`, text(previous?.parkingDistanceMeters), text(next?.parkingDistanceMeters));
   }
   location("pickup", "איסוף", before.pickup, after.pickup);
   location("destination", "יעד", before.destination, after.destination);

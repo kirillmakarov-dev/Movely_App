@@ -37,7 +37,7 @@ test("the comparison shows actual submitted address/access/date values without c
   expect(changes.map((change) => change.key)).toEqual(["pickup.exactAddress", "pickup.floor", "pickup.hasElevator", "pickup.stairsInfo", "pickup.parkingDistanceMeters", "destination.truckAccessInfo", "moveDate", "customerComment"]);
   expect(JSON.stringify(before)).toBe(original);
   render(<RequestChangeSummary before={before} after={after} />);
-  const address = screen.getByRole("heading", { name: "איסוף — כתובת" }).closest("li")!;
+  const address = screen.getByRole("heading", { name: "איסוף - כתובת" }).closest("li")!;
   expect(within(address).getByText("כתובת פרטית 17")).toBeVisible();
   expect(within(address).getByText("כתובת חדשה 25")).toBeVisible();
   expect(within(address).getByText("לפני השינוי")).toBeVisible();

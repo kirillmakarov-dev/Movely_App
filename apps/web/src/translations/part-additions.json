@@ -1,0 +1,32 @@
+[
+  {
+    "id": 1433,
+    "he": "תרגום לעיון בלבד. הנוסח ההיסטורי המקורי נשמר בעברית, והתרגום אינו משנה הסכמות קודמות.",
+    "en": "Translation for reference. The original historical text is preserved in Hebrew. This translation does not change any earlier consent.",
+    "ru": "Перевод для ознакомления. Оригинальный текст прежней версии сохранён на иврите. Этот перевод не меняет ранее данных согласий."
+  },
+  {
+    "id": 1434,
+    "he": "הגעתם למספר הבקשות הפעילות המותר. סגרו או בטלו בקשה שאינה נחוצה לפני פרסום בקשה נוספת.",
+    "en": "You have reached the active request limit. Close or cancel a request you no longer need before publishing another.",
+    "ru": "Вы достигли лимита активных заявок. Закройте или отмените ненужную заявку, прежде чем публиковать новую."
+  },
+  {
+    "id": 1435,
+    "he": "מצב הבקשה אינו מאפשר את הפעולה. רעננו את הפרטים ובדקו את האפשרויות הזמינות.",
+    "en": "This action is not available in the current request status. Refresh the details and check the available options.",
+    "ru": "Текущее состояние заявки не позволяет выполнить это действие. Обновите данные и проверьте доступные варианты."
+  },
+  {
+    "id": 1436,
+    "he": "חסרים פרטים בבקשה. בדקו את השדות המסומנים והשלימו אותם לפני הפרסום.",
+    "en": "Some request details are missing. Check the highlighted fields and complete them before publishing.",
+    "ru": "В заявке не хватает данных. Проверьте выделенные поля и заполните их перед публикацией."
+  },
+  {
+    "id": 1437,
+    "he": "הבקשה לא נמצאה או שאינה זמינה בחשבון הנוכחי.",
+    "en": "The request was not found or is not available in this account.",
+    "ru": "Заявка не найдена или недоступна в текущем аккаунте."
+  }
+]

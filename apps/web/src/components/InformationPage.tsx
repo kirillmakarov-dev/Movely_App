@@ -1,6 +1,7 @@
 import Link from "@/components/SafeLink";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
+import { UI_LOCALE } from "@/lib/locale";
 
 export type InformationSection = { id: string; title: string; paragraphs: string[]; bullets?: string[]; links?: { href: string; label: string }[] };
 export type InformationDocument = { title: string; introduction: string; version?: string; draft?: boolean; sections: InformationSection[] };
@@ -16,9 +17,10 @@ export default function InformationPage({ document, currentHref }: { document: I
         <p>{document.introduction}</p>
         {document.version && <p className="document-version">גרסה <bdi>{document.version}</bdi> · עודכן ב־29.10.2026</p>}
       </header>
-      {currentHref && <aside className="document-notice" aria-label="גרסה קודמת"><strong>גרסה קודמת — אינה הנוסח העדכני</strong><p>המסמך נשמר כדי לאפשר לעיין בנוסח שהיה זמין בעבר. הוא אינו משנה הסכמות שכבר נרשמו.</p><Link href={currentHref} className="inline-link">מעבר לנוסח העדכני</Link></aside>}
+      {currentHref && (UI_LOCALE as string) !== "he" && <p className="document-notice">תרגום לעיון בלבד. הנוסח ההיסטורי המקורי נשמר בעברית, והתרגום אינו משנה הסכמות קודמות.</p>}
+      {currentHref && <aside className="document-notice" aria-label="גרסה קודמת"><strong>גרסה קודמת - אינה הנוסח העדכני</strong><p>המסמך נשמר כדי לאפשר לעיין בנוסח שהיה זמין בעבר. הוא אינו משנה הסכמות שכבר נרשמו.</p><Link href={currentHref} className="inline-link">מעבר לנוסח העדכני</Link></aside>}
       {document.draft && <aside className="document-notice" aria-label="מצב המסמך">
-        <strong>טיוטה לבדיקה — השירות עדיין אינו פתוח לציבור</strong>
+        <strong>טיוטה לבדיקה - השירות עדיין אינו פתוח לציבור</strong>
         <p>לפני השקה יש להשלים את זהות המפעיל, פרטי הקשר, ספקי השירות ומדיניות השמירה, ולסיים בדיקה משפטית. מסמך זה מציג את הכללים המוצעים ואת מצב גרסת ההיכרות; אין להסתמך עליו כאישור שהשירות מוכן להזמנות.</p>
       </aside>}
       <div className="information-layout">
